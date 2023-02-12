@@ -1,11 +1,8 @@
-import { Flex, Button } from '@chakra-ui/react';
+import { Flex, Link } from "@chakra-ui/react";
+import { RoutePaths } from "app/constants/RoutePaths";
 
 type Props = {};
 
 export function Home(props: Props) {
-  return (
-    <Flex flexDirection={'column'} alignItems={'stretch'}>
-      <Button>New</Button>
-    </Flex>
-  );
-};
+  return <Link href={RoutePaths.Hole}>New (jump to hole)</Link>;
+}

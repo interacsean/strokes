@@ -1,9 +1,10 @@
+import { Flex } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 
 export function MainLayout() {
   return (
-    <div>
+    <Flex flexDir={"column"} alignItems={"stretch"}>
       <Outlet />
-    </div>
+    </Flex>
   );
 }
