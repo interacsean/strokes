@@ -1,8 +1,9 @@
-import { FC } from 'react';
+import { FC } from "react";
+import { HoleVmProps } from "app/screens/Hole/Hole.View-Model";
+import { StrokesModel } from "controllerLayer/usecaseLayer/entityLayer/Strokes/StrokesModel";
 
-export function withDependencies<T extends JSX.IntrinsicAttributes>(Component: FC<T>) {
+type HolePublicProps = {};
 
-  return (props: T) => (
-    <Component {...props} />
-  )
+export function withDependencies(Component: FC<HoleVmProps>) {
+  return (props: HolePublicProps) => <Component {...props} />;
 }
