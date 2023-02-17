@@ -3,17 +3,12 @@ import { ThemedChakraProvider } from "interfaceAdaptorsLayer/presenters/theme";
 import { AppRoutes } from "interfaceAdaptorsLayer/presenters/routes/AppRoutes";
 import { RecoilRoot } from 'recoil';
 import { BrowserRouter } from "react-router-dom";
-import { createContext } from "react";
+import { AppContext } from "./appContext/appContext";
+import { CourseState } from "state/state";
 
 type AppProps = {
-  useCourseState: () => {},
+  useCourseState: () => CourseState,
 }
-
-type AppContextType = {
-  useCourseState: () => {}
-}
-
-const AppContext = createContext({} as unknown as AppContextType);
 
 function App(props: AppProps) {
   const appContextValue = {

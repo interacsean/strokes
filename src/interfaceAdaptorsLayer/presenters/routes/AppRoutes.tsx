@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { RoutePaths } from './RoutePaths';
 import { MainLayout } from '../components/MainLayout/MainLayout';
-import { Hole } from '../screens/Hole/Hole';
+import { Hole } from '../screens/Hole';
 import { Home } from '../screens/Home/Home';
 
 export function AppRoutes() {

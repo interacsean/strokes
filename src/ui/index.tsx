@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "interfaceAdaptorsLayer/presenters/App";
 import reportWebVitals from "./reportWebVitals";
-import { useCourseState } from "state";
+import { useCourseState } from "state/state";
 
 export function init() {
   const root = ReactDOM.createRoot(
