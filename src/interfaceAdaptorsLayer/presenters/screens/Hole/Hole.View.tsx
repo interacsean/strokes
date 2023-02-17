@@ -7,10 +7,10 @@ import {
 } from "interfaceAdaptorsLayer/presenters/screens/Hole/reducer";
 
 export type HoleViewProps = {
-  holeNum: number,
-  hole: { holeNum: number },
-  nextHole: () => void,
-  prevHole: () => void,
+  holeNum: number;
+  hole: { holeNum: number };
+  nextHole: () => void;
+  prevHole: () => void;
 };
 
 export function Hole(props: HoleViewProps) {

@@ -11,7 +11,7 @@ export function init() {
 
   const appDependencies = {
     useCourseState,
-  }
+  };
 
   root.render(
     <React.StrictMode>
