@@ -4,7 +4,7 @@ import {
   holeReducer,
   HoleState,
   initialHoleState,
-} from "app/screens/Hole/reducer";
+} from "interfaceAdaptorsLayer/presenters/screens/Hole/reducer";
 
 type Props = {};
 

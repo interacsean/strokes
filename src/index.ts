@@ -1,3 +1,3 @@
-import { bootstrap } from "./app/bootstrap";
+import { init } from "./ui";
 
-bootstrap();
+init();
