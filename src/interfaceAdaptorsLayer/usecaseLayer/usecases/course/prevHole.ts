@@ -1,11 +1,9 @@
 import { Updater } from "types/Updater";
 
-export function makePrevHole<T>(
+export function prevHole<T>(
   updateCourseState: Updater<{ currentHoleNum: number }, T>
 ) {
-  return function prevHole() {
-    updateCourseState(
-      (state) => ({ currentHoleNum: Math.max(1, state.currentHoleNum - 1)})
-    );
-  }
+  updateCourseState(
+    (state) => ({ currentHoleNum: Math.max(1, state.currentHoleNum - 1)})
+  );
 }

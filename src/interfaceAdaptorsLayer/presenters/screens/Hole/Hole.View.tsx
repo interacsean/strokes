@@ -1,10 +1,5 @@
 import React, { useCallback } from "react";
 import { Box, Button, Text } from "@chakra-ui/react";
-import {
-  holeReducer,
-  HoleState,
-  initialHoleState,
-} from "interfaceAdaptorsLayer/presenters/screens/Hole/reducer";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -22,8 +17,8 @@ export function Hole(props: HoleViewProps) {
     <>
       <Text>Hole {props.holeNum}</Text>
       <Box>
-        <Button onClick={onClickNextHole}>Next</Button>
         <Button onClick={onClickPrevHole}>Last</Button>
+        <Button onClick={onClickNextHole}>Next</Button>
       </Box>
     </>
   );

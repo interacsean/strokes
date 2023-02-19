@@ -1,42 +1,48 @@
-import { useAppContext } from 'interfaceAdaptorsLayer/presenters/appContext/appContext';
-import { makeNextHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/course/nextHole';
-import { makePrevHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/course/prevHole';
-import { createHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/hole/createHole';
-import { makeSaveHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/hole/saveHole';
+import { partial } from 'ramda';
+import { nextHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/course/nextHole';
+import { prevHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/course/prevHole';
+import { saveHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/hole/saveHole';
 import { FC, useCallback, useMemo, useState } from 'react';
+import { useCourseState } from 'state/courseState';
 import { HoleViewProps } from './Hole.View';
 
 type HolePublicProps = {
 }
 
-export function withDependencies(Component: FC<HoleViewProps>) {
-  return function Hole(props: HolePublicProps) {
-    const { state: courseState, updateState: updateCourseState } = useAppContext().useCourseState();
+export function withDependencies(HoleView: FC<HoleViewProps>) {
+  return function Hole(_props: HolePublicProps) {
+    const { state: courseState, updateState: updateCourseState } = useCourseState();
+
+    const hole = useMemo(
+      () => courseState.holes[courseState.currentHoleNum - 1],
+      [courseState.holes, courseState.currentHoleNum],
+    );
+
     const { 
-      saveHole, 
-      nextHole,
-      prevHole,
+      saveHoleUpdate, 
+      nextHoleUpdate,
+      prevHoleUpdate,
      } = useMemo(() => ({
-      saveHole: makeSaveHole(updateCourseState),
-      nextHole: makeNextHole(updateCourseState),
-      prevHole: makePrevHole(updateCourseState),
+      saveHoleUpdate: partial(saveHole, [updateCourseState]),
+      nextHoleUpdate: () => nextHole(updateCourseState),
+      prevHoleUpdate: () => prevHole(updateCourseState),
     }), []);
-    const [hole, setHole] = useState(createHole(courseState.currentHoleNum));
 
     const viewProps = {
       nextHole: useCallback(() => {
-        saveHole(hole);
-        nextHole();
-      }, [hole]),
+        saveHoleUpdate(hole, courseState.currentHoleNum);
+        nextHoleUpdate();
+      }, [hole, courseState.currentHoleNum]),
       prevHole: useCallback(() => {
-        saveHole(hole);
-        prevHole();
-      }, [hole]),
-      hole: courseState.holes[courseState.currentHoleNum - 1],
+        saveHoleUpdate(hole, courseState.currentHoleNum);
+        prevHoleUpdate();
+      }, [hole, courseState.currentHoleNum]),
+      hole,
       holeNum: courseState.currentHoleNum,
-    }
+    };
+
     return (
-      <Component {...viewProps} />
+      <HoleView {...viewProps} />
     )
   }
 }
