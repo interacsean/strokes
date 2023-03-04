@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Box, Button, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, FormLabel, Input, Text } from "@chakra-ui/react";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -14,12 +14,12 @@ export function Hole(props: HoleViewProps) {
   const onClickPrevHole = useCallback(props.prevHole, [props.prevHole]);
 
   return (
-    <>
+    <Flex flexDir="column" rowGap={2}>
       <Text>Hole {props.holeNum}</Text>
-      <Box>
-        <Button onClick={onClickPrevHole}>Last</Button>
-        <Button onClick={onClickNextHole}>Next</Button>
-      </Box>
-    </>
+      <Flex columnGap={2} justifyContent="stretch">
+        <Button flexGrow={1} onClick={onClickPrevHole}>Last</Button>
+        <Button flexGrow={1} onClick={onClickNextHole}>Next</Button>
+      </Flex>
+    </Flex>
   );
 }
