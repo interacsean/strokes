@@ -1,10 +1,19 @@
-import { partial } from 'ramda';
+import { partial, set, update } from 'ramda';
 import { nextHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/course/nextHole';
 import { prevHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/course/prevHole';
-import { saveHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/hole/saveHole';
+import { saveHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/course/saveHole';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useCourseState } from 'state/courseState';
 import { HoleViewProps } from './Hole.View';
+import { Hole as HoleModel } from 'model/Hole';
+import { setHolePar } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/hole/setHolePar';
+import { mergePartStroke } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/mergePartStroke';
+import { saveStroke } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/course/saveStroke';
+import { Lie } from 'model/Lie';
+import { setStrokeLie } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/setStrokeLie';
+import { Stroke } from 'model/Stroke';
+import { newHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/hole/newHole';
+import { mergePartHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/hole/mergePartHole';
 
 type HolePublicProps = {
 }
@@ -12,33 +21,69 @@ type HolePublicProps = {
 export function withDependencies(HoleView: FC<HoleViewProps>) {
   return function Hole(_props: HolePublicProps) {
     const { state: courseState, updateState: updateCourseState } = useCourseState();
+    console.log(courseState);
 
-    const hole = useMemo(
-      () => courseState.holes[courseState.currentHoleNum - 1],
+    const currentHole = useMemo(
+      () => courseState.holes[courseState.currentHoleNum - 1] || {
+        ...newHole(),
+        holeNum: courseState.currentHoleNum,
+      },
       [courseState.holes, courseState.currentHoleNum],
     );
 
-    const { 
-      saveHoleUpdate, 
-      nextHoleUpdate,
-      prevHoleUpdate,
-     } = useMemo(() => ({
-      saveHoleUpdate: partial(saveHole, [updateCourseState]),
-      nextHoleUpdate: () => nextHole(updateCourseState),
-      prevHoleUpdate: () => prevHole(updateCourseState),
-    }), []);
+    const saveStrokeAndUpdate = useCallback(
+      (partStroke: Partial<Stroke>, strokeNum: number) =>
+        saveStroke(updateCourseState, strokeNum, mergePartStroke(currentHole.strokes[strokeNum - 1], partStroke)),
+      [updateCourseState, currentHole],
+    );
+
+    const saveCurrentHole = useCallback(
+      (h: HoleModel, n?: number) => saveHole(updateCourseState, h, n),
+      [updateCourseState],
+    );
+
+    const holeUpdateAndSave = useCallback(
+      (partHole: Partial<HoleModel>) => saveCurrentHole(mergePartHole(currentHole, partHole)),
+      [saveCurrentHole, currentHole],
+    );
+
+    const nextHoleAndUpdate = useCallback(
+      () => {
+        // this double-updates the state and it could be done in one Stroke
+        saveCurrentHole(currentHole);
+        nextHole(updateCourseState);
+      },
+      [currentHole, saveCurrentHole, useCourseState],
+    );
+
+    const prevHoleAndUpdate = useCallback(
+      () => {
+        saveCurrentHole(currentHole);
+        prevHole(updateCourseState);
+      },
+      [currentHole, saveCurrentHole, useCourseState],
+    );
+
+    const setParAndUpdate = useCallback(
+      (par: number) => setHolePar(holeUpdateAndSave, par),
+      [saveCurrentHole],
+    );
+
+    const setStrokeLieAndUpdate = useCallback(
+      (strokeNum: number, lie: Lie) => {
+        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [strokeNum]);
+        setStrokeLie(saveStrokeNumAndUpdate, strokeNum, lie);
+      },
+      [saveStrokeAndUpdate],
+    );
 
     const viewProps = {
-      nextHole: useCallback(() => {
-        saveHoleUpdate(hole, courseState.currentHoleNum);
-        nextHoleUpdate();
-      }, [hole, courseState.currentHoleNum]),
-      prevHole: useCallback(() => {
-        saveHoleUpdate(hole, courseState.currentHoleNum);
-        prevHoleUpdate();
-      }, [hole, courseState.currentHoleNum]),
-      hole,
+      nextHole: nextHoleAndUpdate,
+      prevHole: prevHoleAndUpdate,
+      hole: currentHole,
       holeNum: courseState.currentHoleNum,
+      setPar: setParAndUpdate,
+      selectStrokeLie: setStrokeLieAndUpdate
     };
 
     return (

@@ -1,1 +1,1 @@
-export type Updater<T, O> = (newStateOrUpdater: T | ((currentState: T & O) => T)) => void;
+export type Updater<T, O> = (stateUpdaterFn: (currentState: T & O) => T) => void;
