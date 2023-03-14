@@ -1,10 +1,8 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Box, Button, Flex, FormLabel, Input, Text } from "@chakra-ui/react";
 import { Hole as HoleModel } from "model/Hole";
-import { Club } from "model/Club";
 import { Lie } from "model/Lie";
-import { LatLng } from "model/LatLng";
-import { StrokeType } from "model/StrokeType";
+import { useInput } from "interfaceAdaptorsLayer/presenters/utils/useInput/useInput";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -23,25 +21,32 @@ export type HoleViewProps = {
   // setHolePinPos: (pos: LatLng) => void;
 };
 
-export function Hole(props: HoleViewProps) {
+function useHoleViewLogic(props: HoleViewProps) {
+  const { inputProps: parInputProps, setCurrentValue: setParInputValue } = useInput({
+    initValue: `${props.hole.par}`,
+    onBlur: (value) => props.setPar(parseInt(value, 10)),
+  });
+  useEffect(() => {
+    setParInputValue(`${props.hole.par}`)
+  }, [setParInputValue, props.holeNum]);
+  return { parInputProps };
+}
 
+export function Hole(props: HoleViewProps) {
+  const viewLogic = useHoleViewLogic(props);
 
   // const [state, dispatch] = React.useReducer(holeReducer, initialHoleState);
-  const onClickNextHole = useCallback(props.nextHole, [props.nextHole]);
-  const onClickPrevHole = useCallback(props.prevHole, [props.prevHole]);
 
   return (
     <Flex flexDir="column" rowGap={2}>
       <Text>Hole {props.holeNum}</Text>
       <FormLabel>
-        <Input name="par" onChange={(e) => {
-          props.setPar(parseInt(e.currentTarget.value, 10))
-        }} />
-        <Text>Par</Text>
+        <Input name="par" {...viewLogic.parInputProps} />
+        <Text>Par {props.hole.par}</Text>
       </FormLabel>
       <Flex columnGap={2} justifyContent="stretch">
-        <Button flexGrow={1} onClick={onClickPrevHole}>Last</Button>
-        <Button flexGrow={1} onClick={onClickNextHole}>Next</Button>
+        <Button flexGrow={1} onClick={props.prevHole}>Last</Button>
+        <Button flexGrow={1} onClick={props.nextHole}>Next</Button>
       </Flex>
     </Flex>
   );
