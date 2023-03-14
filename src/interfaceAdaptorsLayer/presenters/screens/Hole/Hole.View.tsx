@@ -24,7 +24,12 @@ export type HoleViewProps = {
 function useHoleViewLogic(props: HoleViewProps) {
   const { inputProps: parInputProps, setCurrentValue: setParInputValue } = useInput({
     initValue: `${props.hole.par}`,
-    onBlur: (value) => props.setPar(parseInt(value, 10)),
+    onBlur: (value) => {
+      const newPar = parseInt(value, 10);
+      if (!isNaN(newPar)) {
+        props.setPar(newPar);
+      }
+    }
   });
   useEffect(() => {
     setParInputValue(`${props.hole.par}`)
@@ -41,8 +46,8 @@ export function Hole(props: HoleViewProps) {
     <Flex flexDir="column" rowGap={2}>
       <Text>Hole {props.holeNum}</Text>
       <FormLabel>
-        <Input name="par" {...viewLogic.parInputProps} />
         <Text>Par {props.hole.par}</Text>
+        <Input name="par" {...viewLogic.parInputProps} />
       </FormLabel>
       <Flex columnGap={2} justifyContent="stretch">
         <Button flexGrow={1} onClick={props.prevHole}>Last</Button>
