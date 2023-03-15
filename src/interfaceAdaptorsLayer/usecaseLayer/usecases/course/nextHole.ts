@@ -1,11 +1,9 @@
 import { Updater } from "types/Updater";
 
-export function makeNextHole<T>(
+export function nextHole<T>(
   updateCourseState: Updater<{ currentHoleNum: number }, T>
 ) {
-  return function nextHole() {
-    updateCourseState(
-      (state) => ({ currentHoleNum: Math.min(18, state.currentHoleNum + 1)})
-    );
-  }
+  updateCourseState(
+    (state) => ({ currentHoleNum: Math.min(18, state.currentHoleNum + 1)})
+  );
 }
