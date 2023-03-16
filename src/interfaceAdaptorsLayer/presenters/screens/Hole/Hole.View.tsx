@@ -1,5 +1,18 @@
-import React, { useCallback, useEffect } from "react";
-import { Box, Button, Flex, FormLabel, Input, Text } from "@chakra-ui/react";
+import React, { useCallback, useEffect, useState } from "react";
+import { 
+  Box,
+  Button,
+  Flex,
+  FormLabel,
+  Input,
+  Text,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  useTab,
+} from "@chakra-ui/react";
 import { Hole as HoleModel } from "model/Hole";
 import { Lie } from "model/Lie";
 import { useInput } from "interfaceAdaptorsLayer/presenters/utils/useInput/useInput";
@@ -31,10 +44,22 @@ function useHoleViewLogic(props: HoleViewProps) {
       }
     }
   });
-  useEffect(() => {
-    setParInputValue(`${props.hole.par}`)
-  }, [setParInputValue, props.holeNum]);
-  return { parInputProps };
+  useEffect(
+    function updateParInputValueOnHoleUpdate(){
+      setParInputValue(`${props.hole.par}`)
+    },
+    [setParInputValue, props.holeNum],
+  );
+
+  const [tabIndex, setTabIndex] = useState(0);
+
+  return {
+    parInputProps,
+    tabIndex, 
+    setTabIndex,
+    switchViewMap: () => setTabIndex(0),
+    switchViewStrokeList: () => setTabIndex(1),
+  };
 }
 
 export function Hole(props: HoleViewProps) {
@@ -45,10 +70,24 @@ export function Hole(props: HoleViewProps) {
   return (
     <Flex flexDir="column" rowGap={2}>
       <Text>Hole {props.holeNum}</Text>
-      <FormLabel>
-        <Text>Par {props.hole.par}</Text>
-        <Input name="par" {...viewLogic.parInputProps} />
-      </FormLabel>
+      <Tabs index={viewLogic.tabIndex} onChange={viewLogic.setTabIndex}>
+        <TabList>
+          <Tab onClick={() => viewLogic.setTabIndex(0)}>Map</Tab>
+          <Tab onClick={() => viewLogic.setTabIndex(1)}>Strokes</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <FormLabel>
+              <Text>Par {props.hole.par}</Text>
+              <Input name="par" {...viewLogic.parInputProps} />
+            </FormLabel>
+          </TabPanel>
+          <TabPanel>
+            <p>Strokes</p>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+
       <Flex columnGap={2} justifyContent="stretch">
         <Button flexGrow={1} onClick={props.prevHole}>Last</Button>
         <Button flexGrow={1} onClick={props.nextHole}>Next</Button>
