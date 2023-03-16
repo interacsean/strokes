@@ -13,8 +13,6 @@ export function saveStroke(
   stroke: Stroke,
 ) {
   updateCourseState(
-    (state) => ({
-      holes: set(lensPath(['holes', 'strokes', strokeNum - 1]), stroke, state.holes),
-    })
+    (state) => set(lensPath(['holes', state.currentHoleNum - 1, 'strokes', strokeNum - 1]), stroke, state),
   );
 }

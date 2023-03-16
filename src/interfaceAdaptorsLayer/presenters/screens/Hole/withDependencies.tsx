@@ -14,6 +14,7 @@ import { setStrokeLie } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/strok
 import { Stroke } from 'model/Stroke';
 import { newHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/hole/newHole';
 import { mergePartHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/hole/mergePartHole';
+import { Club } from 'model/Club';
 
 type HolePublicProps = {
 }
@@ -23,17 +24,23 @@ export function withDependencies(HoleView: FC<HoleViewProps>) {
     const { state: courseState, updateState: updateCourseState } = useCourseState();
     console.log(courseState);
 
-    const currentHole = useMemo(
-      () => courseState.holes[courseState.currentHoleNum - 1] || {
+    // todo: fix memoization
+    const currentHole = 
+    // useMemo(
+    //   () => 
+      courseState.holes[courseState.currentHoleNum - 1] || {
         ...newHole(),
         holeNum: courseState.currentHoleNum,
-      },
-      [courseState.holes, courseState.currentHoleNum],
-    );
+      }
+    //   , [courseState, courseState.currentHoleNum],
+    // );
+    console.log({ currentHole })
 
     const saveStrokeAndUpdate = useCallback(
-      (strokeNum: number, partStroke: Partial<Stroke>) => 
-        saveStroke(updateCourseState, strokeNum, mergePartStroke(currentHole.strokes[strokeNum - 1], partStroke)),
+      (strokeNum: number, partStroke: Partial<Stroke>) => {
+        const newStroke = mergePartStroke(currentHole.strokes[strokeNum - 1], partStroke);
+        return saveStroke(updateCourseState, strokeNum, newStroke);
+      },
       [updateCourseState, currentHole],
     );
 
@@ -77,13 +84,19 @@ export function withDependencies(HoleView: FC<HoleViewProps>) {
       [saveStrokeAndUpdate],
     );
 
+    const setStrokeClubAndUpdate = useCallback(
+      (strokeNum: number, club: Club) => saveStrokeAndUpdate(strokeNum, { club }),
+      [saveStrokeAndUpdate]
+    )
+
     const viewProps = {
       nextHole: nextHoleAndUpdate,
       prevHole: prevHoleAndUpdate,
       hole: currentHole,
       holeNum: courseState.currentHoleNum,
       setPar: setParAndUpdate,
-      selectStrokeLie: setStrokeLieAndUpdate
+      selectStrokeLie: setStrokeLieAndUpdate,
+      selectStrokeClub: setStrokeClubAndUpdate,
     };
 
     return (
