@@ -16,6 +16,9 @@ import {
 import { Hole as HoleModel } from "model/Hole";
 import { Lie } from "model/Lie";
 import { useInput } from "interfaceAdaptorsLayer/presenters/utils/useInput/useInput";
+import { StrokeView } from "./components/StrokeRow.view";
+import { Stroke } from "model/Stroke";
+import { newStroke } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/newStroke";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -34,6 +37,8 @@ export type HoleViewProps = {
   // setHolePinPos: (pos: LatLng) => void;
 };
 
+const DEFAULT_HOLE_TAB = 1;
+
 function useHoleViewLogic(props: HoleViewProps) {
   const { inputProps: parInputProps, setCurrentValue: setParInputValue } = useInput({
     initValue: `${props.hole.par}`,
@@ -51,7 +56,7 @@ function useHoleViewLogic(props: HoleViewProps) {
     [setParInputValue, props.holeNum],
   );
 
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
 
   return {
     parInputProps,
@@ -62,7 +67,7 @@ function useHoleViewLogic(props: HoleViewProps) {
   };
 }
 
-export function Hole(props: HoleViewProps) {
+export function HoleView(props: HoleViewProps) {
   const viewLogic = useHoleViewLogic(props);
 
   // const [state, dispatch] = React.useReducer(holeReducer, initialHoleState);
@@ -83,6 +88,21 @@ export function Hole(props: HoleViewProps) {
             </FormLabel>
           </TabPanel>
           <TabPanel>
+            {props.hole.strokes.map((stroke, i) => {
+
+              return (
+                <StrokeView
+                  strokeNum={i + 1}
+                  stroke={stroke}
+                  selectStrokeLie={props.selectStrokeLie}
+                />
+              )
+            })}
+            <StrokeView
+              strokeNum={props.hole.strokes.length + 1}
+              stroke={newStroke(1)}
+              selectStrokeLie={props.selectStrokeLie}
+            />
             <p>Strokes</p>
           </TabPanel>
         </TabPanels>

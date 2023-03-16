@@ -2,7 +2,7 @@ import { Lie } from "model/Lie";
 import { Stroke } from "model/Stroke";
 
 export function setStrokeLie(
-  setHoleAttr: (partStroke: Partial<Stroke>) => void,
+  setHoleAttr: (partStroke: { lie: Lie }) => void,
   strokeNum: number,
   lie: Lie,
 ) {

@@ -32,7 +32,7 @@ export function withDependencies(HoleView: FC<HoleViewProps>) {
     );
 
     const saveStrokeAndUpdate = useCallback(
-      (partStroke: Partial<Stroke>, strokeNum: number) =>
+      (strokeNum: number, partStroke: Partial<Stroke>) => 
         saveStroke(updateCourseState, strokeNum, mergePartStroke(currentHole.strokes[strokeNum - 1], partStroke)),
       [updateCourseState, currentHole],
     );
