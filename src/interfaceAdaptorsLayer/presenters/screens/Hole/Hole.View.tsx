@@ -10,27 +10,27 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  Stack,
   VStack,
 } from "@chakra-ui/react";
 import { Hole as HoleModel } from "model/Hole";
 import { Lie } from "model/Lie";
 import { useInput } from "interfaceAdaptorsLayer/presenters/utils/useInput/useInput";
 import { StrokeView } from "./components/StrokeRow.view";
-import { newStroke } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/newStroke";
 import { Club } from "model/Club";
 import { Stroke } from "model/Stroke";
+import { LatLng } from "model/LatLng";
 
 export type HoleViewProps = {
   holeNum: number;
   hole: HoleModel;
-  // currentPosition: LatLng;
+  currentPosition: LatLng;
   nextHole: () => void;
   prevHole: () => void;
   setPar: (n: number) => void;
   selectStrokeLie: (stroke: number, lie: Lie) => void;
   selectStrokeClub: (stroke: number, club: Club) => void;
   strokeInputList: Stroke[];
+  setStrokePos: (stroke: number, pos: LatLng) => void;
   // setStrokeEndPos: (stroke: number, pos: LatLng) => void;
   // setStrokeStartPos: (stroke: number, pos: LatLng) => void;
   // holedStroke: () => void;
@@ -59,6 +59,9 @@ function useHoleViewLogic(props: HoleViewProps) {
     [setParInputValue, props.holeNum]
   );
 
+  const setCurPos = (strokeNum: number) =>
+    props.setStrokePos(strokeNum, props.currentPosition);
+
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
 
   return {
@@ -67,6 +70,7 @@ function useHoleViewLogic(props: HoleViewProps) {
     setTabIndex,
     switchViewMap: () => setTabIndex(0),
     switchViewStrokeList: () => setTabIndex(1),
+    setCurPos,
   };
 }
 
@@ -100,6 +104,7 @@ export function HoleView(props: HoleViewProps) {
                     stroke={stroke}
                     selectLie={props.selectStrokeLie}
                     selectClub={props.selectStrokeClub}
+                    setPosition={viewLogic.setCurPos}
                   />
                 );
               })}

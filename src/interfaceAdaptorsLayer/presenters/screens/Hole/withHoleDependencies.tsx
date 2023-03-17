@@ -16,6 +16,7 @@ import { newStroke } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/n
 import { newHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/newHole";
 import { mergePartHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/mergePartHole";
 import { Club } from "model/Club";
+import { LatLng } from "model/LatLng";
 
 type HolePublicProps = {};
 
@@ -95,6 +96,13 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       [saveStrokeAndUpdate]
     );
 
+    const setStrokePos = useCallback(
+      (strokeNum: number, pos: LatLng) => {
+        saveStrokeAndUpdate(strokeNum, { shotPos: pos });
+      },
+      [saveStrokeAndUpdate]
+    );
+
     const strokeInputList = shouldShowNewStroke(currentHole.strokes)
       ? [...currentHole.strokes, newStroke(currentHole.strokes.length + 1)]
       : currentHole.strokes;
@@ -108,6 +116,8 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       selectStrokeLie: setStrokeLieAndUpdate,
       selectStrokeClub: setStrokeClubAndUpdate,
       strokeInputList,
+      setStrokePos,
+      currentPosition: { lat: 70, lng: 49 },
     };
 
     return <HoleView {...viewProps} />;

@@ -1,4 +1,6 @@
-import { Flex, Select, Text } from "@chakra-ui/react";
+import { Button, Flex, Select, Text } from "@chakra-ui/react";
+// import x from 'react-icons';
+import styled from "@emotion/styled";
 import { withTargetValue } from "interfaceAdaptorsLayer/presenters/utils/withTargetValue";
 import { Club } from "model/Club";
 import { Lie } from "model/Lie";
@@ -11,7 +13,13 @@ type StrokeViewProps = {
   stroke: Stroke;
   selectLie: HoleViewProps["selectStrokeLie"];
   selectClub: HoleViewProps["selectStrokeClub"];
+  setPosition: (strokeNum: number) => void;
 };
+
+const UnsetButton = styled(Button)`
+  border-color: orange;
+  border-style: dashed;
+`;
 
 const liePairs = Object.entries(Lie);
 const clubPairs = Object.entries(Club);
@@ -23,6 +31,7 @@ export function StrokeView(props: StrokeViewProps) {
   const selectCurStrokeClub = partial(props.selectClub, [props.strokeNum]) as (
     clubAsStr: string
   ) => void;
+  const setCurStrokePos = partial(props.setPosition, [props.strokeNum]);
 
   return (
     <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
@@ -57,6 +66,15 @@ export function StrokeView(props: StrokeViewProps) {
           </option>
         ))}
       </Select>
+      {props.stroke.shotPos ? (
+        <Button variant="ghost" onClick={setCurStrokePos}>
+          📍
+        </Button>
+      ) : (
+        <UnsetButton variant="primaryOutline" onClick={setCurStrokePos}>
+          📍
+        </UnsetButton>
+      )}
     </Flex>
   );
 }

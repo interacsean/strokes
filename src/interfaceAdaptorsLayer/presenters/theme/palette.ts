@@ -1,6 +1,6 @@
 const colorPalette = {
   primary: {
-    500: "#de9f2c",
+    500: "#0088cc",
   },
   secondary: {
     500: "#de412c",
