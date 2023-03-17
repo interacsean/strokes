@@ -7,8 +7,8 @@ export type CourseStateSetters = ReturnType<typeof useCourseState>;
 export type CourseState = typeof defaultCourse;
 
 export type HoleState = {
-  strokes: number[] // todo: update,
-}
+  strokes: number[]; // todo: update,
+};
 
 const defaultCourse = {
   currentHoleNum: 1,
@@ -17,23 +17,26 @@ const defaultCourse = {
 };
 
 export function useCourseState() {
-  const [ state, setState ] = useRecoilState(courseAtom);
+  const [state, setState] = useRecoilState(courseAtom);
 
   return useMemo(
-    () => ({  
+    () => ({
       state,
       setState,
-      updateState: (partialStateOrUpdater: (Partial<CourseState> | ((st: CourseState) => Partial<CourseState>))) => {
-        setState(currentState =>({ 
-          ...currentState, 
-          ...(typeof partialStateOrUpdater === 'function' 
+      updateState: (
+        partialStateOrUpdater:
+          | Partial<CourseState>
+          | ((st: CourseState) => Partial<CourseState>)
+      ) => {
+        setState((currentState) => ({
+          ...currentState,
+          ...(typeof partialStateOrUpdater === "function"
             ? partialStateOrUpdater(currentState)
-            : partialStateOrUpdater
-          )
-        }),
-      )},
+            : partialStateOrUpdater),
+        }));
+      },
     }),
-    [...Object.values(state)],
+    [...Object.values(state)]
   );
 }
 

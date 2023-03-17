@@ -1,6 +1,6 @@
-import { Lie } from "model/Lie"
+import { Lie } from "model/Lie";
 import { Stroke } from "model/Stroke";
-import { setStrokeLie } from "./setStrokeLie"
+import { setStrokeLie } from "./setStrokeLie";
 
 export function newStroke(strokeNum: number): Stroke {
   let stroke: Stroke = {
@@ -8,11 +8,11 @@ export function newStroke(strokeNum: number): Stroke {
     club: undefined,
     intendedPos: undefined,
     shotPos: undefined,
-  }
+  };
   setStrokeLie(
-    ({ lie }) => stroke.lie = lie,
+    ({ lie }) => (stroke.lie = lie),
     strokeNum,
-    strokeNum === 1 ? Lie.TEE : undefined,
-  )
+    strokeNum === 1 ? Lie.TEE : undefined
+  );
   return stroke;
 }

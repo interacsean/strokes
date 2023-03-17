@@ -1,5 +1,5 @@
 export enum Club {
-  'D' = "Driver",
+  "D" = "Driver",
   "1W" = "1 Wood",
   "2W" = "2 Wood",
   "3W" = "3 Wood",
@@ -23,5 +23,5 @@ export enum Club {
   "LW" = "Lob Wedge",
   "SW" = "Sand Wedge",
   "54W" = "54° Wedge",
-  "P" = "Putter"
+  "P" = "Putter",
 }
