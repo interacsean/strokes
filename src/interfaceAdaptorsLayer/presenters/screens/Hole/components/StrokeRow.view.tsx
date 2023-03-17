@@ -4,13 +4,13 @@ import styled from "@emotion/styled";
 import { withTargetValue } from "interfaceAdaptorsLayer/presenters/utils/withTargetValue";
 import { Club } from "model/Club";
 import { Lie } from "model/Lie";
-import { Stroke } from "model/Stroke";
+import { Stroke, StrokeWithDerivedFields } from "model/Stroke";
 import { partial } from "ramda";
 import { HoleViewProps } from "../Hole.View";
 
 type StrokeViewProps = {
   strokeNum: number;
-  stroke: Stroke;
+  stroke: StrokeWithDerivedFields;
   selectLie: HoleViewProps["selectStrokeLie"];
   selectClub: HoleViewProps["selectStrokeClub"];
   setPosition: (strokeNum: number) => void;
@@ -36,7 +36,7 @@ export function StrokeView(props: StrokeViewProps) {
   return (
     <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
       <Text minW={4}>{props.strokeNum}</Text>
-      {props.stroke.shotPos ? (
+      {props.stroke.ballPos ? (
         <Button variant="ghost" onClick={setCurStrokePos}>
           📍
         </Button>
@@ -75,6 +75,9 @@ export function StrokeView(props: StrokeViewProps) {
           </option>
         ))}
       </Select>
+      <Text>
+        {props.stroke.strokeDistance ? `${Math.round(props.stroke.strokeDistance)}m` : '–'}
+      </Text>
     </Flex>
   );
 }

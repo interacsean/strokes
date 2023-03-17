@@ -17,7 +17,7 @@ import { Lie } from "model/Lie";
 import { useInput } from "interfaceAdaptorsLayer/presenters/utils/useInput/useInput";
 import { StrokeView } from "./components/StrokeRow.view";
 import { Club } from "model/Club";
-import { Stroke } from "model/Stroke";
+import { Stroke, StrokeWithDerivedFields } from "model/Stroke";
 import { LatLng } from "model/LatLng";
 
 export type HoleViewProps = {
@@ -29,7 +29,7 @@ export type HoleViewProps = {
   setPar: (n: number) => void;
   selectStrokeLie: (stroke: number, lie: Lie) => void;
   selectStrokeClub: (stroke: number, club: Club) => void;
-  strokeInputList: Stroke[];
+  strokeInputList: StrokeWithDerivedFields[];
   setStrokePos: (stroke: number, pos: LatLng) => void;
   // setStrokeEndPos: (stroke: number, pos: LatLng) => void;
   // setStrokeStartPos: (stroke: number, pos: LatLng) => void;

@@ -4,6 +4,10 @@ import { Lie } from "./Lie";
 export type Stroke = {
   club: string | undefined;
   lie: Lie | undefined;
-  shotPos: LatLng | undefined;
+  ballPos: LatLng | undefined;
   intendedPos: LatLng | undefined;
 };
+
+export type StrokeWithDerivedFields = Stroke & {
+  strokeDistance?: number,
+}

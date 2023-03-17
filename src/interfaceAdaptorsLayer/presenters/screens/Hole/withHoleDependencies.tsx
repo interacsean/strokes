@@ -2,7 +2,7 @@ import { last, partial, set, update } from "ramda";
 import { nextHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/nextHole";
 import { prevHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/prevHole";
 import { saveHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/saveHole";
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import { useCourseState } from "state/courseState";
 import { HoleViewProps } from "./Hole.View";
 import { Hole as HoleModel } from "model/Hole";
@@ -19,6 +19,7 @@ import { Club } from "model/Club";
 import { LatLng } from "model/LatLng";
 import { useGeolocated } from 'react-geolocated';
 import { FakeGeo } from "./components/FakeGeo";
+import { calculateStrokeDistances } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/calculateStrokeDistances";
 
 type HolePublicProps = {};
 
@@ -102,7 +103,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const setStrokePos = useCallback(
       (strokeNum: number, pos: LatLng) => {
-        saveStrokeAndUpdate(strokeNum, { shotPos: pos });
+        saveStrokeAndUpdate(strokeNum, { ballPos: pos });
       },
       [saveStrokeAndUpdate]
     );
@@ -111,9 +112,11 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       ? [...currentHole.strokes, newStroke(currentHole.strokes.length + 1)]
       : currentHole.strokes;
 
+    const strokeListWithDistances = useMemo(() => calculateStrokeDistances(currentHole, strokeInputList), [currentHole, strokeInputList]);
+
     const geo = useGeolocated({ positionOptions: { enableHighAccuracy: true } });
 
-    const [fakePos, setFakePos] = useState<LatLng>({ lat: -37.8, lng: 144.953, alt: 10 })
+    const [fakePos, setFakePos] = useState<LatLng>({ lat: -37.8, lng: 144.95, alt: 10 })
     const currentPosition = USE_FAKE_POSITION ? fakePos
       : geo.coords?.latitude && geo.coords?.longitude
         ? { lat: geo.coords?.latitude, lng: geo.coords?.longitude, alt: geo.coords?.altitude }
@@ -127,7 +130,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       setPar: setParAndUpdate,
       selectStrokeLie: setStrokeLieAndUpdate,
       selectStrokeClub: setStrokeClubAndUpdate,
-      strokeInputList,
+      strokeInputList: strokeListWithDistances,
       setStrokePos,
       currentPosition,
     };
