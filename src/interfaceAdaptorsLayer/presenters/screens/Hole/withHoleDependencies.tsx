@@ -2,7 +2,7 @@ import { last, partial, set, update } from "ramda";
 import { nextHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/nextHole";
 import { prevHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/prevHole";
 import { saveHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/saveHole";
-import { FC, useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useState } from "react";
 import { useCourseState } from "state/courseState";
 import { HoleViewProps } from "./Hole.View";
 import { Hole as HoleModel } from "model/Hole";
@@ -17,8 +17,12 @@ import { newHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/newHo
 import { mergePartHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/mergePartHole";
 import { Club } from "model/Club";
 import { LatLng } from "model/LatLng";
+import { useGeolocated } from 'react-geolocated';
+import { FakeGeo } from "./components/FakeGeo";
 
 type HolePublicProps = {};
+
+const USE_FAKE_POSITION = true;
 
 function shouldShowNewStroke(strokes: Stroke[]) {
   const lastStroke = last(strokes);
@@ -107,6 +111,14 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       ? [...currentHole.strokes, newStroke(currentHole.strokes.length + 1)]
       : currentHole.strokes;
 
+    const geo = useGeolocated({ positionOptions: { enableHighAccuracy: true } });
+
+    const [fakePos, setFakePos] = useState<LatLng>({ lat: -37.8, lng: 144.953, alt: 10 })
+    const currentPosition = USE_FAKE_POSITION ? fakePos
+      : geo.coords?.latitude && geo.coords?.longitude
+        ? { lat: geo.coords?.latitude, lng: geo.coords?.longitude, alt: geo.coords?.altitude }
+        : undefined
+
     const viewProps = {
       nextHole: nextHoleAndUpdate,
       prevHole: prevHoleAndUpdate,
@@ -117,9 +129,14 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       selectStrokeClub: setStrokeClubAndUpdate,
       strokeInputList,
       setStrokePos,
-      currentPosition: { lat: 70, lng: 49 },
+      currentPosition,
     };
 
-    return <HoleView {...viewProps} />;
+    return (
+      <>
+        <HoleView {...viewProps} />
+        <FakeGeo pos={fakePos} setPos={setFakePos} />
+      </>
+    );
   };
 }

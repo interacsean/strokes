@@ -23,7 +23,7 @@ import { LatLng } from "model/LatLng";
 export type HoleViewProps = {
   holeNum: number;
   hole: HoleModel;
-  currentPosition: LatLng;
+  currentPosition: LatLng | undefined;
   nextHole: () => void;
   prevHole: () => void;
   setPar: (n: number) => void;
@@ -59,7 +59,7 @@ function useHoleViewLogic(props: HoleViewProps) {
     [setParInputValue, props.holeNum]
   );
 
-  const setCurPos = (strokeNum: number) =>
+  const setCurPos = (strokeNum: number) => props.currentPosition &&
     props.setStrokePos(strokeNum, props.currentPosition);
 
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);

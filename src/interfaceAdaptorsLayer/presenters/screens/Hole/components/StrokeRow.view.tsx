@@ -36,6 +36,15 @@ export function StrokeView(props: StrokeViewProps) {
   return (
     <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
       <Text minW={4}>{props.strokeNum}</Text>
+      {props.stroke.shotPos ? (
+        <Button variant="ghost" onClick={setCurStrokePos}>
+          📍
+        </Button>
+      ) : (
+        <UnsetButton variant="primaryOutline" onClick={setCurStrokePos}>
+          📍
+        </UnsetButton>
+      )}
       <Select
         onChange={withTargetValue(selectCurStrokeLie)}
         value={props.stroke.lie}
@@ -66,15 +75,6 @@ export function StrokeView(props: StrokeViewProps) {
           </option>
         ))}
       </Select>
-      {props.stroke.shotPos ? (
-        <Button variant="ghost" onClick={setCurStrokePos}>
-          📍
-        </Button>
-      ) : (
-        <UnsetButton variant="primaryOutline" onClick={setCurStrokePos}>
-          📍
-        </UnsetButton>
-      )}
     </Flex>
   );
 }
