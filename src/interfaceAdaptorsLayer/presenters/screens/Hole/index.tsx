@@ -1,4 +1,4 @@
 import { HoleView } from "./Hole.View";
-import { withDependencies } from "./withDependencies";
+import { withHoleDependencies } from "./withHoleDependencies";
 
-export const Hole = withDependencies(HoleView);
+export const Hole = withHoleDependencies(HoleView);

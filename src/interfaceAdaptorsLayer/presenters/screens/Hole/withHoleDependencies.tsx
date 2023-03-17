@@ -1,4 +1,4 @@
-import { partial, set, update } from 'ramda';
+import { last, partial, set, update } from 'ramda';
 import { nextHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/course/nextHole';
 import { prevHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/course/prevHole';
 import { saveHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/course/saveHole';
@@ -12,6 +12,7 @@ import { saveStroke } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/course/
 import { Lie } from 'model/Lie';
 import { setStrokeLie } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/setStrokeLie';
 import { Stroke } from 'model/Stroke';
+import { newStroke } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/newStroke';
 import { newHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/hole/newHole';
 import { mergePartHole } from 'interfaceAdaptorsLayer/usecaseLayer/usecases/hole/mergePartHole';
 import { Club } from 'model/Club';
@@ -19,7 +20,12 @@ import { Club } from 'model/Club';
 type HolePublicProps = {
 }
 
-export function withDependencies(HoleView: FC<HoleViewProps>) {
+function shouldShowNewStroke(strokes: Stroke[]) {
+  const lastStroke = last(strokes);
+  return strokes.length === 0 || (!!lastStroke?.club && !!lastStroke?.lie)
+}
+
+export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
   return function Hole(_props: HolePublicProps) {
     const { state: courseState, updateState: updateCourseState } = useCourseState();
     console.log(courseState);
@@ -38,8 +44,9 @@ export function withDependencies(HoleView: FC<HoleViewProps>) {
 
     const saveStrokeAndUpdate = useCallback(
       (strokeNum: number, partStroke: Partial<Stroke>) => {
-        const newStroke = mergePartStroke(currentHole.strokes[strokeNum - 1], partStroke);
-        return saveStroke(updateCourseState, strokeNum, newStroke);
+        const currentStroke = currentHole.strokes[strokeNum - 1] || newStroke(strokeNum);
+        const strokeUpdate = mergePartStroke(currentStroke, partStroke);
+        return saveStroke(updateCourseState, strokeNum, strokeUpdate);
       },
       [updateCourseState, currentHole],
     );
@@ -89,6 +96,11 @@ export function withDependencies(HoleView: FC<HoleViewProps>) {
       [saveStrokeAndUpdate]
     )
 
+    const strokeInputList = shouldShowNewStroke(currentHole.strokes) ? [
+      ...currentHole.strokes,
+      newStroke(currentHole.strokes.length + 1)
+    ] : currentHole.strokes;
+
     const viewProps = {
       nextHole: nextHoleAndUpdate,
       prevHole: prevHoleAndUpdate,
@@ -97,6 +109,7 @@ export function withDependencies(HoleView: FC<HoleViewProps>) {
       setPar: setParAndUpdate,
       selectStrokeLie: setStrokeLieAndUpdate,
       selectStrokeClub: setStrokeClubAndUpdate,
+      strokeInputList,
     };
 
     return (

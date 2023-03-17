@@ -10,6 +10,8 @@ import {
   TabPanels,
   Tab,
   TabPanel,
+  Stack,
+  VStack,
 } from "@chakra-ui/react";
 import { Hole as HoleModel } from "model/Hole";
 import { Lie } from "model/Lie";
@@ -17,6 +19,7 @@ import { useInput } from "interfaceAdaptorsLayer/presenters/utils/useInput/useIn
 import { StrokeView } from "./components/StrokeRow.view";
 import { newStroke } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/newStroke";
 import { Club } from "model/Club";
+import { Stroke } from "model/Stroke";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -27,6 +30,7 @@ export type HoleViewProps = {
   setPar: (n: number) => void;
   selectStrokeLie: (stroke: number, lie: Lie) => void;
   selectStrokeClub: (stroke: number, club: Club) => void;
+  strokeInputList: Stroke[];
   // setStrokeEndPos: (stroke: number, pos: LatLng) => void;
   // setStrokeStartPos: (stroke: number, pos: LatLng) => void;
   // holedStroke: () => void;
@@ -70,11 +74,6 @@ export function HoleView(props: HoleViewProps) {
 
   // const [state, dispatch] = React.useReducer(holeReducer, initialHoleState);
 
-  const strokesWithNextShot = [
-    ...props.hole.strokes,
-    newStroke(props.hole.strokes.length + 1)
-  ]
-
   return (
     <Flex flexDir="column" rowGap={2}>
       <Text>Hole {props.holeNum}</Text>
@@ -91,18 +90,19 @@ export function HoleView(props: HoleViewProps) {
             </FormLabel>
           </TabPanel>
           <TabPanel>
-            {strokesWithNextShot.map((stroke, i) => {
-              return (
-                <StrokeView
-                  key={i}
-                  strokeNum={i + 1}
-                  stroke={stroke}
-                  selectLie={props.selectStrokeLie}
-                  selectClub={props.selectStrokeClub}
-                />
-              )
-            })}
-            <p>Strokes</p>
+            <VStack spacing={2}>
+              {props.strokeInputList.map((stroke, i) => {
+                return (
+                  <StrokeView
+                    key={i}
+                    strokeNum={i + 1}
+                    stroke={stroke}
+                    selectLie={props.selectStrokeLie}
+                    selectClub={props.selectStrokeClub}
+                  />
+                )
+              })}
+            </VStack>
           </TabPanel>
         </TabPanels>
       </Tabs>

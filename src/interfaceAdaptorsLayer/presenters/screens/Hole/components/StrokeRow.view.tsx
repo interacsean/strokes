@@ -1,4 +1,4 @@
-import { Flex, Select } from "@chakra-ui/react";
+import { Flex, Select, Text } from "@chakra-ui/react";
 import { withTargetValue } from "interfaceAdaptorsLayer/presenters/utils/withTargetValue";
 import { Club } from "model/Club";
 import { Lie } from "model/Lie";
@@ -22,8 +22,9 @@ export function StrokeView(props: StrokeViewProps) {
 
   return (
     <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
-      <p>{props.strokeNum}</p>
+      <Text minW={4}>{props.strokeNum}</Text>
       <Select onChange={withTargetValue(selectCurStrokeLie)} value={props.stroke.lie}>
+      <option value="">-</option>
         {liePairs.map(([_lieKey, label]) => (
           <option key={_lieKey} value={label} selected={props.stroke.lie === label}>
             {label}
@@ -32,7 +33,6 @@ export function StrokeView(props: StrokeViewProps) {
       </Select>
       <Select onChange={withTargetValue(selectCurStrokeClub)} value={props.stroke.club}>
         <option value="">-</option>
-
         {clubPairs.map(([_clubKey, label]) => (
           <option key={_clubKey} value={label} selected={props.stroke.club === label}>
             {label}
