@@ -23,4 +23,5 @@ export enum Club {
   "LW" = "Lob Wedge",
   "SW" = "Sand Wedge",
   "54W" = "54° Wedge",
+  "P" = "Putter"
 }
