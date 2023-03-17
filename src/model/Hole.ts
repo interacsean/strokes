@@ -7,6 +7,6 @@ export type Hole = {
   // tees
   // pinPos
   // waypoints
-}
+};
 
-export type UnknownHole = Omit<Hole, 'holeNum'> & { holeNum?: number };
+export type UnknownHole = Omit<Hole, "holeNum"> & { holeNum?: number };

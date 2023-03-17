@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { 
+import {
   Button,
   Flex,
   FormLabel,
@@ -42,27 +42,28 @@ export type HoleViewProps = {
 const DEFAULT_HOLE_TAB = 1;
 
 function useHoleViewLogic(props: HoleViewProps) {
-  const { inputProps: parInputProps, setCurrentValue: setParInputValue } = useInput({
-    initValue: `${props.hole.par}`,
-    onBlur: (value) => {
-      const newPar = parseInt(value, 10);
-      if (!isNaN(newPar)) {
-        props.setPar(newPar);
-      }
-    }
-  });
+  const { inputProps: parInputProps, setCurrentValue: setParInputValue } =
+    useInput({
+      initValue: `${props.hole.par}`,
+      onBlur: (value) => {
+        const newPar = parseInt(value, 10);
+        if (!isNaN(newPar)) {
+          props.setPar(newPar);
+        }
+      },
+    });
   useEffect(
-    function updateParInputValueOnHoleUpdate(){
-      setParInputValue(`${props.hole.par}`)
+    function updateParInputValueOnHoleUpdate() {
+      setParInputValue(`${props.hole.par}`);
     },
-    [setParInputValue, props.holeNum],
+    [setParInputValue, props.holeNum]
   );
 
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
 
   return {
     parInputProps,
-    tabIndex, 
+    tabIndex,
     setTabIndex,
     switchViewMap: () => setTabIndex(0),
     switchViewStrokeList: () => setTabIndex(1),
@@ -100,7 +101,7 @@ export function HoleView(props: HoleViewProps) {
                     selectLie={props.selectStrokeLie}
                     selectClub={props.selectStrokeClub}
                   />
-                )
+                );
               })}
             </VStack>
           </TabPanel>
@@ -108,8 +109,12 @@ export function HoleView(props: HoleViewProps) {
       </Tabs>
 
       <Flex columnGap={2} justifyContent="stretch">
-        <Button flexGrow={1} onClick={props.prevHole}>Last</Button>
-        <Button flexGrow={1} onClick={props.nextHole}>Next</Button>
+        <Button flexGrow={1} onClick={props.prevHole}>
+          Last
+        </Button>
+        <Button flexGrow={1} onClick={props.nextHole}>
+          Next
+        </Button>
       </Flex>
     </Flex>
   );

@@ -6,4 +6,4 @@ export type Stroke = {
   lie: Lie | undefined;
   shotPos: LatLng | undefined;
   intendedPos: LatLng | undefined;
-}
+};
