@@ -4,4 +4,5 @@ export const newHole = (): Hole => ({
   holeNum: 1,
   par: 4,
   strokes: [],
+  holePos: undefined,
 });

@@ -17,9 +17,10 @@ import { newHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/newHo
 import { mergePartHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/mergePartHole";
 import { Club } from "model/Club";
 import { LatLng } from "model/LatLng";
-import { useGeolocated } from 'react-geolocated';
+import { useGeolocated } from "react-geolocated";
 import { FakeGeo } from "./components/FakeGeo";
 import { calculateStrokeDistances } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/calculateStrokeDistances";
+import { calculateCaddySuggestions } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/calculateCaddySuggestions";
 
 type HolePublicProps = {};
 
@@ -112,15 +113,36 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       ? [...currentHole.strokes, newStroke(currentHole.strokes.length + 1)]
       : currentHole.strokes;
 
-    const strokeListWithDistances = useMemo(() => calculateStrokeDistances(currentHole, strokeInputList), [currentHole, strokeInputList]);
+    const strokeListWithDistances = useMemo(
+      () => calculateStrokeDistances(currentHole, strokeInputList),
+      [currentHole, strokeInputList]
+    );
 
-    const geo = useGeolocated({ positionOptions: { enableHighAccuracy: true } });
+    const geo = useGeolocated({
+      positionOptions: { enableHighAccuracy: true },
+    });
 
-    const [fakePos, setFakePos] = useState<LatLng>({ lat: -37.8, lng: 144.95, alt: 10 })
-    const currentPosition = USE_FAKE_POSITION ? fakePos
+    const [fakePos, setFakePos] = useState<LatLng>({
+      lat: -37.8,
+      lng: 144.95,
+      alt: 10,
+    });
+    const currentPosition = USE_FAKE_POSITION
+      ? fakePos
       : geo.coords?.latitude && geo.coords?.longitude
-        ? { lat: geo.coords?.latitude, lng: geo.coords?.longitude, alt: geo.coords?.altitude }
-        : undefined
+      ? {
+          lat: geo.coords?.latitude,
+          lng: geo.coords?.longitude,
+          alt: geo.coords?.altitude,
+        }
+      : undefined;
+
+    const caddySuggestions = useMemo(() => {
+      const lastStroke = last(strokeListWithDistances);
+      return lastStroke
+        ? calculateCaddySuggestions(currentHole, lastStroke)
+        : [];
+    }, [currentHole, strokeInputList]);
 
     const viewProps = {
       nextHole: nextHoleAndUpdate,
@@ -133,6 +155,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       strokeInputList: strokeListWithDistances,
       setStrokePos,
       currentPosition,
+      caddySuggestions,
     };
 
     return (

@@ -1,25 +1,26 @@
 import { lonToMeters } from "interfaceAdaptorsLayer/presenters/utils/metersToLongitude";
 import { Hole } from "model/Hole";
 import { Stroke } from "model/Stroke";
+import { calculateDistanceBetweenPositions } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/calculateDistanceBetweenPositions";
 
 export function calculateStrokeDistances(hole: Hole, strokes: Stroke[]) {
   return strokes.map((stroke, i) => {
     if (!!stroke.ballPos && i < strokes.length - 1) {
       const nextStrokePos = strokes[i + 1]?.ballPos;
       if (nextStrokePos) {
-        const deltaX = lonToMeters(nextStrokePos.lng - stroke.ballPos.lng, stroke.ballPos.lat);
-        const deltaY = (nextStrokePos.lat - stroke.ballPos.lat) * 111320;
-        const strokeDistance = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
-
+        const strokeDistance = calculateDistanceBetweenPositions(
+          stroke.ballPos,
+          nextStrokePos
+        );
         return {
           ...stroke,
           strokeDistance,
-        }
+        };
       }
     }
     return {
       ...stroke,
       strokeDistance: undefined,
-    }
-  })
+    };
+  });
 }

@@ -19,6 +19,7 @@ import { StrokeView } from "./components/StrokeRow.view";
 import { Club } from "model/Club";
 import { Stroke, StrokeWithDerivedFields } from "model/Stroke";
 import { LatLng } from "model/LatLng";
+import { CaddySuggestion } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/calculateCaddySuggestions";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -31,6 +32,7 @@ export type HoleViewProps = {
   selectStrokeClub: (stroke: number, club: Club) => void;
   strokeInputList: StrokeWithDerivedFields[];
   setStrokePos: (stroke: number, pos: LatLng) => void;
+  caddySuggestions: CaddySuggestion[];
   // setStrokeEndPos: (stroke: number, pos: LatLng) => void;
   // setStrokeStartPos: (stroke: number, pos: LatLng) => void;
   // holedStroke: () => void;
@@ -59,7 +61,8 @@ function useHoleViewLogic(props: HoleViewProps) {
     [setParInputValue, props.holeNum]
   );
 
-  const setCurPos = (strokeNum: number) => props.currentPosition &&
+  const setCurPos = (strokeNum: number) =>
+    props.currentPosition &&
     props.setStrokePos(strokeNum, props.currentPosition);
 
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
