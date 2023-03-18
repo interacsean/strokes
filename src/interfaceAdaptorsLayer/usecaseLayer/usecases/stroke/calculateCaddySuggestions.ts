@@ -10,7 +10,7 @@ export type CaddySuggestion = {
 
 type ClubStat = { loft: number; distances: [number, number] };
 // todo: fix loft numbers
-const TEMP_clubStatistics: Record<string, ClubStat> = {
+const TEMP_clubStatistics: Partial<Record<Club, ClubStat>> = {
   [Club.D]: { loft: 10.5, distances: [180, 205] as [number, number] },
   [Club["3W"]]: { loft: 15, distances: [155, 175] as [number, number] },
   [Club["5W"]]: { loft: 21, distances: [150, 170] as [number, number] },
@@ -39,7 +39,7 @@ export function calculateCaddySuggestions(
 
   const clubRanges = Object.entries(clubStatistics)
     .map((clubStats) => ({
-      club: clubStats[0],
+      club: clubStats[0] as Club,
       clubStats: clubStats[1],
       deltaLow: distanceToTarget - clubStats[1].distances[0],
       deltaHigh: distanceToTarget - clubStats[1].distances[1],
