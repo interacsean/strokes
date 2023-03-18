@@ -35,7 +35,6 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
   return function Hole(_props: HolePublicProps) {
     const { state: courseState, updateState: updateCourseState } =
       useCourseState();
-    console.log(courseState);
 
     // todo: fix memoization
     const currentHole =
@@ -47,7 +46,6 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       };
     //   , [courseState, courseState.currentHoleNum],
     // );
-    console.log({ currentHole });
 
     const saveStrokeAndUpdate = useCallback(
       (strokeNum: number, partStroke: Partial<Stroke>) => {
@@ -83,7 +81,14 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const setParAndUpdate = useCallback(
       (par: number) => setHolePar(holeUpdateAndSave, par),
-      [saveCurrentHole]
+      [holeUpdateAndSave]
+    );
+
+    const setHolePos = useCallback(
+      (holePos: LatLng) => {
+        holeUpdateAndSave({ holePos });
+      },
+      [holeUpdateAndSave]
     );
 
     const setStrokeLieAndUpdate = useCallback(
@@ -156,6 +161,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       setStrokePos,
       currentPosition,
       caddySuggestions,
+      setHolePos,
     };
 
     return (

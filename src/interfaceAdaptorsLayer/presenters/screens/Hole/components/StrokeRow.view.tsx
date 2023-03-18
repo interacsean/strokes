@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { withTargetValue } from "interfaceAdaptorsLayer/presenters/utils/withTargetValue";
 import { Club } from "model/Club";
 import { Lie } from "model/Lie";
-import { Stroke, StrokeWithDerivedFields } from "model/Stroke";
+import { StrokeWithDerivedFields } from "model/Stroke";
 import { partial } from "ramda";
 import { HoleViewProps } from "../Hole.View";
 
@@ -76,7 +76,11 @@ export function StrokeView(props: StrokeViewProps) {
         ))}
       </Select>
       <Text>
-        {props.stroke.strokeDistance ? `${Math.round(props.stroke.strokeDistance)}m` : '–'}
+        {props.stroke.strokeDistance
+          ? `${Math.round(props.stroke.strokeDistance)}m`
+          : props.stroke.distanceToHole
+          ? `(${Math.round(props.stroke.distanceToHole)}m)`
+          : "–"}
       </Text>
     </Flex>
   );

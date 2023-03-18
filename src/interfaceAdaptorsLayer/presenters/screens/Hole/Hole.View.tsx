@@ -33,6 +33,7 @@ export type HoleViewProps = {
   strokeInputList: StrokeWithDerivedFields[];
   setStrokePos: (stroke: number, pos: LatLng) => void;
   caddySuggestions: CaddySuggestion[];
+  setHolePos: (pos: LatLng) => void;
   // setStrokeEndPos: (stroke: number, pos: LatLng) => void;
   // setStrokeStartPos: (stroke: number, pos: LatLng) => void;
   // holedStroke: () => void;
@@ -95,6 +96,18 @@ export function HoleView(props: HoleViewProps) {
             <FormLabel>
               <Text>Par {props.hole.par}</Text>
               <Input name="par" {...viewLogic.parInputProps} />
+            </FormLabel>
+            <FormLabel>
+              <Text>Set hole pos</Text>
+              <Button
+                variant="primaryOutline"
+                onClick={() =>
+                  props.currentPosition &&
+                  props.setHolePos(props.currentPosition)
+                }
+              >
+                📍⛳️
+              </Button>
             </FormLabel>
           </TabPanel>
           <TabPanel>

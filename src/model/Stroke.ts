@@ -9,5 +9,6 @@ export type Stroke = {
 };
 
 export type StrokeWithDerivedFields = Stroke & {
-  strokeDistance?: number,
-}
+  strokeDistance: number | undefined;
+  distanceToHole: number | undefined;
+};
