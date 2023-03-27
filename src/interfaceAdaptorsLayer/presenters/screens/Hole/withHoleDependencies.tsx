@@ -2,7 +2,7 @@ import { last, partial, set, update } from "ramda";
 import { nextHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/nextHole";
 import { prevHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/prevHole";
 import { saveHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/saveHole";
-import { FC, useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useCourseState } from "state/courseState";
 import { HoleViewProps } from "./Hole.View";
 import { Hole as HoleModel } from "model/Hole";
@@ -46,6 +46,10 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       };
     //   , [courseState, courseState.currentHoleNum],
     // );
+
+    useEffect(() => {
+      console.log({ currentHole });
+    }, [currentHole])
 
     const saveStrokeAndUpdate = useCallback(
       (strokeNum: number, partStroke: Partial<Stroke>) => {
@@ -109,7 +113,14 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const setStrokePos = useCallback(
       (strokeNum: number, pos: LatLng) => {
-        saveStrokeAndUpdate(strokeNum, { ballPos: pos });
+        saveStrokeAndUpdate(strokeNum, { strokePos: pos });
+      },
+      [saveStrokeAndUpdate]
+    );
+
+    const setLiePos = useCallback(
+      (strokeNum: number, pos: LatLng) => {
+        saveStrokeAndUpdate(strokeNum, { liePos: pos });
       },
       [saveStrokeAndUpdate]
     );
@@ -123,6 +134,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       [currentHole, strokeInputList]
     );
 
+    // todo: retry-on loop until high accuracy – how oftern to ping
     const geo = useGeolocated({
       positionOptions: { enableHighAccuracy: true },
     });
@@ -159,6 +171,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       selectStrokeClub: setStrokeClubAndUpdate,
       strokeInputList: strokeListWithDistances,
       setStrokePos,
+      setLiePos,
       currentPosition,
       caddySuggestions,
       setHolePos,

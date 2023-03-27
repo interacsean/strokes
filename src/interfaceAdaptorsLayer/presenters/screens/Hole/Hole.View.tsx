@@ -31,6 +31,7 @@ export type HoleViewProps = {
   selectStrokeLie: (stroke: number, lie: Lie) => void;
   selectStrokeClub: (stroke: number, club: Club) => void;
   strokeInputList: StrokeWithDerivedFields[];
+  setLiePos: (stroke: number, pos: LatLng) => void;
   setStrokePos: (stroke: number, pos: LatLng) => void;
   caddySuggestions: CaddySuggestion[];
   setHolePos: (pos: LatLng) => void;
@@ -62,9 +63,13 @@ function useHoleViewLogic(props: HoleViewProps) {
     [setParInputValue, props.holeNum]
   );
 
-  const setCurPos = (strokeNum: number) =>
+  const setStrokePosition = (strokeNum: number) =>
     props.currentPosition &&
     props.setStrokePos(strokeNum, props.currentPosition);
+
+  const setLiePosition = (strokeNum: number) =>
+    props.currentPosition &&
+    props.setLiePos(strokeNum, props.currentPosition);
 
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
 
@@ -74,7 +79,8 @@ function useHoleViewLogic(props: HoleViewProps) {
     setTabIndex,
     switchViewMap: () => setTabIndex(0),
     switchViewStrokeList: () => setTabIndex(1),
-    setCurPos,
+    setStrokePosition,
+    setLiePosition,
   };
 }
 
@@ -120,7 +126,8 @@ export function HoleView(props: HoleViewProps) {
                     stroke={stroke}
                     selectLie={props.selectStrokeLie}
                     selectClub={props.selectStrokeClub}
-                    setPosition={viewLogic.setCurPos}
+                    setLiePosition={viewLogic.setLiePosition}
+                    setStrokePosition={viewLogic.setStrokePosition}
                   />
                 );
               })}

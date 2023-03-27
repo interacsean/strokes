@@ -1,4 +1,4 @@
-import { Button, Flex, Select, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Select, Text } from "@chakra-ui/react";
 // import x from 'react-icons';
 import styled from "@emotion/styled";
 import { withTargetValue } from "interfaceAdaptorsLayer/presenters/utils/withTargetValue";
@@ -13,7 +13,8 @@ type StrokeViewProps = {
   stroke: StrokeWithDerivedFields;
   selectLie: HoleViewProps["selectStrokeLie"];
   selectClub: HoleViewProps["selectStrokeClub"];
-  setPosition: (strokeNum: number) => void;
+  setStrokePosition: (strokeNum: number) => void;
+  setLiePosition: (strokeNum: number) => void;
 };
 
 const UnsetButton = styled(Button)`
@@ -31,57 +32,70 @@ export function StrokeView(props: StrokeViewProps) {
   const selectCurStrokeClub = partial(props.selectClub, [props.strokeNum]) as (
     clubAsStr: string
   ) => void;
-  const setCurStrokePos = partial(props.setPosition, [props.strokeNum]);
+  const setCurStrokePos = partial(props.setStrokePosition, [props.strokeNum]);
+  const setCurLiePos = partial(props.setLiePosition, [props.strokeNum]);
 
   return (
-    <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
+    <Flex>
       <Text minW={4}>{props.strokeNum}</Text>
-      {props.stroke.ballPos ? (
-        <Button variant="ghost" onClick={setCurStrokePos}>
-          📍
-        </Button>
-      ) : (
-        <UnsetButton variant="primaryOutline" onClick={setCurStrokePos}>
-          📍
-        </UnsetButton>
-      )}
-      <Select
-        onChange={withTargetValue(selectCurStrokeLie)}
-        value={props.stroke.lie}
-      >
-        <option value="">-</option>
-        {liePairs.map(([_lieKey, label]) => (
-          <option
-            key={_lieKey}
-            value={label}
-            selected={props.stroke.lie === label}
+      <Flex flexDir="column" rowGap={2}>
+        <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
+          {/* {props.stroke.strokePos ? (
+            <Button variant="ghost" onClick={setCurStrokePos}>
+              📍
+            </Button>
+          ) : (
+            <UnsetButton variant="primaryOutline" onClick={setCurStrokePos}>
+              📍
+            </UnsetButton>
+          )} */}
+          <Select
+            onChange={withTargetValue(selectCurStrokeLie)}
+            value={props.stroke.lie}
           >
-            {label}
-          </option>
-        ))}
-      </Select>
-      <Select
-        onChange={withTargetValue(selectCurStrokeClub)}
-        value={props.stroke.club}
-      >
-        <option value="">-</option>
-        {clubPairs.map(([_clubKey, label]) => (
-          <option
-            key={_clubKey}
-            value={label}
-            selected={props.stroke.club === label}
+            <option value="">-</option>
+            {liePairs.map(([_lieKey, label]) => (
+              <option
+                key={_lieKey}
+                value={label}
+                selected={props.stroke.lie === label}
+              >
+                {label}
+              </option>
+            ))}
+          </Select>
+          <Select
+            onChange={withTargetValue(selectCurStrokeClub)}
+            value={props.stroke.club}
           >
-            {label}
-          </option>
-        ))}
-      </Select>
-      <Text>
-        {props.stroke.strokeDistance
-          ? `${Math.round(props.stroke.strokeDistance)}m`
-          : props.stroke.distanceToHole
-          ? `(${Math.round(props.stroke.distanceToHole)}m)`
-          : "–"}
-      </Text>
+            <option value="">-</option>
+            {clubPairs.map(([_clubKey, label]) => (
+              <option
+                key={_clubKey}
+                value={label}
+                selected={props.stroke.club === label}
+              >
+                {label}
+              </option>
+            ))}
+          </Select>
+          <Text>
+            {props.stroke.strokeDistance
+              ? `${Math.round(props.stroke.strokeDistance)}m`
+              : props.stroke.distanceToHole
+              ? `(${Math.round(props.stroke.distanceToHole)}m)`
+              : "–"}
+          </Text>
+        </Flex>
+        <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
+          <Box>
+            <Button onClick={setCurLiePos}>🏌️‍♂️</Button>
+          </Box>
+          <Box>
+            <Button onClick={setCurStrokePos}>⚪️</Button>
+          </Box>
+        </Flex>
+      </Flex>
     </Flex>
   );
 }

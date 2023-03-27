@@ -4,7 +4,8 @@ import { Lie } from "./Lie";
 export type Stroke = {
   club: string | undefined;
   lie: Lie | undefined;
-  ballPos: LatLng | undefined;
+  liePos: LatLng | undefined;
+  strokePos: LatLng | undefined;
   intendedPos: LatLng | undefined;
 };
 
