@@ -5,26 +5,22 @@ import { calculateDistanceBetweenPositions } from "interfaceAdaptorsLayer/usecas
 export function calculateStrokeDistances(hole: Hole, strokes: Stroke[]) {
   return strokes.map((stroke, i) => {
     const distanceToHole =
-      hole.holePos && stroke.strokePos
-        ? calculateDistanceBetweenPositions(stroke.strokePos, hole.holePos)
+      hole.holePos && stroke.liePos
+        ? calculateDistanceBetweenPositions(stroke.liePos, stroke.intendedPos || hole.holePos)
         : undefined;
-    if (!!stroke.strokePos && i < strokes.length - 1) {
-      const nextStrokePos = strokes[i + 1]?.strokePos;
-      if (nextStrokePos) {
-        const strokeDistance = calculateDistanceBetweenPositions(
-          stroke.strokePos,
-          nextStrokePos
-        );
-        return {
-          ...stroke,
-          strokeDistance,
-          distanceToHole,
-        };
+    const fromPos = stroke.liePos || (i > 0 ? strokes[i - 1]?.strokePos : undefined); // || hole.teePos[tee]
+    const toPos = stroke.strokePos;
+    if (!fromPos || !toPos) {
+      return {
+        ...stroke,
+        strokeDistance: undefined,
+        distanceToHole,
       }
     }
+    const strokeDistance = calculateDistanceBetweenPositions(fromPos, toPos);
     return {
       ...stroke,
-      strokeDistance: undefined,
+      strokeDistance,
       distanceToHole,
     };
   });

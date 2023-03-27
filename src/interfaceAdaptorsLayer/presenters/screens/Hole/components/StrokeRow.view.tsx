@@ -15,6 +15,7 @@ type StrokeViewProps = {
   selectClub: HoleViewProps["selectStrokeClub"];
   setStrokePosition: (strokeNum: number) => void;
   setLiePosition: (strokeNum: number) => void;
+  current: boolean;
 };
 
 const UnsetButton = styled(Button)`
@@ -87,14 +88,16 @@ export function StrokeView(props: StrokeViewProps) {
               : "–"}
           </Text>
         </Flex>
-        <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
-          <Box>
-            <Button onClick={setCurLiePos}>🏌️‍♂️</Button>
-          </Box>
-          <Box>
-            <Button onClick={setCurStrokePos}>⚪️</Button>
-          </Box>
-        </Flex>
+        {props.current && (
+          <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
+            <Box>
+              <Button variant={props.stroke.liePos ? "outline" : "primary"} onClick={setCurLiePos}>🏌️‍♂️</Button>
+            </Box>
+            <Box>
+              <Button variant={props.stroke.strokePos ? "outline" : "primary"} onClick={setCurStrokePos}>⚪️</Button>
+            </Box>
+          </Flex>
+        )}
       </Flex>
     </Flex>
   );

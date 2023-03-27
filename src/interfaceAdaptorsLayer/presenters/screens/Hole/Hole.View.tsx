@@ -17,7 +17,7 @@ import { Lie } from "model/Lie";
 import { useInput } from "interfaceAdaptorsLayer/presenters/utils/useInput/useInput";
 import { StrokeView } from "./components/StrokeRow.view";
 import { Club } from "model/Club";
-import { Stroke, StrokeWithDerivedFields } from "model/Stroke";
+import { StrokeWithDerivedFields } from "model/Stroke";
 import { LatLng } from "model/LatLng";
 import { CaddySuggestion } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/calculateCaddySuggestions";
 
@@ -35,6 +35,7 @@ export type HoleViewProps = {
   setStrokePos: (stroke: number, pos: LatLng) => void;
   caddySuggestions: CaddySuggestion[];
   setHolePos: (pos: LatLng) => void;
+  addStroke: () => void;
   // setStrokeEndPos: (stroke: number, pos: LatLng) => void;
   // setStrokeStartPos: (stroke: number, pos: LatLng) => void;
   // holedStroke: () => void;
@@ -128,9 +129,11 @@ export function HoleView(props: HoleViewProps) {
                     selectClub={props.selectStrokeClub}
                     setLiePosition={viewLogic.setLiePosition}
                     setStrokePosition={viewLogic.setStrokePosition}
+                    current={i === props.strokeInputList.length - 1}
                   />
                 );
               })}
+              <Button onClick={props.addStroke}>New stroke</Button>
             </VStack>
           </TabPanel>
         </TabPanels>

@@ -27,8 +27,8 @@ type HolePublicProps = {};
 const USE_FAKE_POSITION = true;
 
 function shouldShowNewStroke(strokes: Stroke[]) {
-  const lastStroke = last(strokes);
-  return strokes.length === 0 || (!!lastStroke?.club && !!lastStroke?.lie);
+  // const lastStroke = last(strokes);
+  return strokes.length === 0;
 }
 
 export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
@@ -60,6 +60,17 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       },
       [updateCourseState, currentHole]
     );
+
+    const addStroke = useCallback(
+      () => {
+        const strokeToAdd = {
+          ...newStroke(currentHole.strokes.length + 1),
+          liePos: last(currentHole.strokes)?.strokePos,
+        };
+        saveStroke(updateCourseState, currentHole.strokes.length + 1, strokeToAdd);
+      },
+      [currentHole.strokes, updateCourseState],
+    )
 
     const saveCurrentHole = useCallback(
       (h: HoleModel, n?: number) => saveHole(updateCourseState, h, n),
@@ -175,6 +186,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       currentPosition,
       caddySuggestions,
       setHolePos,
+      addStroke,
     };
 
     return (
