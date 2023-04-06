@@ -7,7 +7,7 @@ export function newStroke(strokeNum: number): Stroke {
     lie: undefined,
     club: undefined,
     intendedPos: undefined,
-    shotPos: undefined,
+    ballPos: undefined,
   };
   setStrokeLie(
     ({ lie }) => (stroke.lie = lie),

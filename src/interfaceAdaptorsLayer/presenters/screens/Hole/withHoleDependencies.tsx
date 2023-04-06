@@ -2,7 +2,7 @@ import { last, partial, set, update } from "ramda";
 import { nextHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/nextHole";
 import { prevHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/prevHole";
 import { saveHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/saveHole";
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import { useCourseState } from "state/courseState";
 import { HoleViewProps } from "./Hole.View";
 import { Hole as HoleModel } from "model/Hole";
@@ -17,8 +17,10 @@ import { newHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/newHo
 import { mergePartHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/mergePartHole";
 import { Club } from "model/Club";
 import { LatLng } from "model/LatLng";
-import { useGeolocated } from 'react-geolocated';
+import { useGeolocated } from "react-geolocated";
 import { FakeGeo } from "./components/FakeGeo";
+import { calculateStrokeDistances } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/calculateStrokeDistances";
+import { calculateCaddySuggestions } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/calculateCaddySuggestions";
 
 type HolePublicProps = {};
 
@@ -33,7 +35,6 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
   return function Hole(_props: HolePublicProps) {
     const { state: courseState, updateState: updateCourseState } =
       useCourseState();
-    console.log(courseState);
 
     // todo: fix memoization
     const currentHole =
@@ -45,7 +46,6 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       };
     //   , [courseState, courseState.currentHoleNum],
     // );
-    console.log({ currentHole });
 
     const saveStrokeAndUpdate = useCallback(
       (strokeNum: number, partStroke: Partial<Stroke>) => {
@@ -81,7 +81,14 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const setParAndUpdate = useCallback(
       (par: number) => setHolePar(holeUpdateAndSave, par),
-      [saveCurrentHole]
+      [holeUpdateAndSave]
+    );
+
+    const setHolePos = useCallback(
+      (holePos: LatLng) => {
+        holeUpdateAndSave({ holePos });
+      },
+      [holeUpdateAndSave]
     );
 
     const setStrokeLieAndUpdate = useCallback(
@@ -102,7 +109,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const setStrokePos = useCallback(
       (strokeNum: number, pos: LatLng) => {
-        saveStrokeAndUpdate(strokeNum, { shotPos: pos });
+        saveStrokeAndUpdate(strokeNum, { ballPos: pos });
       },
       [saveStrokeAndUpdate]
     );
@@ -111,13 +118,36 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       ? [...currentHole.strokes, newStroke(currentHole.strokes.length + 1)]
       : currentHole.strokes;
 
-    const geo = useGeolocated({ positionOptions: { enableHighAccuracy: true } });
+    const strokeListWithDistances = useMemo(
+      () => calculateStrokeDistances(currentHole, strokeInputList),
+      [currentHole, strokeInputList]
+    );
 
-    const [fakePos, setFakePos] = useState<LatLng>({ lat: -37.8, lng: 144.953, alt: 10 })
-    const currentPosition = USE_FAKE_POSITION ? fakePos
+    const geo = useGeolocated({
+      positionOptions: { enableHighAccuracy: true },
+    });
+
+    const [fakePos, setFakePos] = useState<LatLng>({
+      lat: -37.8,
+      lng: 144.95,
+      alt: 10,
+    });
+    const currentPosition = USE_FAKE_POSITION
+      ? fakePos
       : geo.coords?.latitude && geo.coords?.longitude
-        ? { lat: geo.coords?.latitude, lng: geo.coords?.longitude, alt: geo.coords?.altitude }
-        : undefined
+      ? {
+          lat: geo.coords?.latitude,
+          lng: geo.coords?.longitude,
+          alt: geo.coords?.altitude,
+        }
+      : undefined;
+
+    const caddySuggestions = useMemo(() => {
+      const lastStroke = last(strokeListWithDistances);
+      return lastStroke
+        ? calculateCaddySuggestions(currentHole, lastStroke)
+        : [];
+    }, [currentHole, strokeInputList]);
 
     const viewProps = {
       nextHole: nextHoleAndUpdate,
@@ -127,9 +157,11 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       setPar: setParAndUpdate,
       selectStrokeLie: setStrokeLieAndUpdate,
       selectStrokeClub: setStrokeClubAndUpdate,
-      strokeInputList,
+      strokeInputList: strokeListWithDistances,
       setStrokePos,
       currentPosition,
+      caddySuggestions,
+      setHolePos,
     };
 
     return (

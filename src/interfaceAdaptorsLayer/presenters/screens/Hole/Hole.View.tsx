@@ -17,8 +17,9 @@ import { Lie } from "model/Lie";
 import { useInput } from "interfaceAdaptorsLayer/presenters/utils/useInput/useInput";
 import { StrokeView } from "./components/StrokeRow.view";
 import { Club } from "model/Club";
-import { Stroke } from "model/Stroke";
+import { Stroke, StrokeWithDerivedFields } from "model/Stroke";
 import { LatLng } from "model/LatLng";
+import { CaddySuggestion } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/calculateCaddySuggestions";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -29,8 +30,10 @@ export type HoleViewProps = {
   setPar: (n: number) => void;
   selectStrokeLie: (stroke: number, lie: Lie) => void;
   selectStrokeClub: (stroke: number, club: Club) => void;
-  strokeInputList: Stroke[];
+  strokeInputList: StrokeWithDerivedFields[];
   setStrokePos: (stroke: number, pos: LatLng) => void;
+  caddySuggestions: CaddySuggestion[];
+  setHolePos: (pos: LatLng) => void;
   // setStrokeEndPos: (stroke: number, pos: LatLng) => void;
   // setStrokeStartPos: (stroke: number, pos: LatLng) => void;
   // holedStroke: () => void;
@@ -59,7 +62,8 @@ function useHoleViewLogic(props: HoleViewProps) {
     [setParInputValue, props.holeNum]
   );
 
-  const setCurPos = (strokeNum: number) => props.currentPosition &&
+  const setCurPos = (strokeNum: number) =>
+    props.currentPosition &&
     props.setStrokePos(strokeNum, props.currentPosition);
 
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
@@ -92,6 +96,18 @@ export function HoleView(props: HoleViewProps) {
             <FormLabel>
               <Text>Par {props.hole.par}</Text>
               <Input name="par" {...viewLogic.parInputProps} />
+            </FormLabel>
+            <FormLabel>
+              <Text>Set hole pos</Text>
+              <Button
+                variant="primaryOutline"
+                onClick={() =>
+                  props.currentPosition &&
+                  props.setHolePos(props.currentPosition)
+                }
+              >
+                📍⛳️
+              </Button>
             </FormLabel>
           </TabPanel>
           <TabPanel>
