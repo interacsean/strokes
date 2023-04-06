@@ -2,7 +2,7 @@ import { last, partial, set, update } from "ramda";
 import { nextHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/nextHole";
 import { prevHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/prevHole";
 import { saveHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/saveHole";
-import { FC, useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useCourseState } from "state/courseState";
 import { HoleViewProps } from "./Hole.View";
 import { Hole as HoleModel } from "model/Hole";
@@ -27,8 +27,8 @@ type HolePublicProps = {};
 const USE_FAKE_POSITION = true;
 
 function shouldShowNewStroke(strokes: Stroke[]) {
-  const lastStroke = last(strokes);
-  return strokes.length === 0 || (!!lastStroke?.club && !!lastStroke?.lie);
+  // const lastStroke = last(strokes);
+  return strokes.length === 0;
 }
 
 export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
@@ -47,6 +47,10 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     //   , [courseState, courseState.currentHoleNum],
     // );
 
+    useEffect(() => {
+      console.log({ currentHole });
+    }, [currentHole])
+
     const saveStrokeAndUpdate = useCallback(
       (strokeNum: number, partStroke: Partial<Stroke>) => {
         const currentStroke =
@@ -56,6 +60,17 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       },
       [updateCourseState, currentHole]
     );
+
+    const addStroke = useCallback(
+      () => {
+        const strokeToAdd = {
+          ...newStroke(currentHole.strokes.length + 1),
+          liePos: last(currentHole.strokes)?.strokePos,
+        };
+        saveStroke(updateCourseState, currentHole.strokes.length + 1, strokeToAdd);
+      },
+      [currentHole.strokes, updateCourseState],
+    )
 
     const saveCurrentHole = useCallback(
       (h: HoleModel, n?: number) => saveHole(updateCourseState, h, n),
@@ -109,7 +124,14 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const setStrokePos = useCallback(
       (strokeNum: number, pos: LatLng) => {
-        saveStrokeAndUpdate(strokeNum, { ballPos: pos });
+        saveStrokeAndUpdate(strokeNum, { strokePos: pos });
+      },
+      [saveStrokeAndUpdate]
+    );
+
+    const setLiePos = useCallback(
+      (strokeNum: number, pos: LatLng) => {
+        saveStrokeAndUpdate(strokeNum, { liePos: pos });
       },
       [saveStrokeAndUpdate]
     );
@@ -123,6 +145,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       [currentHole, strokeInputList]
     );
 
+    // todo: retry-on loop until high accuracy – how oftern to ping
     const geo = useGeolocated({
       positionOptions: { enableHighAccuracy: true },
     });
@@ -159,9 +182,11 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       selectStrokeClub: setStrokeClubAndUpdate,
       strokeInputList: strokeListWithDistances,
       setStrokePos,
+      setLiePos,
       currentPosition,
       caddySuggestions,
       setHolePos,
+      addStroke,
     };
 
     return (

@@ -5,9 +5,10 @@ import { setStrokeLie } from "./setStrokeLie";
 export function newStroke(strokeNum: number): Stroke {
   let stroke: Stroke = {
     lie: undefined,
+    liePos: undefined,
     club: undefined,
     intendedPos: undefined,
-    ballPos: undefined,
+    strokePos: undefined,
   };
   setStrokeLie(
     ({ lie }) => (stroke.lie = lie),

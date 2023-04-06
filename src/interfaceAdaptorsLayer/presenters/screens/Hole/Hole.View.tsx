@@ -17,7 +17,7 @@ import { Lie } from "model/Lie";
 import { useInput } from "interfaceAdaptorsLayer/presenters/utils/useInput/useInput";
 import { StrokeView } from "./components/StrokeRow.view";
 import { Club } from "model/Club";
-import { Stroke, StrokeWithDerivedFields } from "model/Stroke";
+import { StrokeWithDerivedFields } from "model/Stroke";
 import { LatLng } from "model/LatLng";
 import { CaddySuggestion } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/calculateCaddySuggestions";
 
@@ -31,9 +31,11 @@ export type HoleViewProps = {
   selectStrokeLie: (stroke: number, lie: Lie) => void;
   selectStrokeClub: (stroke: number, club: Club) => void;
   strokeInputList: StrokeWithDerivedFields[];
+  setLiePos: (stroke: number, pos: LatLng) => void;
   setStrokePos: (stroke: number, pos: LatLng) => void;
   caddySuggestions: CaddySuggestion[];
   setHolePos: (pos: LatLng) => void;
+  addStroke: () => void;
   // setStrokeEndPos: (stroke: number, pos: LatLng) => void;
   // setStrokeStartPos: (stroke: number, pos: LatLng) => void;
   // holedStroke: () => void;
@@ -62,9 +64,13 @@ function useHoleViewLogic(props: HoleViewProps) {
     [setParInputValue, props.holeNum]
   );
 
-  const setCurPos = (strokeNum: number) =>
+  const setStrokePosition = (strokeNum: number) =>
     props.currentPosition &&
     props.setStrokePos(strokeNum, props.currentPosition);
+
+  const setLiePosition = (strokeNum: number) =>
+    props.currentPosition &&
+    props.setLiePos(strokeNum, props.currentPosition);
 
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
 
@@ -74,7 +80,8 @@ function useHoleViewLogic(props: HoleViewProps) {
     setTabIndex,
     switchViewMap: () => setTabIndex(0),
     switchViewStrokeList: () => setTabIndex(1),
-    setCurPos,
+    setStrokePosition,
+    setLiePosition,
   };
 }
 
@@ -120,10 +127,13 @@ export function HoleView(props: HoleViewProps) {
                     stroke={stroke}
                     selectLie={props.selectStrokeLie}
                     selectClub={props.selectStrokeClub}
-                    setPosition={viewLogic.setCurPos}
+                    setLiePosition={viewLogic.setLiePosition}
+                    setStrokePosition={viewLogic.setStrokePosition}
+                    current={i === props.strokeInputList.length - 1}
                   />
                 );
               })}
+              <Button onClick={props.addStroke}>New stroke</Button>
             </VStack>
           </TabPanel>
         </TabPanels>

@@ -20,12 +20,12 @@ describe("calculateCaddySuggestions", () => {
 
     // Distance delta is 171m
     const holePos = { lat: -37, lng: 144, alt: null };
-    const ballPos = { lat: -37.0012, lng: 144.0012, alt: null };
+    const strokePos = { lat: -37.0012, lng: 144.0012, alt: null };
 
     const actual = calculateCaddySuggestions(
       { holePos },
       {
-        ballPos,
+        strokePos,
         intendedPos: undefined,
       },
       testClubStats
