@@ -1,5 +1,5 @@
 import { Flex, Link } from "@chakra-ui/react";
-import { RoutePaths } from "interfaceAdaptorsLayer/presenters/routes/RoutePaths";
+import { RoutePaths } from "presenters/routes/RoutePaths";
 
 type Props = {};
 

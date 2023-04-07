@@ -1,26 +1,26 @@
 import { last, partial, set, update } from "ramda";
-import { nextHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/nextHole";
-import { prevHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/prevHole";
-import { saveHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/saveHole";
+import { nextHole } from "usecases/course/nextHole";
+import { prevHole } from "usecases/course/prevHole";
+import { saveHole } from "usecases/course/saveHole";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useCourseState } from "state/courseState";
 import { HoleViewProps } from "./Hole.View";
 import { Hole as HoleModel } from "model/Hole";
-import { setHolePar } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/setHolePar";
-import { mergePartStroke } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/mergePartStroke";
-import { saveStroke } from "interfaceAdaptorsLayer/usecaseLayer/usecases/course/saveStroke";
+import { setHolePar } from "usecases/hole/setHolePar";
+import { mergePartStroke } from "usecases/stroke/mergePartStroke";
+import { saveStroke } from "usecases/course/saveStroke";
 import { Lie } from "model/Lie";
-import { setStrokeLie } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/setStrokeLie";
+import { setStrokeLie } from "usecases/stroke/setStrokeLie";
 import { Stroke } from "model/Stroke";
-import { newStroke } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/newStroke";
-import { newHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/newHole";
-import { mergePartHole } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/mergePartHole";
+import { newStroke } from "usecases/stroke/newStroke";
+import { newHole } from "usecases/hole/newHole";
+import { mergePartHole } from "usecases/hole/mergePartHole";
 import { Club } from "model/Club";
 import { LatLng } from "model/LatLng";
 import { useGeolocated } from "react-geolocated";
 import { FakeGeo } from "./components/FakeGeo";
-import { calculateStrokeDistances } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/calculateStrokeDistances";
-import { calculateCaddySuggestions } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/calculateCaddySuggestions";
+import { calculateStrokeDistances } from "usecases/hole/calculateStrokeDistances";
+import { calculateCaddySuggestions } from "usecases/stroke/calculateCaddySuggestions";
 
 type HolePublicProps = {};
 
@@ -158,12 +158,12 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const currentPosition = USE_FAKE_POSITION
       ? fakePos
       : geo.coords?.latitude && geo.coords?.longitude
-      ? {
+        ? {
           lat: geo.coords?.latitude,
           lng: geo.coords?.longitude,
           alt: geo.coords?.altitude,
         }
-      : undefined;
+        : undefined;
 
     const caddySuggestions = useMemo(() => {
       const lastStroke = last(strokeListWithDistances);
