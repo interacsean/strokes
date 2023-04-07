@@ -36,7 +36,8 @@ export function useCourseState() {
         }));
       },
     }),
-    [...Object.values(state)]
+    // eslint-disable-next-line
+    [setState, ...Object.values(state)]
   );
 }
 

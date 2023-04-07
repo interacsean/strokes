@@ -61,7 +61,7 @@ function useHoleViewLogic(props: HoleViewProps) {
     function updateParInputValueOnHoleUpdate() {
       setParInputValue(`${props.hole.par}`);
     },
-    [setParInputValue, props.holeNum]
+    [setParInputValue, props.holeNum, props.hole.par]
   );
 
   const setStrokePosition = (strokeNum: number) =>

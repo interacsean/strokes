@@ -1,4 +1,4 @@
-import { last, partial, set, update } from "ramda";
+import { last, partial } from "ramda";
 import { nextHole } from "usecases/course/nextHole";
 import { prevHole } from "usecases/course/prevHole";
 import { saveHole } from "usecases/course/saveHole";
@@ -84,15 +84,15 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     );
 
     const nextHoleAndUpdate = useCallback(() => {
-      // this double-updates the state and it could be done in one Stroke
+      // todo: this double-updates the state and it could be done in one Stroke
       saveCurrentHole(currentHole);
       nextHole(updateCourseState);
-    }, [currentHole, saveCurrentHole, useCourseState]);
+    }, [currentHole, saveCurrentHole, updateCourseState]);
 
     const prevHoleAndUpdate = useCallback(() => {
       saveCurrentHole(currentHole);
       prevHole(updateCourseState);
-    }, [currentHole, saveCurrentHole, useCourseState]);
+    }, [currentHole, saveCurrentHole, updateCourseState]);
 
     const setParAndUpdate = useCallback(
       (par: number) => setHolePar(holeUpdateAndSave, par),
@@ -136,9 +136,12 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       [saveStrokeAndUpdate]
     );
 
-    const strokeInputList = shouldShowNewStroke(currentHole.strokes)
-      ? [...currentHole.strokes, newStroke(currentHole.strokes.length + 1)]
-      : currentHole.strokes;
+    const strokeInputList = useMemo(
+      () => shouldShowNewStroke(currentHole.strokes)
+        ? [...currentHole.strokes, newStroke(currentHole.strokes.length + 1)]
+        : currentHole.strokes,
+      [currentHole.strokes]
+    );
 
     const strokeListWithDistances = useMemo(
       () => calculateStrokeDistances(currentHole, strokeInputList),
@@ -170,7 +173,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       return lastStroke
         ? calculateCaddySuggestions(currentHole, lastStroke)
         : [];
-    }, [currentHole, strokeInputList]);
+    }, [currentHole, strokeListWithDistances]);
 
     const viewProps = {
       nextHole: nextHoleAndUpdate,

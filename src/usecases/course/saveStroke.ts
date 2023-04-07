@@ -1,4 +1,4 @@
-import { lensIndex, lensPath, set } from "ramda";
+import { lensPath, set } from "ramda";
 import { Updater } from "types/Updater";
 import { Stroke } from "model/Stroke";
 import { Hole } from "model/Hole";

@@ -45,7 +45,9 @@ const elementColors = {
   },
 };
 
-export default {
+const palette = {
   ...colorPalette,
   ...elementColors,
 };
+
+export default palette;

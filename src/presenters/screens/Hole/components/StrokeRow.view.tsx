@@ -1,6 +1,5 @@
 import { Box, Button, Flex, Select, Text } from "@chakra-ui/react";
 // import x from 'react-icons';
-import styled from "@emotion/styled";
 import { withTargetValue } from "presenters/utils/withTargetValue";
 import { Club } from "model/Club";
 import { Lie } from "model/Lie";
@@ -17,11 +16,6 @@ type StrokeViewProps = {
   setLiePosition: (strokeNum: number) => void;
   current: boolean;
 };
-
-const UnsetButton = styled(Button)`
-  border-color: orange;
-  border-style: dashed;
-`;
 
 const liePairs = Object.entries(Lie);
 const clubPairs = Object.entries(Club);
