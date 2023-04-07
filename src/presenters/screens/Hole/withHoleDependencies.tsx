@@ -3,7 +3,7 @@ import { nextHole } from "usecases/course/nextHole";
 import { prevHole } from "usecases/course/prevHole";
 import { saveHole } from "usecases/course/saveHole";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { useCourseState } from "state/courseState";
+import { useCourseState } from "state/course/courseState";
 import { HoleViewProps } from "./Hole.View";
 import { Hole as HoleModel } from "model/Hole";
 import { setHolePar } from "usecases/hole/setHolePar";
@@ -13,7 +13,6 @@ import { Lie } from "model/Lie";
 import { setStrokeLie } from "usecases/stroke/setStrokeLie";
 import { Stroke } from "model/Stroke";
 import { newStroke } from "usecases/stroke/newStroke";
-import { newHole } from "usecases/hole/newHole";
 import { mergePartHole } from "usecases/hole/mergePartHole";
 import { Club } from "model/Club";
 import { LatLng } from "model/LatLng";
@@ -21,6 +20,8 @@ import { useGeolocated } from "react-geolocated";
 import { FakeGeo } from "./components/FakeGeo";
 import { calculateStrokeDistances } from "usecases/hole/calculateStrokeDistances";
 import { calculateCaddySuggestions } from "usecases/stroke/calculateCaddySuggestions";
+import { selectCurrentHole } from "state/course/selectors/currentHole";
+import { useSelector } from "state/utils/useSelector";
 
 type HolePublicProps = {};
 
@@ -36,16 +37,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const { state: courseState, updateState: updateCourseState } =
       useCourseState();
 
-    // todo: fix memoization
-    const currentHole =
-      // useMemo(
-      //   () =>
-      courseState.holes[courseState.currentHoleNum - 1] || {
-        ...newHole(),
-        holeNum: courseState.currentHoleNum,
-      };
-    //   , [courseState, courseState.currentHoleNum],
-    // );
+    const currentHole = useSelector(selectCurrentHole, courseState);
 
     useEffect(() => {
       console.log({ currentHole });
