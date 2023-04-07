@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Select, Text } from "@chakra-ui/react";
 // import x from 'react-icons';
 import styled from "@emotion/styled";
-import { withTargetValue } from "interfaceAdaptorsLayer/presenters/utils/withTargetValue";
+import { withTargetValue } from "presenters/utils/withTargetValue";
 import { Club } from "model/Club";
 import { Lie } from "model/Lie";
 import { StrokeWithDerivedFields } from "model/Stroke";
@@ -84,8 +84,8 @@ export function StrokeView(props: StrokeViewProps) {
             {props.stroke.strokeDistance
               ? `${Math.round(props.stroke.strokeDistance)}m`
               : props.stroke.distanceToHole
-              ? `(${Math.round(props.stroke.distanceToHole)}m)`
-              : "–"}
+                ? `(${Math.round(props.stroke.distanceToHole)}m)`
+                : "–"}
           </Text>
         </Flex>
         {props.current && (

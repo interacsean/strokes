@@ -1,6 +1,6 @@
 import { Hole } from "model/Hole";
 import { Stroke } from "model/Stroke";
-import { calculateDistanceBetweenPositions } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/calculateDistanceBetweenPositions";
+import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 
 export function calculateStrokeDistances(hole: Hole, strokes: Stroke[]) {
   return strokes.map((stroke, i) => {

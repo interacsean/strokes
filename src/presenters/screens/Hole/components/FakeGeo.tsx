@@ -1,6 +1,6 @@
 import { Flex, Input, Text } from "@chakra-ui/react";
-import { metersToLon } from "interfaceAdaptorsLayer/presenters/utils/metersToLongitude";
-import { useInput } from "interfaceAdaptorsLayer/presenters/utils/useInput/useInput";
+import { metersToLon } from "presenters/utils/metersToLongitude";
+import { useInput } from "presenters/utils/useInput/useInput";
 import { LatLng } from "model/LatLng";
 import { Dispatch, SetStateAction } from "react";
 

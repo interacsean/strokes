@@ -14,12 +14,12 @@ import {
 } from "@chakra-ui/react";
 import { Hole as HoleModel } from "model/Hole";
 import { Lie } from "model/Lie";
-import { useInput } from "interfaceAdaptorsLayer/presenters/utils/useInput/useInput";
+import { useInput } from "presenters/utils/useInput/useInput";
 import { StrokeView } from "./components/StrokeRow.view";
 import { Club } from "model/Club";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { LatLng } from "model/LatLng";
-import { CaddySuggestion } from "interfaceAdaptorsLayer/usecaseLayer/usecases/stroke/calculateCaddySuggestions";
+import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
 
 export type HoleViewProps = {
   holeNum: number;

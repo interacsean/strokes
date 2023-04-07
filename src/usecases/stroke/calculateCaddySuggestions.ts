@@ -1,7 +1,7 @@
 import { Club } from "model/Club";
 import { Stroke } from "model/Stroke";
 import { Hole } from "model/Hole";
-import { calculateDistanceBetweenPositions } from "interfaceAdaptorsLayer/usecaseLayer/usecases/hole/calculateDistanceBetweenPositions";
+import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 
 export type CaddySuggestion = {
   club: Club;

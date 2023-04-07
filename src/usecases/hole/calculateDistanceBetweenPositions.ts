@@ -1,5 +1,5 @@
 import { LatLng } from "model/LatLng";
-import { lonToMeters } from "interfaceAdaptorsLayer/presenters/utils/metersToLongitude";
+import { lonToMeters } from "presenters/utils/metersToLongitude";
 
 export function calculateDistanceBetweenPositions(pos: LatLng, pos2: LatLng) {
   const deltaX = lonToMeters(pos2.lng - pos.lng, pos.lat);
