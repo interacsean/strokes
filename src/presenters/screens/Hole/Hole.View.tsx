@@ -11,15 +11,18 @@ import {
   Tab,
   TabPanel,
   VStack,
+  Box,
 } from "@chakra-ui/react";
 import { Hole as HoleModel } from "model/Hole";
 import { Lie } from "model/Lie";
 import { useInput } from "presenters/utils/useInput/useInput";
-import { StrokeView } from "./components/StrokeRow.view";
+import { StrokeView } from "./components/StrokeRow/StrokeRow.view";
 import { Club } from "model/Club";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { LatLng } from "model/LatLng";
 import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
+import { Container, StrokesContainer } from "./Hole.styles";
+import { HoleOverview } from "./components/HoleOverview/HoleOverview.view";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -91,8 +94,7 @@ export function HoleView(props: HoleViewProps) {
   // const [state, dispatch] = React.useReducer(holeReducer, initialHoleState);
 
   return (
-    <Flex flexDir="column" rowGap={2}>
-      <Text>Hole {props.holeNum}</Text>
+    <Container>
       <Tabs index={viewLogic.tabIndex} onChange={viewLogic.setTabIndex}>
         <TabList>
           <Tab onClick={() => viewLogic.setTabIndex(0)}>Map</Tab>
@@ -118,7 +120,19 @@ export function HoleView(props: HoleViewProps) {
             </FormLabel>
           </TabPanel>
           <TabPanel>
-            <VStack spacing={2}>
+            <StrokesContainer>
+              <Box mx={-4} mt={-4} >
+                <HoleOverview
+                  holeNum={props.holeNum}
+                  currentStrokeNum={props.strokeInputList.length}
+                  distanceToHole={undefined}
+                  holeAltitudeDelta={undefined}
+                  holeDistance={350}
+                  par={props.hole.par}
+                  playerRoundScore={8}
+                />
+
+              </Box>
               {props.strokeInputList.map((stroke, i) => {
                 return (
                   <StrokeView
@@ -134,19 +148,19 @@ export function HoleView(props: HoleViewProps) {
                 );
               })}
               <Button onClick={props.addStroke}>New stroke</Button>
-            </VStack>
+
+              <Flex columnGap={2} justifyContent="stretch">
+                <Button flexGrow={1} onClick={props.prevHole}>
+                  Last
+                </Button>
+                <Button flexGrow={1} onClick={props.nextHole}>
+                  Next
+                </Button>
+              </Flex>
+            </StrokesContainer>
           </TabPanel>
         </TabPanels>
       </Tabs>
-
-      <Flex columnGap={2} justifyContent="stretch">
-        <Button flexGrow={1} onClick={props.prevHole}>
-          Last
-        </Button>
-        <Button flexGrow={1} onClick={props.nextHole}>
-          Next
-        </Button>
-      </Flex>
-    </Flex>
+    </Container>
   );
 }

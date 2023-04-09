@@ -5,7 +5,8 @@ import { Club } from "model/Club";
 import { Lie } from "model/Lie";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { partial } from "ramda";
-import { HoleViewProps } from "../Hole.View";
+import { HoleViewProps } from "../../Hole.View";
+import { Container } from "./StrokeRow.styles";
 
 type StrokeViewProps = {
   strokeNum: number;
@@ -31,7 +32,7 @@ export function StrokeView(props: StrokeViewProps) {
   const setCurLiePos = partial(props.setLiePosition, [props.strokeNum]);
 
   return (
-    <Flex>
+    <Container>
       <Text minW={4}>{props.strokeNum}</Text>
       <Flex flexDir="column" rowGap={2}>
         <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
@@ -93,6 +94,6 @@ export function StrokeView(props: StrokeViewProps) {
           </Flex>
         )}
       </Flex>
-    </Flex>
+    </Container>
   );
 }
