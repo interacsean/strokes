@@ -3,7 +3,7 @@ const colorPalette = {
     200: "#D9EDFF",
     500: "#0088cc",
     700: "#3A7FBE",
-    900: '#0F4B83',
+    900: "#0F4B83",
   },
   secondary: {
     500: "#FF7051",
@@ -14,9 +14,9 @@ const colorPalette = {
     500: "#222222",
   },
   neutral: {
-    100: '#F4F4F4',
-    500: '#CDCBCB',
-    800: '#686868',
+    100: "#F4F4F4",
+    500: "#CDCBCB",
+    800: "#686868",
   },
   action: {
     400: "#707f9f",

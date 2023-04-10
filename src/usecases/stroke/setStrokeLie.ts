@@ -9,7 +9,7 @@ export function setStrokeLie(
     strokeNum === 1
       ? Lie.TEE
       : strokeNum > 1 && lie === Lie.TEE
-        ? Lie.FAIRWAY
-        : lie;
+      ? Lie.FAIRWAY
+      : lie;
   return setHoleAttr({ lie: validLie });
 }

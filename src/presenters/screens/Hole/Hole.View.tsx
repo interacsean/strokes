@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Flex,
@@ -10,7 +10,6 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  VStack,
   Box,
 } from "@chakra-ui/react";
 import { Hole as HoleModel } from "model/Hole";
@@ -39,6 +38,10 @@ export type HoleViewProps = {
   caddySuggestions: CaddySuggestion[];
   setHolePos: (pos: LatLng) => void;
   addStroke: () => void;
+  distanceToHole: number | undefined;
+  holeAltitudeDelta: number | undefined;
+  roundScore: number;
+  holeLength: number | undefined;
   // setStrokeEndPos: (stroke: number, pos: LatLng) => void;
   // setStrokeStartPos: (stroke: number, pos: LatLng) => void;
   // holedStroke: () => void;
@@ -50,15 +53,24 @@ export type HoleViewProps = {
 const DEFAULT_HOLE_TAB = 1;
 
 function useHoleViewLogic(props: HoleViewProps) {
+  const {
+    setPar,
+    currentPosition,
+    setStrokePos: parentSetStrokePos,
+    setLiePos: parentSetLiePos,
+  } = props;
   const { inputProps: parInputProps, setCurrentValue: setParInputValue } =
     useInput({
       initValue: `${props.hole.par}`,
-      onBlur: (value) => {
-        const newPar = parseInt(value, 10);
-        if (!isNaN(newPar)) {
-          props.setPar(newPar);
-        }
-      },
+      onBlur: useCallback(
+        (value: string) => {
+          const newPar = parseInt(value, 10);
+          if (!isNaN(newPar)) {
+            setPar(newPar);
+          }
+        },
+        [setPar]
+      ),
     });
   useEffect(
     function updateParInputValueOnHoleUpdate() {
@@ -67,13 +79,17 @@ function useHoleViewLogic(props: HoleViewProps) {
     [setParInputValue, props.holeNum, props.hole.par]
   );
 
-  const setStrokePosition = (strokeNum: number) =>
-    props.currentPosition &&
-    props.setStrokePos(strokeNum, props.currentPosition);
+  const setStrokePosition = useCallback(
+    (strokeNum: number) =>
+      currentPosition && parentSetStrokePos(strokeNum, currentPosition),
+    [currentPosition, parentSetStrokePos]
+  );
 
-  const setLiePosition = (strokeNum: number) =>
-    props.currentPosition &&
-    props.setLiePos(strokeNum, props.currentPosition);
+  const setLiePosition = useCallback(
+    (strokeNum: number) =>
+      currentPosition && parentSetLiePos(strokeNum, currentPosition),
+    [currentPosition, parentSetLiePos]
+  );
 
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
 
@@ -81,8 +97,8 @@ function useHoleViewLogic(props: HoleViewProps) {
     parInputProps,
     tabIndex,
     setTabIndex,
-    switchViewMap: () => setTabIndex(0),
-    switchViewStrokeList: () => setTabIndex(1),
+    switchViewMap: useCallback(() => setTabIndex(0), [setTabIndex]),
+    switchViewStrokeList: useCallback(() => setTabIndex(1), [setTabIndex]),
     setStrokePosition,
     setLiePosition,
   };
@@ -90,8 +106,6 @@ function useHoleViewLogic(props: HoleViewProps) {
 
 export function HoleView(props: HoleViewProps) {
   const viewLogic = useHoleViewLogic(props);
-
-  // const [state, dispatch] = React.useReducer(holeReducer, initialHoleState);
 
   return (
     <Container>
@@ -121,17 +135,16 @@ export function HoleView(props: HoleViewProps) {
           </TabPanel>
           <TabPanel>
             <StrokesContainer>
-              <Box mx={-4} mt={-4} >
+              <Box mx={-4} mt={-4}>
                 <HoleOverview
                   holeNum={props.holeNum}
                   currentStrokeNum={props.strokeInputList.length}
-                  distanceToHole={undefined}
-                  holeAltitudeDelta={undefined}
-                  holeDistance={350}
+                  distanceToHole={props.distanceToHole}
+                  holeAltitudeDelta={props.holeAltitudeDelta}
+                  holeLength={props.holeLength}
                   par={props.hole.par}
-                  playerRoundScore={8}
+                  roundScore={props.roundScore}
                 />
-
               </Box>
               {props.strokeInputList.map((stroke, i) => {
                 return (

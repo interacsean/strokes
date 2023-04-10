@@ -5,4 +5,6 @@ export const newHole = (): Hole => ({
   par: 4,
   strokes: [],
   holePos: undefined,
+  tees: {},
+  completed: false,
 });

@@ -3,7 +3,9 @@ import { withTheme } from "@emotion/react";
 
 // @ts-ignore
 export const Container = withTheme(({ theme, children }) => (
-  <Flex flexDir="column" rowGap={2}>{children}</Flex>
+  <Flex flexDir="column" rowGap={2}>
+    {children}
+  </Flex>
 ));
 
 // @ts-ignore

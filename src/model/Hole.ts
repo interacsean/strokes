@@ -6,9 +6,7 @@ export type Hole = {
   strokes: Stroke[];
   par: number;
   holePos: LatLng | undefined;
-  // tees
-  // pinPos
+  tees: Record<string, LatLng>;
+  completed: boolean;
   // waypoints
 };
-
-export type UnknownHole = Omit<Hole, "holeNum"> & { holeNum?: number };

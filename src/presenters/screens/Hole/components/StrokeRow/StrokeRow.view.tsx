@@ -51,11 +51,7 @@ export function StrokeView(props: StrokeViewProps) {
           >
             <option value="">-</option>
             {liePairs.map(([_lieKey, label]) => (
-              <option
-                key={_lieKey}
-                value={label}
-                selected={props.stroke.lie === label}
-              >
+              <option key={_lieKey} value={label}>
                 {label}
               </option>
             ))}
@@ -66,11 +62,7 @@ export function StrokeView(props: StrokeViewProps) {
           >
             <option value="">-</option>
             {clubPairs.map(([_clubKey, label]) => (
-              <option
-                key={_clubKey}
-                value={label}
-                selected={props.stroke.club === label}
-              >
+              <option key={_clubKey} value={label}>
                 {label}
               </option>
             ))}
@@ -79,17 +71,27 @@ export function StrokeView(props: StrokeViewProps) {
             {props.stroke.strokeDistance
               ? `${Math.round(props.stroke.strokeDistance)}m`
               : props.stroke.distanceToHole
-                ? `(${Math.round(props.stroke.distanceToHole)}m)`
-                : "–"}
+              ? `(${Math.round(props.stroke.distanceToHole)}m)`
+              : "–"}
           </Text>
         </Flex>
         {props.current && (
           <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
             <Box>
-              <Button variant={props.stroke.liePos ? "outline" : "primary"} onClick={setCurLiePos}>🏌️‍♂️</Button>
+              <Button
+                variant={props.stroke.liePos ? "outline" : "primary"}
+                onClick={setCurLiePos}
+              >
+                🏌️‍♂️
+              </Button>
             </Box>
             <Box>
-              <Button variant={props.stroke.strokePos ? "outline" : "primary"} onClick={setCurStrokePos}>⚪️</Button>
+              <Button
+                variant={props.stroke.strokePos ? "outline" : "primary"}
+                onClick={setCurStrokePos}
+              >
+                ⚪️
+              </Button>
             </Box>
           </Flex>
         )}
