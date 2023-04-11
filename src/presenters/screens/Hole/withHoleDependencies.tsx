@@ -132,7 +132,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
           club
         );
       },
-      [saveStrokeAndUpdate]
+      [saveStrokeAndUpdate, strokes]
     );
 
     const setStrokeTypeAndUpdate = useCallback(
@@ -192,12 +192,12 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
         USE_FAKE_POSITION
           ? fakePos
           : geo.coords?.latitude && geo.coords?.longitude
-          ? {
+            ? {
               lat: geo.coords?.latitude,
               lng: geo.coords?.longitude,
               alt: geo.coords?.altitude,
             }
-          : undefined,
+            : undefined,
       [fakePos, geo.coords]
     );
 
@@ -212,9 +212,9 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       () =>
         currentPosition && currentHole.holePos
           ? calculateDistanceBetweenPositions(
-              currentPosition,
-              currentHole.holePos
-            )
+            currentPosition,
+            currentHole.holePos
+          )
           : undefined,
       [currentHole.holePos, currentPosition]
     );

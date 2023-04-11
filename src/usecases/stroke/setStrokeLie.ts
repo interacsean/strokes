@@ -6,15 +6,15 @@ import { StrokeType } from "model/StrokeType";
 export function setStrokeLie(
   setHoleAttr: (partStroke: Partial<Stroke>) => void,
   strokeNum: number,
-  stroke: Stroke,
+  stroke: Stroke | undefined,
   lie: Lie | undefined
 ) {
   const validLie =
     strokeNum === 1 && (!lie || ![Lie.TEE, Lie.TEE_GRASS].includes(lie))
       ? Lie.TEE
       : strokeNum > 1 && lie === Lie.TEE
-      ? Lie.FAIRWAY
-      : lie;
+        ? Lie.FAIRWAY
+        : lie;
   const attrs: Partial<Stroke> = {
     lie: validLie,
   };
@@ -23,9 +23,9 @@ export function setStrokeLie(
     attrs.strokeType = StrokeType.PUTT;
   }
   if (validLie === Lie.FRINGE) {
-    if (stroke.club === undefined) {
+    if (stroke?.club === undefined) {
       attrs.club = Club.PW;
-      if (stroke.strokeType === undefined) {
+      if (stroke?.strokeType === undefined) {
         attrs.strokeType = StrokeType.CHIP;
       }
     }
@@ -34,10 +34,10 @@ export function setStrokeLie(
     validLie &&
     ![Lie.FRINGE, Lie.GREEN, Lie.FAIRWAY, Lie.LIGHT_ROUGH].includes(validLie)
   ) {
-    if (stroke.club === Club.P) {
+    if (stroke?.club === Club.P) {
       attrs.club = undefined;
     }
-    if (stroke.strokeType === StrokeType.PUTT) {
+    if (stroke?.strokeType === StrokeType.PUTT) {
       attrs.strokeType = undefined;
     }
   }
