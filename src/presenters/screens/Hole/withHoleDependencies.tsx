@@ -12,7 +12,7 @@ import { saveStroke } from "usecases/course/saveStroke";
 import { Lie } from "model/Lie";
 import { setStrokeLie } from "usecases/stroke/setStrokeLie";
 import { Stroke } from "model/Stroke";
-import { newStroke } from "usecases/stroke/newStroke";
+import { newStrokeFromStrokes } from "usecases/stroke/newStrokeFromStrokes";
 import { mergePartHole } from "usecases/hole/mergePartHole";
 import { Club } from "model/Club";
 import { LatLng } from "model/LatLng";
@@ -45,16 +45,17 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const saveStrokeAndUpdate = useCallback(
       (strokeNum: number, partStroke: Partial<Stroke>) => {
         const currentStroke =
-          currentHole.strokes[strokeNum - 1] || newStroke(strokeNum);
+          currentHole.strokes[strokeNum - 1] ||
+          newStrokeFromStrokes(currentHole.strokes);
         const strokeUpdate = mergePartStroke(currentStroke, partStroke);
         return saveStroke(updateCourseState, strokeNum, strokeUpdate);
       },
-      [updateCourseState, currentHole]
+      [updateCourseState, currentHole, currentHole.strokes]
     );
 
     const addStroke = useCallback(() => {
       const strokeToAdd = {
-        ...newStroke(currentHole.strokes.length + 1),
+        ...newStrokeFromStrokes(currentHole.strokes),
         liePos: last(currentHole.strokes)?.strokePos,
       };
       saveStroke(
@@ -131,7 +132,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const strokeInputList = useMemo(
       () =>
         shouldShowNewStroke(currentHole.strokes)
-          ? [...currentHole.strokes, newStroke(currentHole.strokes.length + 1)]
+          ? [...currentHole.strokes, newStrokeFromStrokes(currentHole.strokes)]
           : currentHole.strokes,
       [currentHole.strokes]
     );
