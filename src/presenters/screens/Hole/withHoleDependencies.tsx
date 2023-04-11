@@ -12,7 +12,7 @@ import { saveStroke } from "usecases/course/saveStroke";
 import { Lie } from "model/Lie";
 import { setStrokeLie } from "usecases/stroke/setStrokeLie";
 import { Stroke } from "model/Stroke";
-import { newStroke } from "usecases/stroke/newStroke";
+import { newStrokeFromStrokes } from "usecases/stroke/newStrokeFromStrokes";
 import { mergePartHole } from "usecases/hole/mergePartHole";
 import { Club } from "model/Club";
 import { LatLng } from "model/LatLng";
@@ -23,6 +23,9 @@ import { calculateCaddySuggestions } from "usecases/stroke/calculateCaddySuggest
 import { selectCurrentHole } from "state/course/selectors/currentHole";
 import { useSelector } from "state/utils/useSelector";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
+import { StrokeType } from "model/StrokeType";
+import { setStrokeType } from "usecases/stroke/setStrokeType";
+import { setClub } from "usecases/stroke/setClub";
 
 type HolePublicProps = {};
 
@@ -38,29 +41,35 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const { state: courseState, updateState: updateCourseState } =
       useCourseState();
 
+    console.log(courseState);
+
     const currentHole = useSelector(selectCurrentHole, courseState);
+    const { strokes } = currentHole;
+
+    console.log(currentHole, strokes);
 
     const saveStrokeAndUpdate = useCallback(
       (strokeNum: number, partStroke: Partial<Stroke>) => {
         const currentStroke =
-          currentHole.strokes[strokeNum - 1] || newStroke(strokeNum);
-        const strokeUpdate = mergePartStroke(currentStroke, partStroke);
-        return saveStroke(updateCourseState, strokeNum, strokeUpdate);
+          currentHole.strokes[strokeNum - 1] || newStrokeFromStrokes(strokes);
+        const updatedStroke = mergePartStroke(currentStroke, partStroke);
+        saveStroke(updateCourseState, currentHole, strokeNum, updatedStroke);
       },
-      [updateCourseState, currentHole]
+      [updateCourseState, currentHole, strokes]
     );
 
     const addStroke = useCallback(() => {
       const strokeToAdd = {
-        ...newStroke(currentHole.strokes.length + 1),
-        liePos: last(currentHole.strokes)?.strokePos,
+        ...newStrokeFromStrokes(strokes),
+        liePos: last(strokes)?.strokePos,
       };
       saveStroke(
         updateCourseState,
-        currentHole.strokes.length + 1,
+        currentHole,
+        strokes.length + 1,
         strokeToAdd
       );
-    }, [currentHole.strokes, updateCourseState]);
+    }, [strokes, currentHole, updateCourseState]);
 
     const saveCurrentHole = useCallback(
       (h: HoleModel, n?: number) => saveHole(updateCourseState, h, n),
@@ -101,15 +110,44 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
         const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
           strokeNum,
         ]);
-        setStrokeLie(saveStrokeNumAndUpdate, strokeNum, lie);
+        setStrokeLie(
+          saveStrokeNumAndUpdate,
+          strokeNum,
+          strokes[strokeNum - 1],
+          lie
+        );
+      },
+      [saveStrokeAndUpdate, strokes]
+    );
+
+    const setStrokeClubAndUpdate = useCallback(
+      (strokeNum: number, club: Club) => {
+        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
+          strokeNum,
+        ]);
+        setClub(
+          saveStrokeNumAndUpdate,
+          strokeNum,
+          strokes[strokeNum - 1],
+          club
+        );
       },
       [saveStrokeAndUpdate]
     );
 
-    const setStrokeClubAndUpdate = useCallback(
-      (strokeNum: number, club: Club) =>
-        saveStrokeAndUpdate(strokeNum, { club }),
-      [saveStrokeAndUpdate]
+    const setStrokeTypeAndUpdate = useCallback(
+      (strokeNum: number, strokeType: StrokeType) => {
+        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
+          strokeNum,
+        ]);
+        setStrokeType(
+          saveStrokeNumAndUpdate,
+          strokeNum,
+          strokes[strokeNum - 1],
+          strokeType
+        );
+      },
+      [saveStrokeAndUpdate, strokes]
     );
 
     const setStrokePos = useCallback(
@@ -129,7 +167,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const strokeInputList = useMemo(
       () =>
         shouldShowNewStroke(currentHole.strokes)
-          ? [...currentHole.strokes, newStroke(currentHole.strokes.length + 1)]
+          ? [...currentHole.strokes, newStrokeFromStrokes(currentHole.strokes)]
           : currentHole.strokes,
       [currentHole.strokes]
     );
@@ -154,12 +192,12 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
         USE_FAKE_POSITION
           ? fakePos
           : geo.coords?.latitude && geo.coords?.longitude
-            ? {
+          ? {
               lat: geo.coords?.latitude,
               lng: geo.coords?.longitude,
               alt: geo.coords?.altitude,
             }
-            : undefined,
+          : undefined,
       [fakePos, geo.coords]
     );
 
@@ -174,9 +212,9 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       () =>
         currentPosition && currentHole.holePos
           ? calculateDistanceBetweenPositions(
-            currentPosition,
-            currentHole.holePos
-          )
+              currentPosition,
+              currentHole.holePos
+            )
           : undefined,
       [currentHole.holePos, currentPosition]
     );
@@ -215,6 +253,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       setPar: setParAndUpdate,
       selectStrokeLie: setStrokeLieAndUpdate,
       selectStrokeClub: setStrokeClubAndUpdate,
+      selectStrokeType: setStrokeTypeAndUpdate,
       strokeInputList: strokeListWithDistances,
       setStrokePos,
       setLiePos,

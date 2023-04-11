@@ -14,7 +14,8 @@ type HoleOverviewProps = {
 };
 
 function StrokesCount({ par, stroke }: { par: number; stroke: number }) {
-  const strokes = Array(Math.max(par, stroke))
+  const numStrokesToShow = Math.max(par, stroke);
+  const strokes = Array(isNaN(numStrokesToShow) ? par : numStrokesToShow)
     .fill(0)
     .map((_, i) => i + 1)
     .slice(-6);
@@ -84,11 +85,14 @@ export function HoleOverview(props: HoleOverviewProps) {
         </Flex>
         <Flex py={1} px={2} flexDir="column" flexGrow={1}>
           <Text textTransform="uppercase">
-            {props.holeLength}
-            {distUnit}
-            <Text as="span" color="neutral.500" mx={1}>
-              •
-            </Text>
+            {props.holeLength && (
+              <>
+                {distUnit}
+                <Text as="span" color="neutral.500" mx={1}>
+                  •
+                </Text>
+              </>
+            )}
             Par {props.par}
           </Text>
           <Flex>
@@ -122,10 +126,12 @@ export function HoleOverview(props: HoleOverviewProps) {
       <Flex justifyContent="stretch" bgColor="neutral.100">
         <Box width="3rem" />
         <Flex py={1} px={2} flexGrow={1}>
-          <Text textTransform="uppercase">
-            {props.distanceToHole || "?"}
-            {distUnit} to hole
-          </Text>
+          {props.distanceToHole && (
+            <Text textTransform="uppercase">
+              {Math.round(props.distanceToHole) || "?"}
+              {distUnit} to hole
+            </Text>
+          )}
         </Flex>
       </Flex>
     </Box>
