@@ -9,14 +9,20 @@ type NeededCourseState = {
 };
 export function saveStroke(
   updateCourseState: Updater<{ holes: Hole[] }, NeededCourseState>,
+  hole: Hole,
   strokeNum: number,
   stroke: Stroke
 ) {
-  updateCourseState((state) =>
-    set(
+  updateCourseState((state) => {
+    const updatedStateHole = set(
+      lensPath(["holes", state.currentHoleNum - 1]),
+      hole,
+      state
+    );
+    return set(
       lensPath(["holes", state.currentHoleNum - 1, "strokes", strokeNum - 1]),
       stroke,
-      state
-    )
-  );
+      updatedStateHole
+    );
+  });
 }

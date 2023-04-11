@@ -23,6 +23,7 @@ import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
 import { Container, StrokesContainer } from "./Hole.styles";
 import { HoleOverview } from "./components/HoleOverview/HoleOverview.view";
 import { StrokeHeaderView } from "./components/StrokeRow/StrokeRow.header.view";
+import { StrokeType } from "model/StrokeType";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -33,6 +34,7 @@ export type HoleViewProps = {
   setPar: (n: number) => void;
   selectStrokeLie: (stroke: number, lie: Lie) => void;
   selectStrokeClub: (stroke: number, club: Club) => void;
+  selectStrokeType: (stroke: number, strokeType: StrokeType) => void;
   strokeInputList: StrokeWithDerivedFields[];
   setLiePos: (stroke: number, pos: LatLng) => void;
   setStrokePos: (stroke: number, pos: LatLng) => void;
@@ -156,6 +158,7 @@ export function HoleView(props: HoleViewProps) {
                     stroke={stroke}
                     selectLie={props.selectStrokeLie}
                     selectClub={props.selectStrokeClub}
+                    selectStrokeType={props.selectStrokeType}
                     setLiePosition={viewLogic.setLiePosition}
                     setStrokePosition={viewLogic.setStrokePosition}
                     current={i === props.strokeInputList.length - 1}

@@ -12,12 +12,14 @@ import {
   lieWidth,
   strokeNumWidth,
 } from "./StrokeRow.styles";
+import { StrokeType } from "model/StrokeType";
 
 type StrokeViewProps = {
   strokeNum: number;
   stroke: StrokeWithDerivedFields;
   selectLie: HoleViewProps["selectStrokeLie"];
   selectClub: HoleViewProps["selectStrokeClub"];
+  selectStrokeType: HoleViewProps["selectStrokeType"];
   setStrokePosition: (strokeNum: number) => void;
   setLiePosition: (strokeNum: number) => void;
   current: boolean;
@@ -25,6 +27,7 @@ type StrokeViewProps = {
 
 const liePairs = Object.entries(Lie);
 const clubPairs = Object.entries(Club);
+const typePairs = Object.entries(StrokeType);
 
 export function StrokeView(props: StrokeViewProps) {
   const selectCurStrokeLie = partial(props.selectLie, [props.strokeNum]) as (
@@ -33,6 +36,9 @@ export function StrokeView(props: StrokeViewProps) {
   const selectCurStrokeClub = partial(props.selectClub, [props.strokeNum]) as (
     clubAsStr: string
   ) => void;
+  const selectCurStrokeType = partial(props.selectStrokeType, [
+    props.strokeNum,
+  ]) as (strokeTypeAsStr: string) => void;
   const setCurStrokePos = partial(props.setStrokePosition, [props.strokeNum]);
   const setCurLiePos = partial(props.setLiePosition, [props.strokeNum]);
 
@@ -64,6 +70,19 @@ export function StrokeView(props: StrokeViewProps) {
               <option value="">-</option>
               {clubPairs.map(([_clubKey, label]) => (
                 <option key={_clubKey} value={label}>
+                  {label}
+                </option>
+              ))}
+            </Select>
+          </Box>
+          <Box flexBasis={clubWidth}>
+            <Select
+              onChange={withTargetValue(selectCurStrokeType)}
+              value={props.stroke.strokeType}
+            >
+              <option value="">-</option>
+              {typePairs.map(([_typeKey, label]) => (
+                <option key={_typeKey} value={label}>
                   {label}
                 </option>
               ))}

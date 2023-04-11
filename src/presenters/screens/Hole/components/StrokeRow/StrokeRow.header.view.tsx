@@ -20,7 +20,7 @@ export function StrokeHeaderView(props: StrokeViewProps) {
       >
         <Text flexBasis={lieWidth}>Lie</Text>
         <Text flexBasis={clubWidth}>Club</Text>
-        <Text>To Hole</Text>
+        <Text>Dist.</Text>
       </Flex>
     </Container>
   );

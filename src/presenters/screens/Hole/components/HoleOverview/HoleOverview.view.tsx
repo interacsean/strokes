@@ -14,7 +14,8 @@ type HoleOverviewProps = {
 };
 
 function StrokesCount({ par, stroke }: { par: number; stroke: number }) {
-  const strokes = Array(Math.max(par, stroke))
+  const numStrokesToShow = Math.max(par, stroke);
+  const strokes = Array(isNaN(numStrokesToShow) ? par : numStrokesToShow)
     .fill(0)
     .map((_, i) => i + 1)
     .slice(-6);
