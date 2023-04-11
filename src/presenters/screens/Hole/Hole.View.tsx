@@ -22,6 +22,7 @@ import { LatLng } from "model/LatLng";
 import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
 import { Container, StrokesContainer } from "./Hole.styles";
 import { HoleOverview } from "./components/HoleOverview/HoleOverview.view";
+import { StrokeHeaderView } from "./components/StrokeRow/StrokeRow.header.view";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -146,6 +147,7 @@ export function HoleView(props: HoleViewProps) {
                   roundScore={props.roundScore}
                 />
               </Box>
+              <StrokeHeaderView />
               {props.strokeInputList.map((stroke, i) => {
                 return (
                   <StrokeView

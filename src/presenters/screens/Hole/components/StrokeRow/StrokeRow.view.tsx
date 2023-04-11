@@ -6,7 +6,12 @@ import { Lie } from "model/Lie";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { partial } from "ramda";
 import { HoleViewProps } from "../../Hole.View";
-import { Container } from "./StrokeRow.styles";
+import {
+  clubWidth,
+  Container,
+  lieWidth,
+  strokeNumWidth,
+} from "./StrokeRow.styles";
 
 type StrokeViewProps = {
   strokeNum: number;
@@ -33,40 +38,37 @@ export function StrokeView(props: StrokeViewProps) {
 
   return (
     <Container>
-      <Text minW={4}>{props.strokeNum}</Text>
-      <Flex flexDir="column" rowGap={2}>
+      <Text textAlign="right" paddingRight="0.25em" flexBasis={strokeNumWidth}>
+        {props.strokeNum}
+      </Text>
+      <Flex flexGrow={1} flexDir="column" rowGap={2}>
         <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
-          {/* {props.stroke.strokePos ? (
-            <Button variant="ghost" onClick={setCurStrokePos}>
-              📍
-            </Button>
-          ) : (
-            <UnsetButton variant="primaryOutline" onClick={setCurStrokePos}>
-              📍
-            </UnsetButton>
-          )} */}
-          <Select
-            onChange={withTargetValue(selectCurStrokeLie)}
-            value={props.stroke.lie}
-          >
-            <option value="">-</option>
-            {liePairs.map(([_lieKey, label]) => (
-              <option key={_lieKey} value={label}>
-                {label}
-              </option>
-            ))}
-          </Select>
-          <Select
-            onChange={withTargetValue(selectCurStrokeClub)}
-            value={props.stroke.club}
-          >
-            <option value="">-</option>
-            {clubPairs.map(([_clubKey, label]) => (
-              <option key={_clubKey} value={label}>
-                {label}
-              </option>
-            ))}
-          </Select>
+          <Box flexBasis={lieWidth}>
+            <Select
+              onChange={withTargetValue(selectCurStrokeLie)}
+              value={props.stroke.lie}
+            >
+              <option value="">-</option>
+              {liePairs.map(([_lieKey, label]) => (
+                <option key={_lieKey} value={label}>
+                  {label}
+                </option>
+              ))}
+            </Select>
+          </Box>
+          <Box flexBasis={clubWidth}>
+            <Select
+              onChange={withTargetValue(selectCurStrokeClub)}
+              value={props.stroke.club}
+            >
+              <option value="">-</option>
+              {clubPairs.map(([_clubKey, label]) => (
+                <option key={_clubKey} value={label}>
+                  {label}
+                </option>
+              ))}
+            </Select>
+          </Box>
           <Text>
             {props.stroke.strokeDistance
               ? `${Math.round(props.stroke.strokeDistance)}m`

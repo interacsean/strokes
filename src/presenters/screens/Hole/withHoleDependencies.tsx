@@ -38,6 +38,8 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const { state: courseState, updateState: updateCourseState } =
       useCourseState();
 
+    console.log(courseState);
+
     const currentHole = useSelector(selectCurrentHole, courseState);
 
     const saveStrokeAndUpdate = useCallback(
@@ -154,12 +156,12 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
         USE_FAKE_POSITION
           ? fakePos
           : geo.coords?.latitude && geo.coords?.longitude
-            ? {
+          ? {
               lat: geo.coords?.latitude,
               lng: geo.coords?.longitude,
               alt: geo.coords?.altitude,
             }
-            : undefined,
+          : undefined,
       [fakePos, geo.coords]
     );
 
@@ -174,9 +176,9 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       () =>
         currentPosition && currentHole.holePos
           ? calculateDistanceBetweenPositions(
-            currentPosition,
-            currentHole.holePos
-          )
+              currentPosition,
+              currentHole.holePos
+            )
           : undefined,
       [currentHole.holePos, currentPosition]
     );
