@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
 
 type UseInputParams = {
   initValue?: string;
@@ -7,21 +7,35 @@ type UseInputParams = {
 };
 
 export function useInput(params: UseInputParams) {
+  const { onChange: parentOnChange, onBlur: parentOnBlur } = params;
   const [currentValue, setCurrentValue] = useState(params.initValue || "");
 
-  // todo: useCallback/useMemos
-  return {
-    inputProps: {
-      onChange: (e: ChangeEvent<HTMLInputElement>) => {
-        setCurrentValue(e.currentTarget.value);
-        params.onChange?.(e.currentTarget.value);
-      },
-      onBlur: () => {
-        params.onBlur?.(currentValue);
-      },
-      value: currentValue,
+  const onChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setCurrentValue(e.currentTarget.value);
+      parentOnChange?.(e.currentTarget.value);
     },
-    currentValue,
-    setCurrentValue,
-  };
+    [parentOnChange]
+  );
+  const onBlur = useCallback(() => {
+    parentOnBlur?.(currentValue);
+  }, [parentOnBlur, currentValue]);
+
+  const inputProps = useMemo(
+    () => ({
+      onChange,
+      onBlur,
+      value: currentValue,
+    }),
+    [currentValue, onChange, onBlur]
+  );
+
+  return useMemo(
+    () => ({
+      inputProps,
+      currentValue,
+      setCurrentValue,
+    }),
+    [inputProps, currentValue, setCurrentValue]
+  );
 }

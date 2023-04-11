@@ -1,4 +1,3 @@
-import "./App.css";
 import { ThemedChakraProvider } from "presenters/theme";
 import { AppRoutes } from "presenters/routes/AppRoutes";
 import { RecoilRoot } from "recoil";

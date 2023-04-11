@@ -1,8 +1,8 @@
-import { last, partial } from "ramda";
+import { head, last, partial } from "ramda";
 import { nextHole } from "usecases/course/nextHole";
 import { prevHole } from "usecases/course/prevHole";
 import { saveHole } from "usecases/course/saveHole";
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import { useCourseState } from "state/course/courseState";
 import { HoleViewProps } from "./Hole.View";
 import { Hole as HoleModel } from "model/Hole";
@@ -22,6 +22,7 @@ import { calculateStrokeDistances } from "usecases/hole/calculateStrokeDistances
 import { calculateCaddySuggestions } from "usecases/stroke/calculateCaddySuggestions";
 import { selectCurrentHole } from "state/course/selectors/currentHole";
 import { useSelector } from "state/utils/useSelector";
+import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 
 type HolePublicProps = {};
 
@@ -39,10 +40,6 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const currentHole = useSelector(selectCurrentHole, courseState);
 
-    useEffect(() => {
-      console.log({ currentHole });
-    }, [currentHole])
-
     const saveStrokeAndUpdate = useCallback(
       (strokeNum: number, partStroke: Partial<Stroke>) => {
         const currentStroke =
@@ -53,16 +50,17 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       [updateCourseState, currentHole]
     );
 
-    const addStroke = useCallback(
-      () => {
-        const strokeToAdd = {
-          ...newStroke(currentHole.strokes.length + 1),
-          liePos: last(currentHole.strokes)?.strokePos,
-        };
-        saveStroke(updateCourseState, currentHole.strokes.length + 1, strokeToAdd);
-      },
-      [currentHole.strokes, updateCourseState],
-    )
+    const addStroke = useCallback(() => {
+      const strokeToAdd = {
+        ...newStroke(currentHole.strokes.length + 1),
+        liePos: last(currentHole.strokes)?.strokePos,
+      };
+      saveStroke(
+        updateCourseState,
+        currentHole.strokes.length + 1,
+        strokeToAdd
+      );
+    }, [currentHole.strokes, updateCourseState]);
 
     const saveCurrentHole = useCallback(
       (h: HoleModel, n?: number) => saveHole(updateCourseState, h, n),
@@ -129,9 +127,10 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     );
 
     const strokeInputList = useMemo(
-      () => shouldShowNewStroke(currentHole.strokes)
-        ? [...currentHole.strokes, newStroke(currentHole.strokes.length + 1)]
-        : currentHole.strokes,
+      () =>
+        shouldShowNewStroke(currentHole.strokes)
+          ? [...currentHole.strokes, newStroke(currentHole.strokes.length + 1)]
+          : currentHole.strokes,
       [currentHole.strokes]
     );
 
@@ -150,15 +149,19 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       lng: 144.95,
       alt: 10,
     });
-    const currentPosition = USE_FAKE_POSITION
-      ? fakePos
-      : geo.coords?.latitude && geo.coords?.longitude
-        ? {
-          lat: geo.coords?.latitude,
-          lng: geo.coords?.longitude,
-          alt: geo.coords?.altitude,
-        }
-        : undefined;
+    const currentPosition = useMemo(
+      () =>
+        USE_FAKE_POSITION
+          ? fakePos
+          : geo.coords?.latitude && geo.coords?.longitude
+            ? {
+              lat: geo.coords?.latitude,
+              lng: geo.coords?.longitude,
+              alt: geo.coords?.altitude,
+            }
+            : undefined,
+      [fakePos, geo.coords]
+    );
 
     const caddySuggestions = useMemo(() => {
       const lastStroke = last(strokeListWithDistances);
@@ -167,7 +170,44 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
         : [];
     }, [currentHole, strokeListWithDistances]);
 
-    const viewProps = {
+    const distanceToHole = useMemo(
+      () =>
+        currentPosition && currentHole.holePos
+          ? calculateDistanceBetweenPositions(
+            currentPosition,
+            currentHole.holePos
+          )
+          : undefined,
+      [currentHole.holePos, currentPosition]
+    );
+
+    const holeAltitudeDelta = useMemo(
+      () =>
+        currentPosition && currentPosition.alt !== null && currentHole.holePos
+          ? currentHole.holePos?.lat - currentPosition?.alt
+          : undefined,
+      [currentHole.holePos, currentPosition]
+    );
+
+    const holeLength = useMemo(() => {
+      const chosenTeePos = head(strokeListWithDistances)?.liePos;
+      return chosenTeePos && currentHole.holePos
+        ? calculateDistanceBetweenPositions(chosenTeePos, currentHole.holePos)
+        : undefined;
+    }, [currentHole.holePos, strokeListWithDistances]);
+
+    const roundScore = useMemo(
+      () =>
+        courseState.holes.reduce((scoreAcc, hole) => {
+          if (hole.strokes.length && hole.completed) {
+            return scoreAcc + hole.strokes.length - hole.par;
+          }
+          return scoreAcc;
+        }, 0),
+      [courseState.holes]
+    );
+
+    const viewProps: HoleViewProps = {
       nextHole: nextHoleAndUpdate,
       prevHole: prevHoleAndUpdate,
       hole: currentHole,
@@ -182,6 +222,10 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       caddySuggestions,
       setHolePos,
       addStroke,
+      distanceToHole,
+      holeAltitudeDelta,
+      holeLength,
+      roundScore,
     };
 
     return (

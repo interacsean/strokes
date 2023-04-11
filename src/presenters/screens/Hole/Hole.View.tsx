@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Flex,
@@ -10,16 +10,18 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  VStack,
+  Box,
 } from "@chakra-ui/react";
 import { Hole as HoleModel } from "model/Hole";
 import { Lie } from "model/Lie";
 import { useInput } from "presenters/utils/useInput/useInput";
-import { StrokeView } from "./components/StrokeRow.view";
+import { StrokeView } from "./components/StrokeRow/StrokeRow.view";
 import { Club } from "model/Club";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { LatLng } from "model/LatLng";
 import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
+import { Container, StrokesContainer } from "./Hole.styles";
+import { HoleOverview } from "./components/HoleOverview/HoleOverview.view";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -36,6 +38,10 @@ export type HoleViewProps = {
   caddySuggestions: CaddySuggestion[];
   setHolePos: (pos: LatLng) => void;
   addStroke: () => void;
+  distanceToHole: number | undefined;
+  holeAltitudeDelta: number | undefined;
+  roundScore: number;
+  holeLength: number | undefined;
   // setStrokeEndPos: (stroke: number, pos: LatLng) => void;
   // setStrokeStartPos: (stroke: number, pos: LatLng) => void;
   // holedStroke: () => void;
@@ -47,15 +53,24 @@ export type HoleViewProps = {
 const DEFAULT_HOLE_TAB = 1;
 
 function useHoleViewLogic(props: HoleViewProps) {
+  const {
+    setPar,
+    currentPosition,
+    setStrokePos: parentSetStrokePos,
+    setLiePos: parentSetLiePos,
+  } = props;
   const { inputProps: parInputProps, setCurrentValue: setParInputValue } =
     useInput({
       initValue: `${props.hole.par}`,
-      onBlur: (value) => {
-        const newPar = parseInt(value, 10);
-        if (!isNaN(newPar)) {
-          props.setPar(newPar);
-        }
-      },
+      onBlur: useCallback(
+        (value: string) => {
+          const newPar = parseInt(value, 10);
+          if (!isNaN(newPar)) {
+            setPar(newPar);
+          }
+        },
+        [setPar]
+      ),
     });
   useEffect(
     function updateParInputValueOnHoleUpdate() {
@@ -64,13 +79,17 @@ function useHoleViewLogic(props: HoleViewProps) {
     [setParInputValue, props.holeNum, props.hole.par]
   );
 
-  const setStrokePosition = (strokeNum: number) =>
-    props.currentPosition &&
-    props.setStrokePos(strokeNum, props.currentPosition);
+  const setStrokePosition = useCallback(
+    (strokeNum: number) =>
+      currentPosition && parentSetStrokePos(strokeNum, currentPosition),
+    [currentPosition, parentSetStrokePos]
+  );
 
-  const setLiePosition = (strokeNum: number) =>
-    props.currentPosition &&
-    props.setLiePos(strokeNum, props.currentPosition);
+  const setLiePosition = useCallback(
+    (strokeNum: number) =>
+      currentPosition && parentSetLiePos(strokeNum, currentPosition),
+    [currentPosition, parentSetLiePos]
+  );
 
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
 
@@ -78,8 +97,8 @@ function useHoleViewLogic(props: HoleViewProps) {
     parInputProps,
     tabIndex,
     setTabIndex,
-    switchViewMap: () => setTabIndex(0),
-    switchViewStrokeList: () => setTabIndex(1),
+    switchViewMap: useCallback(() => setTabIndex(0), [setTabIndex]),
+    switchViewStrokeList: useCallback(() => setTabIndex(1), [setTabIndex]),
     setStrokePosition,
     setLiePosition,
   };
@@ -88,11 +107,8 @@ function useHoleViewLogic(props: HoleViewProps) {
 export function HoleView(props: HoleViewProps) {
   const viewLogic = useHoleViewLogic(props);
 
-  // const [state, dispatch] = React.useReducer(holeReducer, initialHoleState);
-
   return (
-    <Flex flexDir="column" rowGap={2}>
-      <Text>Hole {props.holeNum}</Text>
+    <Container>
       <Tabs index={viewLogic.tabIndex} onChange={viewLogic.setTabIndex}>
         <TabList>
           <Tab onClick={() => viewLogic.setTabIndex(0)}>Map</Tab>
@@ -118,7 +134,18 @@ export function HoleView(props: HoleViewProps) {
             </FormLabel>
           </TabPanel>
           <TabPanel>
-            <VStack spacing={2}>
+            <StrokesContainer>
+              <Box mx={-4} mt={-4}>
+                <HoleOverview
+                  holeNum={props.holeNum}
+                  currentStrokeNum={props.strokeInputList.length}
+                  distanceToHole={props.distanceToHole}
+                  holeAltitudeDelta={props.holeAltitudeDelta}
+                  holeLength={props.holeLength}
+                  par={props.hole.par}
+                  roundScore={props.roundScore}
+                />
+              </Box>
               {props.strokeInputList.map((stroke, i) => {
                 return (
                   <StrokeView
@@ -134,19 +161,19 @@ export function HoleView(props: HoleViewProps) {
                 );
               })}
               <Button onClick={props.addStroke}>New stroke</Button>
-            </VStack>
+
+              <Flex columnGap={2} justifyContent="stretch">
+                <Button flexGrow={1} onClick={props.prevHole}>
+                  Last
+                </Button>
+                <Button flexGrow={1} onClick={props.nextHole}>
+                  Next
+                </Button>
+              </Flex>
+            </StrokesContainer>
           </TabPanel>
         </TabPanels>
       </Tabs>
-
-      <Flex columnGap={2} justifyContent="stretch">
-        <Button flexGrow={1} onClick={props.prevHole}>
-          Last
-        </Button>
-        <Button flexGrow={1} onClick={props.nextHole}>
-          Next
-        </Button>
-      </Flex>
-    </Flex>
+    </Container>
   );
 }

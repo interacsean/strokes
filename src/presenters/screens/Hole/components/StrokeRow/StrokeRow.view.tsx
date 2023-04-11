@@ -5,7 +5,8 @@ import { Club } from "model/Club";
 import { Lie } from "model/Lie";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { partial } from "ramda";
-import { HoleViewProps } from "../Hole.View";
+import { HoleViewProps } from "../../Hole.View";
+import { Container } from "./StrokeRow.styles";
 
 type StrokeViewProps = {
   strokeNum: number;
@@ -31,7 +32,7 @@ export function StrokeView(props: StrokeViewProps) {
   const setCurLiePos = partial(props.setLiePosition, [props.strokeNum]);
 
   return (
-    <Flex>
+    <Container>
       <Text minW={4}>{props.strokeNum}</Text>
       <Flex flexDir="column" rowGap={2}>
         <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
@@ -50,11 +51,7 @@ export function StrokeView(props: StrokeViewProps) {
           >
             <option value="">-</option>
             {liePairs.map(([_lieKey, label]) => (
-              <option
-                key={_lieKey}
-                value={label}
-                selected={props.stroke.lie === label}
-              >
+              <option key={_lieKey} value={label}>
                 {label}
               </option>
             ))}
@@ -65,11 +62,7 @@ export function StrokeView(props: StrokeViewProps) {
           >
             <option value="">-</option>
             {clubPairs.map(([_clubKey, label]) => (
-              <option
-                key={_clubKey}
-                value={label}
-                selected={props.stroke.club === label}
-              >
+              <option key={_clubKey} value={label}>
                 {label}
               </option>
             ))}
@@ -78,21 +71,31 @@ export function StrokeView(props: StrokeViewProps) {
             {props.stroke.strokeDistance
               ? `${Math.round(props.stroke.strokeDistance)}m`
               : props.stroke.distanceToHole
-                ? `(${Math.round(props.stroke.distanceToHole)}m)`
-                : "–"}
+              ? `(${Math.round(props.stroke.distanceToHole)}m)`
+              : "–"}
           </Text>
         </Flex>
         {props.current && (
           <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
             <Box>
-              <Button variant={props.stroke.liePos ? "outline" : "primary"} onClick={setCurLiePos}>🏌️‍♂️</Button>
+              <Button
+                variant={props.stroke.liePos ? "outline" : "primary"}
+                onClick={setCurLiePos}
+              >
+                🏌️‍♂️
+              </Button>
             </Box>
             <Box>
-              <Button variant={props.stroke.strokePos ? "outline" : "primary"} onClick={setCurStrokePos}>⚪️</Button>
+              <Button
+                variant={props.stroke.strokePos ? "outline" : "primary"}
+                onClick={setCurStrokePos}
+              >
+                ⚪️
+              </Button>
             </Box>
           </Flex>
         )}
       </Flex>
-    </Flex>
+    </Container>
   );
 }
