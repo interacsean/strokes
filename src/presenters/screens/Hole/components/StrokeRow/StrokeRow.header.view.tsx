@@ -4,6 +4,7 @@ import {
   Container,
   lieWidth,
   strokeNumWidth,
+  strokeTypeWidth,
 } from "./StrokeRow.styles";
 
 type StrokeViewProps = {};
@@ -20,6 +21,7 @@ export function StrokeHeaderView(props: StrokeViewProps) {
       >
         <Text flexBasis={lieWidth}>Lie</Text>
         <Text flexBasis={clubWidth}>Club</Text>
+        <Text flexBasis={strokeTypeWidth}>Stroke</Text>
         <Text>Dist.</Text>
       </Flex>
     </Container>

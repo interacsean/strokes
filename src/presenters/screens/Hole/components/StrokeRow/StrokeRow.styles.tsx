@@ -7,6 +7,8 @@ export const lieWidth = "6rem";
 
 export const clubWidth = "8rem";
 
+export const strokeTypeWidth = "4.5rem";
+
 // @ts-ignore
 export const Container = withTheme(({ theme, children }) => (
   <Flex maxW={theme.breakpoints.md} alignItems="baseline">

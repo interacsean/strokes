@@ -19,6 +19,7 @@ export function newStrokeFromStrokes(strokes: Stroke[]): Stroke {
   setStrokeLie(
     ({ lie }) => (stroke.lie = lie),
     strokeNum,
+    stroke,
     strokeNum === 1
       ? Lie.TEE
       : lastStroke?.lie === Lie.GREEN
@@ -28,7 +29,7 @@ export function newStrokeFromStrokes(strokes: Stroke[]): Stroke {
   setStrokeType(
     ({ strokeType }) => (stroke.strokeType = strokeType),
     strokeNum,
-    stroke.lie,
+    stroke,
     stroke.strokeType
   );
   return stroke;

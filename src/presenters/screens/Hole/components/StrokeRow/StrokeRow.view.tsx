@@ -11,6 +11,7 @@ import {
   Container,
   lieWidth,
   strokeNumWidth,
+  strokeTypeWidth,
 } from "./StrokeRow.styles";
 import { StrokeType } from "model/StrokeType";
 
@@ -52,7 +53,7 @@ export function StrokeView(props: StrokeViewProps) {
           <Box flexBasis={lieWidth}>
             <Select
               onChange={withTargetValue(selectCurStrokeLie)}
-              value={props.stroke.lie}
+              value={props.stroke.lie || ""}
             >
               <option value="">-</option>
               {liePairs.map(([_lieKey, label]) => (
@@ -65,7 +66,7 @@ export function StrokeView(props: StrokeViewProps) {
           <Box flexBasis={clubWidth}>
             <Select
               onChange={withTargetValue(selectCurStrokeClub)}
-              value={props.stroke.club}
+              value={props.stroke.club || ""}
             >
               <option value="">-</option>
               {clubPairs.map(([_clubKey, label]) => (
@@ -75,10 +76,10 @@ export function StrokeView(props: StrokeViewProps) {
               ))}
             </Select>
           </Box>
-          <Box flexBasis={clubWidth}>
+          <Box flexBasis={strokeTypeWidth}>
             <Select
               onChange={withTargetValue(selectCurStrokeType)}
-              value={props.stroke.strokeType}
+              value={props.stroke.strokeType || ""}
             >
               <option value="">-</option>
               {typePairs.map(([_typeKey, label]) => (

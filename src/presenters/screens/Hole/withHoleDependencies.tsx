@@ -24,6 +24,8 @@ import { selectCurrentHole } from "state/course/selectors/currentHole";
 import { useSelector } from "state/utils/useSelector";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 import { StrokeType } from "model/StrokeType";
+import { setStrokeType } from "usecases/stroke/setStrokeType";
+import { setClub } from "usecases/stroke/setClub";
 
 type HolePublicProps = {};
 
@@ -108,21 +110,44 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
         const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
           strokeNum,
         ]);
-        setStrokeLie(saveStrokeNumAndUpdate, strokeNum, lie);
+        setStrokeLie(
+          saveStrokeNumAndUpdate,
+          strokeNum,
+          strokes[strokeNum - 1],
+          lie
+        );
+      },
+      [saveStrokeAndUpdate, strokes]
+    );
+
+    const setStrokeClubAndUpdate = useCallback(
+      (strokeNum: number, club: Club) => {
+        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
+          strokeNum,
+        ]);
+        setClub(
+          saveStrokeNumAndUpdate,
+          strokeNum,
+          strokes[strokeNum - 1],
+          club
+        );
       },
       [saveStrokeAndUpdate]
     );
 
-    const setStrokeClubAndUpdate = useCallback(
-      (strokeNum: number, club: Club) =>
-        saveStrokeAndUpdate(strokeNum, { club }),
-      [saveStrokeAndUpdate]
-    );
-
     const setStrokeTypeAndUpdate = useCallback(
-      (strokeNum: number, strokeType: StrokeType) =>
-        saveStrokeAndUpdate(strokeNum, { strokeType }),
-      [saveStrokeAndUpdate]
+      (strokeNum: number, strokeType: StrokeType) => {
+        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
+          strokeNum,
+        ]);
+        setStrokeType(
+          saveStrokeNumAndUpdate,
+          strokeNum,
+          strokes[strokeNum - 1],
+          strokeType
+        );
+      },
+      [saveStrokeAndUpdate, strokes]
     );
 
     const setStrokePos = useCallback(
