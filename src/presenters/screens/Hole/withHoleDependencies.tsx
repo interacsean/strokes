@@ -26,10 +26,11 @@ import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistan
 import { StrokeType } from "model/StrokeType";
 import { setStrokeType } from "usecases/stroke/setStrokeType";
 import { setClub } from "usecases/stroke/setClub";
+import { GeoHUD } from "presenters/screens/Hole/components/GeoHUD";
 
 type HolePublicProps = {};
 
-const USE_FAKE_POSITION = true;
+const USE_FAKE_POSITION = false;
 
 function shouldShowNewStroke(strokes: Stroke[]) {
   // const lastStroke = last(strokes);
@@ -180,6 +181,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     // todo: retry-on loop until high accuracy – how oftern to ping
     const geo = useGeolocated({
       positionOptions: { enableHighAccuracy: true },
+      watchPosition: true,
     });
 
     const [fakePos, setFakePos] = useState<LatLng>({
@@ -192,12 +194,12 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
         USE_FAKE_POSITION
           ? fakePos
           : geo.coords?.latitude && geo.coords?.longitude
-            ? {
+          ? {
               lat: geo.coords?.latitude,
               lng: geo.coords?.longitude,
               alt: geo.coords?.altitude,
             }
-            : undefined,
+          : undefined,
       [fakePos, geo.coords]
     );
 
@@ -212,9 +214,9 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       () =>
         currentPosition && currentHole.holePos
           ? calculateDistanceBetweenPositions(
-            currentPosition,
-            currentHole.holePos
-          )
+              currentPosition,
+              currentHole.holePos
+            )
           : undefined,
       [currentHole.holePos, currentPosition]
     );
@@ -270,7 +272,11 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     return (
       <>
         <HoleView {...viewProps} />
-        <FakeGeo pos={fakePos} setPos={setFakePos} />
+        {USE_FAKE_POSITION ? (
+          <FakeGeo pos={fakePos} setPos={setFakePos} />
+        ) : (
+          <GeoHUD currentPosition={currentPosition} geo={geo} />
+        )}
       </>
     );
   };
