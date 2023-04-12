@@ -1,9 +1,9 @@
 import { Club } from "model/Club";
 import { Stroke } from "model/Stroke";
 import { StrokeType } from "model/StrokeType";
+import { Lie, puttableLies } from "model/Lie";
 
 export function setClub(
-  setHoleAttr: (partStroke: Partial<Stroke>) => void,
   strokeNum: number,
   stroke: Stroke | undefined,
   club: Club | undefined
@@ -15,26 +15,12 @@ export function setClub(
   };
   if (validClub === Club.P) {
     attrs.strokeType = StrokeType.PUTT;
+    if (stroke?.lie && !puttableLies.includes(stroke.lie)) {
+      attrs.lie = Lie.GREEN;
+    }
   }
   if (validClub !== Club.P && stroke?.strokeType === StrokeType.PUTT) {
     attrs.strokeType = undefined;
   }
-  if (validClub && [
-    Club.D,
-    Club["1W"],
-    Club["2W"],
-    Club["3W"],
-    Club["4W"],
-    Club["5W"],
-    Club["1H"],
-    Club["2H"],
-    Club["3H"],
-    Club["4H"],
-    Club["5H"]
-  ]) {
-    if (stroke?.strokeType !== StrokeType.FULL) {
-      attrs.strokeType = StrokeType.FULL;
-    }
-  }
-  return setHoleAttr(attrs);
+  return attrs;
 }

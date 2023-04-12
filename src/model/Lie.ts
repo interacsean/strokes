@@ -10,3 +10,10 @@ export enum Lie {
   WATER = "Water hazard",
   HAZARD = "Hazard / Out of bounds",
 }
+
+export const puttableLies = [
+  Lie.GREEN,
+  Lie.FRINGE,
+  Lie.FAIRWAY,
+  Lie.LIGHT_ROUGH,
+];

@@ -16,21 +16,21 @@ export function newStrokeFromStrokes(strokes: Stroke[]): Stroke {
     strokeType: StrokeType.FULL,
   };
   const strokeNum = strokes.length + 1;
-  setStrokeLie(
-    ({ lie }) => (stroke.lie = lie),
-    strokeNum,
-    stroke,
-    strokeNum === 1
-      ? Lie.TEE
-      : lastStroke?.lie === Lie.GREEN
-      ? Lie.GREEN
-      : undefined
-  );
-  setStrokeType(
-    ({ strokeType }) => (stroke.strokeType = strokeType),
-    strokeNum,
-    stroke,
-    stroke.strokeType
-  );
+  stroke = {
+    ...stroke,
+    ...setStrokeLie(
+      strokeNum,
+      stroke,
+      strokeNum === 1
+        ? Lie.TEE
+        : lastStroke?.lie === Lie.GREEN
+        ? Lie.GREEN
+        : undefined
+    ),
+  };
+  stroke = {
+    ...stroke,
+    ...setStrokeType(strokeNum, stroke, stroke.strokeType),
+  };
   return stroke;
 }
