@@ -1,4 +1,4 @@
-import { head, last, partial } from "ramda";
+import { head, last } from "ramda";
 import { nextHole } from "usecases/course/nextHole";
 import { prevHole } from "usecases/course/prevHole";
 import { saveHole } from "usecases/course/saveHole";
@@ -107,45 +107,32 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const setStrokeLieAndUpdate = useCallback(
       (strokeNum: number, lie: Lie) => {
-        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
-          strokeNum,
-        ]);
-        setStrokeLie(
-          saveStrokeNumAndUpdate,
+        const strokeLieUpdate = setStrokeLie(
           strokeNum,
           strokes[strokeNum - 1],
           lie
         );
+        saveStrokeAndUpdate(strokeNum, strokeLieUpdate);
       },
       [saveStrokeAndUpdate, strokes]
     );
 
     const setStrokeClubAndUpdate = useCallback(
       (strokeNum: number, club: Club) => {
-        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
-          strokeNum,
-        ]);
-        setClub(
-          saveStrokeNumAndUpdate,
-          strokeNum,
-          strokes[strokeNum - 1],
-          club
-        );
+        const clubUpdate = setClub(strokeNum, strokes[strokeNum - 1], club);
+        saveStrokeAndUpdate(strokeNum, clubUpdate);
       },
       [saveStrokeAndUpdate, strokes]
     );
 
     const setStrokeTypeAndUpdate = useCallback(
       (strokeNum: number, strokeType: StrokeType) => {
-        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
-          strokeNum,
-        ]);
-        setStrokeType(
-          saveStrokeNumAndUpdate,
+        const strokeTypeUpdate = setStrokeType(
           strokeNum,
           strokes[strokeNum - 1],
           strokeType
         );
+        saveStrokeAndUpdate(strokeNum, strokeTypeUpdate);
       },
       [saveStrokeAndUpdate, strokes]
     );
@@ -192,12 +179,12 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
         USE_FAKE_POSITION
           ? fakePos
           : geo.coords?.latitude && geo.coords?.longitude
-            ? {
+          ? {
               lat: geo.coords?.latitude,
               lng: geo.coords?.longitude,
               alt: geo.coords?.altitude,
             }
-            : undefined,
+          : undefined,
       [fakePos, geo.coords]
     );
 
@@ -212,9 +199,9 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       () =>
         currentPosition && currentHole.holePos
           ? calculateDistanceBetweenPositions(
-            currentPosition,
-            currentHole.holePos
-          )
+              currentPosition,
+              currentHole.holePos
+            )
           : undefined,
       [currentHole.holePos, currentPosition]
     );

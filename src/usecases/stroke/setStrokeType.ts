@@ -4,7 +4,6 @@ import { Stroke } from "model/Stroke";
 import { StrokeType } from "model/StrokeType";
 
 export function setStrokeType(
-  setHoleAttr: (partStroke: Partial<Stroke>) => void,
   strokeNum: number,
   curStroke: Stroke | undefined,
   strokeType: StrokeType | undefined
@@ -33,5 +32,5 @@ export function setStrokeType(
     }
   }
 
-  return setHoleAttr(attrs);
+  return attrs;
 }
