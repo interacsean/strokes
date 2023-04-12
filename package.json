@@ -1,5 +1,5 @@
 {
-  "name": "strokers",
+  "name": "strokes",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -33,7 +33,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --write .",
-    "lint:fix": "eslint --fix 'src/**'"
+    "lint:fix": "eslint --fix 'src/**'",
+    "deploy": "npm run build && mv build/index.html build/200.html && surge build strokes.surge.sh"
   },
   "eslintConfig": {
     "extends": [
@@ -55,6 +56,7 @@
   },
   "devDependencies": {
     "@types/ramda": "0.28.23",
-    "prettier": "2.8.4"
+    "prettier": "2.8.4",
+    "surge": "0.23.1"
   }
 }
