@@ -40,17 +40,13 @@ export type HoleViewProps = {
   setStrokePos: (stroke: number, pos: LatLng) => void;
   caddySuggestions: CaddySuggestion[];
   setHolePos: (pos: LatLng) => void;
+  setTeePos: (teeName: string, pos: LatLng) => void;
   addStroke: () => void;
   distanceToHole: number | undefined;
   holeAltitudeDelta: number | undefined;
   roundScore: number;
   holeLength: number | undefined;
-  // setStrokeEndPos: (stroke: number, pos: LatLng) => void;
-  // setStrokeStartPos: (stroke: number, pos: LatLng) => void;
   // holedStroke: () => void;
-  // selectStrokeType: (stroke: number, strokeType: StrokeType) => void;
-  // setHoleTeePos: (teeColor: string, pos1: LatLng, pos2: LatLng) => void;
-  // setHolePinPos: (pos: LatLng) => void;
 };
 
 const DEFAULT_HOLE_TAB = 1;
@@ -119,6 +115,18 @@ export function HoleView(props: HoleViewProps) {
         </TabList>
         <TabPanels>
           <TabPanel>
+            <FormLabel>
+              <Text>Set tee pos</Text>
+              <Button
+                variant="primaryOutline"
+                onClick={() =>
+                  props.currentPosition &&
+                  props.setTeePos('default', props.currentPosition)
+                }
+              >
+                📍⛳️
+              </Button>
+            </FormLabel>
             <FormLabel>
               <Text>Par {props.hole.par}</Text>
               <Input name="par" {...viewLogic.parInputProps} />

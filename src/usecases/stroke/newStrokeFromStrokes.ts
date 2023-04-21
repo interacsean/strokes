@@ -4,8 +4,9 @@ import { StrokeType } from "model/StrokeType";
 import { last } from "ramda";
 import { setStrokeLie } from "./setStrokeLie";
 import { setStrokeType } from "./setStrokeType";
+import { Hole } from "model/Hole";
 
-export function newStrokeFromStrokes(strokes: Stroke[]): Stroke {
+export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
   const lastStroke = last(strokes);
   let stroke: Stroke = {
     lie: undefined,
@@ -23,9 +24,17 @@ export function newStrokeFromStrokes(strokes: Stroke[]): Stroke {
     strokeNum === 1
       ? Lie.TEE
       : lastStroke?.lie === Lie.GREEN
-      ? Lie.GREEN
-      : undefined
+        ? Lie.GREEN
+        : undefined
   );
+  if (lastStroke) {
+    stroke.liePos = lastStroke?.strokePos;
+  } else {
+    const usedTee = Object.keys(hole.tees).length === 1
+      ? Object.values(hole.tees)[0]
+      : hole.teePlayed ? hole.tees[hole.teePlayed] : undefined;
+    if (usedTee) stroke.liePos = usedTee;
+  }
   setStrokeType(
     ({ strokeType }) => (stroke.strokeType = strokeType),
     strokeNum,

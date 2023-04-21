@@ -7,4 +7,5 @@ export const newHole = (): Hole => ({
   holePos: undefined,
   tees: {},
   completed: false,
+  teePlayed: undefined,
 });

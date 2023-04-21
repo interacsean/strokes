@@ -30,7 +30,7 @@ import { GeoHUD } from "presenters/screens/Hole/components/GeoHUD";
 
 type HolePublicProps = {};
 
-const USE_FAKE_POSITION = false;
+const USE_FAKE_POSITION = true;
 
 function shouldShowNewStroke(strokes: Stroke[]) {
   // const lastStroke = last(strokes);
@@ -52,7 +52,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const saveStrokeAndUpdate = useCallback(
       (strokeNum: number, partStroke: Partial<Stroke>) => {
         const currentStroke =
-          currentHole.strokes[strokeNum - 1] || newStrokeFromStrokes(strokes);
+          currentHole.strokes[strokeNum - 1] || newStrokeFromStrokes(strokes, currentHole);
         const updatedStroke = mergePartStroke(currentStroke, partStroke);
         saveStroke(updateCourseState, currentHole, strokeNum, updatedStroke);
       },
@@ -61,7 +61,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const addStroke = useCallback(() => {
       const strokeToAdd = {
-        ...newStrokeFromStrokes(strokes),
+        ...newStrokeFromStrokes(strokes, currentHole),
         liePos: last(strokes)?.strokePos,
       };
       saveStroke(
@@ -104,6 +104,18 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
         holeUpdateAndSave({ holePos });
       },
       [holeUpdateAndSave]
+    );
+
+    const setTeePos = useCallback(
+      (teeName: string, teePos: LatLng) => {
+        holeUpdateAndSave({
+          tees: {
+            ...currentHole.tees || {},
+            [teeName]: teePos,
+          }
+        });
+      },
+      [holeUpdateAndSave, currentHole]
     );
 
     const setStrokeLieAndUpdate = useCallback(
@@ -166,10 +178,13 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     );
 
     const strokeInputList = useMemo(
-      () =>
-        shouldShowNewStroke(currentHole.strokes)
-          ? [...currentHole.strokes, newStrokeFromStrokes(currentHole.strokes)]
-          : currentHole.strokes,
+      () => {
+        if (shouldShowNewStroke(currentHole.strokes)) {
+          const newStroke = newStrokeFromStrokes(currentHole.strokes, currentHole);
+          return [...currentHole.strokes, newStroke]
+        }
+        return currentHole.strokes;
+      },
       [currentHole.strokes]
     );
 
@@ -194,12 +209,12 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
         USE_FAKE_POSITION
           ? fakePos
           : geo.coords?.latitude && geo.coords?.longitude
-          ? {
+            ? {
               lat: geo.coords?.latitude,
               lng: geo.coords?.longitude,
               alt: geo.coords?.altitude,
             }
-          : undefined,
+            : undefined,
       [fakePos, geo.coords]
     );
 
@@ -214,9 +229,9 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       () =>
         currentPosition && currentHole.holePos
           ? calculateDistanceBetweenPositions(
-              currentPosition,
-              currentHole.holePos
-            )
+            currentPosition,
+            currentHole.holePos
+          )
           : undefined,
       [currentHole.holePos, currentPosition]
     );
@@ -262,6 +277,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       currentPosition,
       caddySuggestions,
       setHolePos,
+      setTeePos,
       addStroke,
       distanceToHole,
       holeAltitudeDelta,
