@@ -1,4 +1,5 @@
 import { Hole } from "model/Hole";
+import { localStoragePersistenceEffect } from "persistence/localStoragePersistence";
 import { useMemo } from "react";
 import { atom, useRecoilState } from "recoil";
 
@@ -44,4 +45,5 @@ export function useCourseState() {
 const courseAtom = atom({
   key: "course",
   default: defaultCourse,
+  effects: [localStoragePersistenceEffect("strokes_course")],
 });
