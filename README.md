@@ -14,7 +14,7 @@ An app to track strokes on the golf course, and provide statistics and caddy-lik
 
 **Application**
 
-- [ ] Persisting data to localStorage, as MVP
+- [x] Persisting data to localStorage, as MVP
 - [ ] Load course from course data
 - [ ] Update UI from design
 - [ ] 'Finish hole' to mark hole as completed

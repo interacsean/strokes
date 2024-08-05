@@ -4,5 +4,5 @@ import { RoutePaths } from "presenters/routes/RoutePaths";
 type Props = {};
 
 export function Home(props: Props) {
-  return <Link href={RoutePaths.Hole}>New (jump to hole)</Link>;
+  return <Link href={RoutePaths.ChooseCourse}>New round</Link>;
 }

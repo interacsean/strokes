@@ -5,7 +5,7 @@ export type CourseDef = {
   holes: HoleDef[];
 };
 
-export type Course = Omit<CourseDef, "hole"> & {
-  currentHole: number;
+export type Course = Omit<CourseDef, "holes"> & {
+  currentHoleNum: number;
   holes: Hole[];
 };

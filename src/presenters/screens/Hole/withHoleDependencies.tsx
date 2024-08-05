@@ -44,15 +44,11 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const { state: courseState, updateState: updateCourseState } =
       useCourseState();
 
-    console.log(courseState);
-
     // todo: validate this does something and couldn't just be selectCurrentHole(courseState)
     const currentHole = useSelector(selectCurrentHole, courseState);
     const currentPin = useSelector(selectCurrentPinFromHole, currentHole);
     const currentTee = useSelector(selectCurrentTeeFromHole, currentHole);
     const { strokes } = currentHole;
-
-    console.log(currentHole, strokes);
 
     const saveStrokeAndUpdate = useCallback(
       (strokeNum: number, partStroke: Partial<Stroke>) => {

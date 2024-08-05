@@ -1,3 +1,4 @@
+import { Course } from "model/Course";
 import { Hole } from "model/Hole";
 import { localStoragePersistenceEffect } from "persistence/localStoragePersistence";
 import { useMemo } from "react";
@@ -11,10 +12,10 @@ export type HoleState = {
   strokes: number[]; // todo: update,
 };
 
-const defaultCourse = {
+const defaultCourse: Course = {
+  courseName: "Default course",
   currentHoleNum: 1,
   holes: [] as Hole[],
-  // course metadata here
 };
 
 export function useCourseState() {
@@ -42,7 +43,7 @@ export function useCourseState() {
   );
 }
 
-const courseAtom = atom({
+const courseAtom = atom<CourseState>({
   key: "course",
   default: defaultCourse,
   effects: [localStoragePersistenceEffect("strokes_course")],
