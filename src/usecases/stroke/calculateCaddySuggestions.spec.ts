@@ -23,7 +23,7 @@ describe("calculateCaddySuggestions", () => {
     const strokePos = { lat: -37.0012, lng: 144.0012, alt: null };
 
     const actual = calculateCaddySuggestions(
-      { holePos },
+      { pins: { pin: holePos }, pinPlayed: "pin" },
       {
         strokePos,
         intendedPos: undefined,

@@ -3,7 +3,7 @@ import { Flex, Box, Text } from "@chakra-ui/react";
 type HoleOverviewProps = {
   holeNum: number;
   holeLength: number | undefined;
-  par: number;
+  par: number | undefined;
   currentStrokeNum: number;
   distanceToHole: number | undefined;
   holeAltitudeDelta: number | undefined;
@@ -13,8 +13,14 @@ type HoleOverviewProps = {
   weather?: string | undefined;
 };
 
-function StrokesCount({ par, stroke }: { par: number; stroke: number }) {
-  const numStrokesToShow = Math.max(par, stroke);
+function StrokesCount({
+  par,
+  stroke,
+}: {
+  par: number | undefined;
+  stroke: number;
+}) {
+  const numStrokesToShow = Math.max(par || 1, stroke);
   const strokes = Array(isNaN(numStrokesToShow) ? par : numStrokesToShow)
     .fill(0)
     .map((_, i) => i + 1)
@@ -54,20 +60,21 @@ export function HoleOverview(props: HoleOverviewProps) {
       ? "black"
       : "neutral.800";
 
-  const forScoreOutcomeDescription =
-    props.currentStrokeNum === props.par - 2
-      ? "eagle"
-      : props.currentStrokeNum === props.par - 1
-      ? "birdie"
-      : props.currentStrokeNum === props.par
-      ? "par"
-      : props.currentStrokeNum === props.par + 1
-      ? "bogey"
-      : props.currentStrokeNum === props.par + 2
-      ? "double bogey"
-      : props.currentStrokeNum === props.par + 3
-      ? "triple bogey"
-      : undefined;
+  const forScoreOutcomeDescription = !props.par
+    ? undefined
+    : props.currentStrokeNum === props.par - 2
+    ? "eagle"
+    : props.currentStrokeNum === props.par - 1
+    ? "birdie"
+    : props.currentStrokeNum === props.par
+    ? "par"
+    : props.currentStrokeNum === props.par + 1
+    ? "bogey"
+    : props.currentStrokeNum === props.par + 2
+    ? "double bogey"
+    : props.currentStrokeNum === props.par + 3
+    ? "triple bogey"
+    : undefined;
 
   return (
     <Box borderBottom="1px solid" borderColor="neutral.500">

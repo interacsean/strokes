@@ -2,9 +2,9 @@ import { Hole } from "model/Hole";
 
 export const newHole = (): Hole => ({
   holeNum: 1,
-  par: 4,
   strokes: [],
-  holePos: undefined,
+  pinPlayed: "pin",
+  pins: {},
   tees: {},
   completed: false,
   teePlayed: undefined,

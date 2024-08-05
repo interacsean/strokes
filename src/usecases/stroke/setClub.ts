@@ -19,19 +19,21 @@ export function setClub(
   if (validClub !== Club.P && stroke?.strokeType === StrokeType.PUTT) {
     attrs.strokeType = undefined;
   }
-  if (validClub && [
-    Club.D,
-    Club["1W"],
-    Club["2W"],
-    Club["3W"],
-    Club["4W"],
-    Club["5W"],
-    Club["1H"],
-    Club["2H"],
-    Club["3H"],
-    Club["4H"],
-    Club["5H"]
-  ]) {
+  if (
+    validClub && [
+      Club.D,
+      Club["1W"],
+      Club["2W"],
+      Club["3W"],
+      Club["4W"],
+      Club["5W"],
+      Club["1H"],
+      Club["2H"],
+      Club["3H"],
+      Club["4H"],
+      Club["5H"],
+    ]
+  ) {
     if (stroke?.strokeType !== StrokeType.FULL) {
       attrs.strokeType = StrokeType.FULL;
     }

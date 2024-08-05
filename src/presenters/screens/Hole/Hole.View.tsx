@@ -24,10 +24,13 @@ import { Container, StrokesContainer } from "./Hole.styles";
 import { HoleOverview } from "./components/HoleOverview/HoleOverview.view";
 import { StrokeHeaderView } from "./components/StrokeRow/StrokeRow.header.view";
 import { StrokeType } from "model/StrokeType";
+// import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
+import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 
 export type HoleViewProps = {
   holeNum: number;
   hole: HoleModel;
+  par: number | undefined;
   currentPosition: LatLng | undefined;
   nextHole: () => void;
   prevHole: () => void;
@@ -58,9 +61,12 @@ function useHoleViewLogic(props: HoleViewProps) {
     setStrokePos: parentSetStrokePos,
     setLiePos: parentSetLiePos,
   } = props;
+  // const pinPlayed = selectCurrentPinFromHole(props.hole);
+  const teePlayed = selectCurrentTeeFromHole(props.hole);
+  const par = teePlayed?.par;
   const { inputProps: parInputProps, setCurrentValue: setParInputValue } =
     useInput({
-      initValue: `${props.hole.par}`,
+      initValue: `${par}`,
       onBlur: useCallback(
         (value: string) => {
           const newPar = parseInt(value, 10);
@@ -73,9 +79,9 @@ function useHoleViewLogic(props: HoleViewProps) {
     });
   useEffect(
     function updateParInputValueOnHoleUpdate() {
-      setParInputValue(`${props.hole.par}`);
+      setParInputValue(`${par}`);
     },
-    [setParInputValue, props.holeNum, props.hole.par]
+    [setParInputValue, props.holeNum, par]
   );
 
   const setStrokePosition = useCallback(
@@ -93,6 +99,7 @@ function useHoleViewLogic(props: HoleViewProps) {
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
 
   return {
+    par,
     parInputProps,
     tabIndex,
     setTabIndex,
@@ -121,14 +128,14 @@ export function HoleView(props: HoleViewProps) {
                 variant="primaryOutline"
                 onClick={() =>
                   props.currentPosition &&
-                  props.setTeePos('default', props.currentPosition)
+                  props.setTeePos("default", props.currentPosition)
                 }
               >
                 📍⛳️
               </Button>
             </FormLabel>
             <FormLabel>
-              <Text>Par {props.hole.par}</Text>
+              <Text>Par {props.par}</Text>
               <Input name="par" {...viewLogic.parInputProps} />
             </FormLabel>
             <FormLabel>
@@ -153,7 +160,7 @@ export function HoleView(props: HoleViewProps) {
                   distanceToHole={props.distanceToHole}
                   holeAltitudeDelta={props.holeAltitudeDelta}
                   holeLength={props.holeLength}
-                  par={props.hole.par}
+                  par={props.par}
                   roundScore={props.roundScore}
                 />
               </Box>

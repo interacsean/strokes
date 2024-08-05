@@ -1,14 +1,16 @@
 import { Hole } from "model/Hole";
 import { Stroke } from "model/Stroke";
+import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 
 export function calculateStrokeDistances(hole: Hole, strokes: Stroke[]) {
   return strokes.map((stroke, i) => {
+    const pin = selectCurrentPinFromHole(hole);
     const distanceToHole =
-      hole.holePos && stroke.liePos
+      pin && stroke.liePos
         ? calculateDistanceBetweenPositions(
             stroke.liePos,
-            stroke.intendedPos || hole.holePos
+            stroke.intendedPos || pin
           )
         : undefined;
     const fromPos =

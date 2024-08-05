@@ -13,8 +13,8 @@ export function setStrokeLie(
     strokeNum === 1 && (!lie || ![Lie.TEE, Lie.TEE_GRASS].includes(lie))
       ? Lie.TEE
       : strokeNum > 1 && lie === Lie.TEE
-        ? Lie.FAIRWAY
-        : lie;
+      ? Lie.FAIRWAY
+      : lie;
   const attrs: Partial<Stroke> = {
     lie: validLie,
   };

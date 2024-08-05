@@ -5,7 +5,7 @@ import { saveHole } from "usecases/course/saveHole";
 import { FC, useCallback, useMemo, useState } from "react";
 import { useCourseState } from "state/course/courseState";
 import { HoleViewProps } from "./Hole.View";
-import { Hole as HoleModel } from "model/Hole";
+import { Hole, Hole as HoleModel } from "model/Hole";
 import { setHolePar } from "usecases/hole/setHolePar";
 import { mergePartStroke } from "usecases/stroke/mergePartStroke";
 import { saveStroke } from "usecases/course/saveStroke";
@@ -27,13 +27,15 @@ import { StrokeType } from "model/StrokeType";
 import { setStrokeType } from "usecases/stroke/setStrokeType";
 import { setClub } from "usecases/stroke/setClub";
 import { GeoHUD } from "presenters/screens/Hole/components/GeoHUD";
+import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
+import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
+import { DeepPartial } from "types/DeepPartial";
 
 type HolePublicProps = {};
 
 const USE_FAKE_POSITION = true;
 
 function shouldShowNewStroke(strokes: Stroke[]) {
-  // const lastStroke = last(strokes);
   return strokes.length === 0;
 }
 
@@ -44,7 +46,10 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     console.log(courseState);
 
+    // todo: validate this does something and couldn't just be selectCurrentHole(courseState)
     const currentHole = useSelector(selectCurrentHole, courseState);
+    const currentPin = useSelector(selectCurrentPinFromHole, currentHole);
+    const currentTee = useSelector(selectCurrentTeeFromHole, currentHole);
     const { strokes } = currentHole;
 
     console.log(currentHole, strokes);
@@ -52,7 +57,8 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const saveStrokeAndUpdate = useCallback(
       (strokeNum: number, partStroke: Partial<Stroke>) => {
         const currentStroke =
-          currentHole.strokes[strokeNum - 1] || newStrokeFromStrokes(strokes, currentHole);
+          currentHole.strokes[strokeNum - 1] ||
+          newStrokeFromStrokes(strokes, currentHole);
         const updatedStroke = mergePartStroke(currentStroke, partStroke);
         saveStroke(updateCourseState, currentHole, strokeNum, updatedStroke);
       },
@@ -78,8 +84,8 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     );
 
     const holeUpdateAndSave = useCallback(
-      (partHole: Partial<HoleModel>) =>
-        saveCurrentHole(mergePartHole(currentHole, partHole)),
+      (partHole: DeepPartial<HoleModel>) =>
+        saveCurrentHole(mergePartHole(currentHole, partHole) as Hole),
       [saveCurrentHole, currentHole]
     );
 
@@ -101,7 +107,8 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const setHolePos = useCallback(
       (holePos: LatLng) => {
-        holeUpdateAndSave({ holePos });
+        // todo: handle taking tee name
+        holeUpdateAndSave({ pins: { pin: holePos } });
       },
       [holeUpdateAndSave]
     );
@@ -110,10 +117,13 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       (teeName: string, teePos: LatLng) => {
         holeUpdateAndSave({
           tees: {
-            ...currentHole.tees || {},
-            [teeName]: teePos,
-          }
-        });
+            ...(currentHole.tees || {}),
+            [teeName]: {
+              ...currentHole.tees[teeName],
+              pos: teePos,
+            },
+          },
+        } as DeepPartial<HoleModel>);
       },
       [holeUpdateAndSave, currentHole]
     );
@@ -177,16 +187,16 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       [saveStrokeAndUpdate]
     );
 
-    const strokeInputList = useMemo(
-      () => {
-        if (shouldShowNewStroke(currentHole.strokes)) {
-          const newStroke = newStrokeFromStrokes(currentHole.strokes, currentHole);
-          return [...currentHole.strokes, newStroke]
-        }
-        return currentHole.strokes;
-      },
-      [currentHole.strokes]
-    );
+    const strokeInputList = useMemo(() => {
+      if (shouldShowNewStroke(currentHole.strokes)) {
+        const newStroke = newStrokeFromStrokes(
+          currentHole.strokes,
+          currentHole
+        );
+        return [...currentHole.strokes, newStroke];
+      }
+      return currentHole.strokes;
+    }, [currentHole]);
 
     const strokeListWithDistances = useMemo(
       () => calculateStrokeDistances(currentHole, strokeInputList),
@@ -200,21 +210,21 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     });
 
     const [fakePos, setFakePos] = useState<LatLng>({
-      lat: -37.8,
-      lng: 144.95,
-      alt: 10,
+      lat: -37.758007544374024,
+      lng: 144.98399686860003,
+      alt: 45,
     });
     const currentPosition = useMemo(
       () =>
         USE_FAKE_POSITION
           ? fakePos
           : geo.coords?.latitude && geo.coords?.longitude
-            ? {
+          ? {
               lat: geo.coords?.latitude,
               lng: geo.coords?.longitude,
               alt: geo.coords?.altitude,
             }
-            : undefined,
+          : undefined,
       [fakePos, geo.coords]
     );
 
@@ -227,39 +237,36 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const distanceToHole = useMemo(
       () =>
-        currentPosition && currentHole.holePos
-          ? calculateDistanceBetweenPositions(
-            currentPosition,
-            currentHole.holePos
-          )
+        currentPosition && currentPin
+          ? calculateDistanceBetweenPositions(currentPosition, currentPin)
           : undefined,
-      [currentHole.holePos, currentPosition]
+      [currentPin, currentPosition]
     );
 
     const holeAltitudeDelta = useMemo(
       () =>
-        currentPosition && currentPosition.alt !== null && currentHole.holePos
-          ? currentHole.holePos?.lat - currentPosition?.alt
+        currentPosition && currentPosition.alt !== null && currentPin
+          ? currentPin?.lat - currentPosition?.alt
           : undefined,
-      [currentHole.holePos, currentPosition]
+      [currentPin, currentPosition]
     );
 
     const holeLength = useMemo(() => {
       const chosenTeePos = head(strokeListWithDistances)?.liePos;
-      return chosenTeePos && currentHole.holePos
-        ? calculateDistanceBetweenPositions(chosenTeePos, currentHole.holePos)
+      return chosenTeePos && currentPin
+        ? calculateDistanceBetweenPositions(chosenTeePos, currentPin)
         : undefined;
-    }, [currentHole.holePos, strokeListWithDistances]);
+    }, [currentPin, strokeListWithDistances]);
 
     const roundScore = useMemo(
       () =>
         courseState.holes.reduce((scoreAcc, hole) => {
           if (hole.strokes.length && hole.completed) {
-            return scoreAcc + hole.strokes.length - hole.par;
+            return scoreAcc + hole.strokes.length - (currentTee?.par || 0);
           }
           return scoreAcc;
         }, 0),
-      [courseState.holes]
+      [currentTee, courseState.holes]
     );
 
     const viewProps: HoleViewProps = {
@@ -283,6 +290,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       holeAltitudeDelta,
       holeLength,
       roundScore,
+      par: currentTee?.par,
     };
 
     return (

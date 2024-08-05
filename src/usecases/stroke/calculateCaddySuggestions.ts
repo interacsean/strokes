@@ -2,6 +2,7 @@ import { Club } from "model/Club";
 import { Stroke } from "model/Stroke";
 import { Hole } from "model/Hole";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
+import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 
 export type CaddySuggestion = {
   club: Club;
@@ -22,13 +23,12 @@ const TEMP_clubStatistics: Partial<Record<Club, ClubStat>> = {
   [Club["SW"]]: { loft: 45, distances: [80, 90] as [number, number] },
 };
 
-// todo: accept clubStatistics
 export function calculateCaddySuggestions(
-  hole: Pick<Hole, "holePos">,
+  hole: Pick<Hole, "pinPlayed" | "pins">,
   currentStroke: Pick<Stroke, "strokePos" | "intendedPos">,
   clubStatistics = TEMP_clubStatistics
 ) {
-  const holePos = hole.holePos;
+  const holePos = selectCurrentPinFromHole(hole);
   if (!holePos || !currentStroke.strokePos) return [];
   const targetPos = currentStroke.intendedPos || holePos;
 

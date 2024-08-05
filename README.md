@@ -14,6 +14,24 @@ An app to track strokes on the golf course, and provide statistics and caddy-lik
 
 **Application**
 
+- [ ] Persisting data to localStorage, as MVP
+- [ ] Load course from course data
+- [ ] Update UI from design
+- [ ] 'Finish hole' to mark hole as completed
+
+---
+
+- [ ] Scorecard
+- [ ] 'Fringe' should set 'Stroke: chip'
+- [ ] Bug: New stroke without touching anything does not seem to acknowledge the default stroke that is added on a new hole
+- [ ] Adding new stroke from previous: 'Green' shoud default to 'Putter'/'Putt'
+- [ ] Adding new stroke from previous: 'Fringe' shoud default to 'Green'/'Putter'/'Putt'(optimistically!)
+- [ ] If hole is complete, remove "for [par|etc]"
+- [ ] Design bigger UI
+- [ ] Expose caddy
+- [ ] Allow select clubs in bag
+- [ ] Selecting the Tee used
+- [ ] Shot tracking - implement all variations
 - [ ] Style and structure Hole with sub-components
 - [ ] Test and refine geolocation UX
   - Requesting permission
@@ -22,9 +40,8 @@ An app to track strokes on the golf course, and provide statistics and caddy-lik
 - [ ] Ability to set Tee and Cup position for Hole
 - [ ] Using Tee and Cup position of Hole for start and end Stroke positions
 - [ ] Integrate with weather API to provide wind and weather data
-- [ ] Persisting data
-  - to localStorage, as MVP
-  - to persistent remote storage (FireStore?)
+- [ ] Persisting data to persistent remote storage (FireStore?)
+- [ ] View Stats
 
 ---
 

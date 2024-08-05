@@ -3,14 +3,22 @@ import { LatLng } from "model/LatLng";
 
 export type HoleDef = {
   holeNum: number;
-  par: number;
-  holePos: LatLng | undefined;
-  tees: Record<string, LatLng>;
-}
+  tees: Record<
+    string,
+    | {
+        par: number | undefined;
+        nominalDistance: number;
+        pos: LatLng;
+      }
+    | undefined
+  >;
+  pins: Record<string, LatLng | undefined>;
+};
 
 export type Hole = HoleDef & {
   strokes: Stroke[];
   teePlayed: string | undefined;
+  pinPlayed: string | undefined;
   completed: boolean;
-  // waypoints
+  // todo: waypoints (for targets)
 };
