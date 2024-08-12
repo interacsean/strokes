@@ -1,4 +1,5 @@
-import { Flex, Box, Text } from "@chakra-ui/react";
+import { Flex, Box, Text, Button } from "@chakra-ui/react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
 type HoleOverviewProps = {
   holeNum: number;
@@ -11,38 +12,67 @@ type HoleOverviewProps = {
   windDirection?: number | undefined;
   windSpeed?: number | undefined;
   weather?: string | undefined;
+  activeStroke: number;
+  setActiveStroke: (stroke: number) => void;
 };
 
 function StrokesCount({
   par,
-  stroke,
+  activeStroke,
+  totalStrokes,
+  strokeClick,
 }: {
   par: number | undefined;
-  stroke: number;
+  activeStroke: number;
+  totalStrokes: number;
+  strokeClick: (stroke: number) => void;
 }) {
-  const numStrokesToShow = Math.max(par || 1, stroke);
+  const sz = "32"; // size
+  const numStrokesToShow = Math.max(par || 1, totalStrokes);
   const strokes = Array(isNaN(numStrokesToShow) ? par : numStrokesToShow)
     .fill(0)
     .map((_, i) => i + 1)
     .slice(-6);
+  // todo: consider activeStroke, if user is scrolling back through
   return (
     <Flex>
-      {strokes.map((n) => (
-        <Text
-          key={n}
-          display="inline-flex"
-          justifyContent="center"
-          alignItems="center"
-          fontWeight="600"
-          minWidth={n === stroke ? "1.4em" : "0.8em"}
-          mx={n === stroke ? undefined : "0.3em"}
-          height="1.4em"
-          bgColor={n === stroke ? "primary.900" : "transparent"}
-          color={n === stroke ? "white" : "black"}
-          borderRadius="1.4em"
+      {strokes.map((n, i) => (
+        <Button
+          variant="ghost"
+          onClick={() => strokeClick(n)}
+          p={0}
+          minWidth={`${sz}px`}
+          height={`${sz}px`}
         >
-          {n}
-        </Text>
+          <Text
+            key={n}
+            display="inline-flex"
+            justifyContent="center"
+            alignItems="center"
+            fontWeight="600"
+            minWidth={`${sz}px`}
+            height={`${sz}px`}
+            bgColor={
+              n === activeStroke
+                ? "white"
+                : n === totalStrokes
+                ? "primary.500"
+                : "transparent"
+            }
+            color={
+              n === activeStroke
+                ? "primary.200"
+                : n === totalStrokes
+                ? "primary.200"
+                : "white"
+            }
+            border={`1px solid`}
+            borderColor="white"
+            borderRight={i !== strokes.length - 1 ? "none" : undefined}
+          >
+            {strokes.length < numStrokesToShow && i === 0 ? "-" : n}
+          </Text>
+        </Button>
       ))}
     </Flex>
   );
@@ -74,47 +104,44 @@ export function HoleOverview(props: HoleOverviewProps) {
     ? "double bogey"
     : props.currentStrokeNum === props.par + 3
     ? "triple bogey"
-    : undefined;
+    : `${props.currentStrokeNum - props.par}× bogey`;
+
+  console.log({ props });
 
   return (
     <Box borderBottom="1px solid" borderColor="neutral.500">
       <Flex justifyContent="stretch" bgColor="white">
+        <Flex width="3rem">{/* Spacer */}</Flex>
         <Flex
-          bgColor="primary.900"
-          width="3rem"
           py={1}
-          justifyContent="center"
-          alignItems="center"
+          px={2}
+          flexDir="row"
+          alignItems={"center"}
+          justifyContent={"center"}
+          flexGrow={1}
         >
-          <Text variant="heading" color="white">
+          <Button variant="ghost">
+            <ChevronLeftIcon boxSize={6} />
+          </Button>
+          <Text variant="heading" color="black" pr={2}>
             {props.holeNum}
           </Text>
-        </Flex>
-        <Flex py={1} px={2} flexDir="column" flexGrow={1}>
-          <Text textTransform="uppercase">
-            {props.holeLength && (
-              <>
-                {distUnit}
-                <Text as="span" color="neutral.500" mx={1}>
-                  •
-                </Text>
-              </>
+          <Flex flexDir={"column"} color={"neutral.800"}>
+            {props.par && (
+              <Text variant="minor" lineHeight={"1.1em"} fontWeight={800}>
+                Par {props.par}
+              </Text>
             )}
-            Par {props.par}
-          </Text>
-          <Flex>
-            <StrokesCount par={props.par} stroke={props.currentStrokeNum} />
-            {forScoreOutcomeDescription && (
-              <>
-                <Text as="span" color="neutral.500" mx={1}>
-                  •
-                </Text>
-                <Text textTransform="uppercase">
-                  For {forScoreOutcomeDescription}
-                </Text>
-              </>
+            {props.holeLength && (
+              <Text variant="minor" lineHeight={"1.1em"} fontWeight={800}>
+                {Math.round(props.holeLength)}
+                {distUnit}
+              </Text>
             )}
           </Flex>
+          <Button variant="ghost">
+            <ChevronRightIcon boxSize={6} />
+          </Button>
         </Flex>
         {props.roundScore !== undefined && (
           <Flex
@@ -130,15 +157,39 @@ export function HoleOverview(props: HoleOverviewProps) {
           </Flex>
         )}
       </Flex>
-      <Flex justifyContent="stretch" bgColor="neutral.100">
-        <Box width="3rem" />
-        <Flex py={1} px={2} flexGrow={1}>
-          {props.distanceToHole && (
-            <Text textTransform="uppercase">
-              {Math.round(props.distanceToHole) || "?"}
-              {distUnit} to hole
+      <Flex
+        justifyContent="space-between"
+        alignItems={"stretch"}
+        bgColor="panel.700"
+        py={2}
+        px={4}
+      >
+        <Flex flexDir={"column"}>
+          <StrokesCount
+            par={props.par}
+            activeStroke={props.activeStroke}
+            totalStrokes={props.currentStrokeNum}
+            strokeClick={props.setActiveStroke}
+          />
+          {forScoreOutcomeDescription && (
+            <Text color="white" variant="solidLabel" mt={1} lineHeight="1em">
+              For {forScoreOutcomeDescription}
             </Text>
           )}
+        </Flex>
+        <Flex flexDir={"column"} alignItems={"flex-end"}>
+          {props.distanceToHole && (
+            <Flex pt={1}>
+              <Text color="white" variant="solidLabel" mr={1}>
+                To hole
+              </Text>
+              <Text variant="heading2" color="white" lineHeight={"1em"}>
+                {Math.round(props.distanceToHole)}
+                {distUnit}
+              </Text>
+            </Flex>
+          )}
+          {/* Todo: Wind */}
         </Flex>
       </Flex>
     </Box>

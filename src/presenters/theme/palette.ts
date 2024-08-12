@@ -1,9 +1,10 @@
 const colorPalette = {
   primary: {
-    200: "#D9EDFF",
-    500: "#0088cc",
-    700: "#3A7FBE",
-    900: "#0F4B83",
+    200: "#0F4B83", // pri-xdark
+    300: "#3A7FBE", // pri-dark
+    400: "#0088cc",
+    500: "#329DFF", // pri
+    700: "#D9EDFF",
   },
   secondary: {
     500: "#FF7051",
@@ -43,6 +44,7 @@ const elementColors = {
   },
   panel: {
     100: "#dee5ef",
+    700: colorPalette.primary["300"],
     900: "#051c30",
   },
   placeholder: {

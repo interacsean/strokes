@@ -32,22 +32,29 @@ const makeVariants = (name: string, def: {}) => ({
 const TextTheme = {
   variants: {
     heading: {
-      fontSize: `${19 / 16}rem`,
+      fontSize: `${26 / 16}rem`,
       fontFamily: fontFamilies.heading,
       fontWeight: fontWeights.bold,
       color: palette.heading[100],
     },
     heading2: {
-      fontSize: `1rem`,
+      fontSize: `${22.5 / 16}rem`,
       fontFamily: fontFamilies.content,
       fontWeight: fontWeights.black,
       color: palette.heading[200],
     },
     heading3: {
-      fontSize: `1rem`,
+      fontSize: `${19 / 16}rem`,
       fontFamily: fontFamilies.content,
       fontWeight: fontWeights.black,
       color: palette.heading[100],
+    },
+    solidLabel: {
+      fontFamily: fontFamilies.content,
+      fontWeight: fontWeights.bold,
+      fontSize: `${12 / 16}rem`,
+      color: palette.heading[100],
+      textTransform: "uppercase",
     },
     ...makeVariants("content", {
       fontSize: "1rem",

@@ -62,6 +62,7 @@ function useHoleViewLogic(props: HoleViewProps) {
     setLiePos: parentSetLiePos,
   } = props;
   // const pinPlayed = selectCurrentPinFromHole(props.hole);
+  const [activeStroke, setActiveStroke] = useState(1);
   const teePlayed = selectCurrentTeeFromHole(props.hole);
   const par = teePlayed?.par;
   const { inputProps: parInputProps, setCurrentValue: setParInputValue } =
@@ -107,6 +108,8 @@ function useHoleViewLogic(props: HoleViewProps) {
     switchViewStrokeList: useCallback(() => setTabIndex(1), [setTabIndex]),
     setStrokePosition,
     setLiePosition,
+    activeStroke,
+    setActiveStroke,
   };
 }
 
@@ -162,6 +165,8 @@ export function HoleView(props: HoleViewProps) {
                   holeLength={props.holeLength}
                   par={props.par}
                   roundScore={props.roundScore}
+                  activeStroke={viewLogic.activeStroke}
+                  setActiveStroke={viewLogic.setActiveStroke}
                 />
               </Box>
               <StrokeHeaderView />
