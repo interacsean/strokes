@@ -4,9 +4,10 @@ import { StrokeType } from "./StrokeType";
 
 export type Stroke = {
   club: string | undefined;
-  lie: Lie | undefined;
-  liePos: LatLng | undefined;
-  strokePos: LatLng | undefined;
+  fromLie: Lie | undefined;
+  fromPos: LatLng | undefined;
+  toPos: LatLng | undefined;
+  toLie: Lie | undefined | null;
   strokeType: StrokeType | undefined;
   intendedPos: LatLng | undefined;
 };

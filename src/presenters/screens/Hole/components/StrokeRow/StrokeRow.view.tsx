@@ -5,7 +5,7 @@ import { Club } from "model/Club";
 import { Lie } from "model/Lie";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { partial } from "ramda";
-import { HoleViewProps } from "../../Hole.View";
+import { HoleViewProps } from "../../Hole.view";
 import {
   clubWidth,
   Container,
@@ -53,7 +53,7 @@ export function StrokeView(props: StrokeViewProps) {
           <Box flexBasis={lieWidth}>
             <Select
               onChange={withTargetValue(selectCurStrokeLie)}
-              value={props.stroke.lie || ""}
+              value={props.stroke.fromLie || ""}
             >
               <option value="">-</option>
               {liePairs.map(([_lieKey, label]) => (
@@ -101,7 +101,7 @@ export function StrokeView(props: StrokeViewProps) {
           <Flex columnGap={2} justifyContent="flex-start" alignItems="baseline">
             <Box>
               <Button
-                variant={props.stroke.liePos ? "outline" : "primary"}
+                variant={props.stroke.fromPos ? "outline" : "primary"}
                 onClick={setCurLiePos}
               >
                 🏌️‍♂️
@@ -109,7 +109,7 @@ export function StrokeView(props: StrokeViewProps) {
             </Box>
             <Box>
               <Button
-                variant={props.stroke.strokePos ? "outline" : "primary"}
+                variant={props.stroke.toPos ? "outline" : "primary"}
                 onClick={setCurStrokePos}
               >
                 ⚪️

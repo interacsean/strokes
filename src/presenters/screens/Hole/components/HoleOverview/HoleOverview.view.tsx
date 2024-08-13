@@ -104,9 +104,9 @@ export function HoleOverview(props: HoleOverviewProps) {
     ? "double bogey"
     : props.currentStrokeNum === props.par + 3
     ? "triple bogey"
-    : `${props.currentStrokeNum - props.par}× bogey`;
-
-  console.log({ props });
+    : props.currentStrokeNum >= props.par
+    ? `${props.currentStrokeNum - props.par}× bogey`
+    : undefined;
 
   return (
     <Box borderBottom="1px solid" borderColor="neutral.500">
@@ -171,11 +171,12 @@ export function HoleOverview(props: HoleOverviewProps) {
             totalStrokes={props.currentStrokeNum}
             strokeClick={props.setActiveStroke}
           />
-          {forScoreOutcomeDescription && (
-            <Text color="white" variant="solidLabel" mt={1} lineHeight="1em">
-              For {forScoreOutcomeDescription}
-            </Text>
-          )}
+          <Text color="white" variant="solidLabel" mt={1} lineHeight="1em">
+            {forScoreOutcomeDescription && (
+              <>For {forScoreOutcomeDescription}</>
+            )}
+            &nbsp;
+          </Text>
         </Flex>
         <Flex flexDir={"column"} alignItems={"flex-end"}>
           {props.distanceToHole && (

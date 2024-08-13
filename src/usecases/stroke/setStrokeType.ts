@@ -9,7 +9,7 @@ export function setStrokeType(
   curStroke: Stroke | undefined,
   strokeType: StrokeType | undefined
 ) {
-  const { lie, club } = curStroke || {};
+  const { fromLie, club } = curStroke || {};
   const validStrokeType =
     strokeNum === 1 && strokeType === StrokeType.PUTT
       ? StrokeType.FULL
@@ -19,8 +19,8 @@ export function setStrokeType(
     strokeType: validStrokeType,
   };
   if (validStrokeType !== StrokeType.PUTT) {
-    if (lie === Lie.GREEN) {
-      attrs.lie = undefined;
+    if (fromLie === Lie.GREEN) {
+      attrs.fromLie = undefined;
     }
     if (club === Club.P) {
       attrs.club = undefined;
@@ -28,8 +28,8 @@ export function setStrokeType(
   }
   if (validStrokeType === StrokeType.PUTT) {
     attrs.club = Club.P;
-    if (!lie || ![Lie.GREEN, Lie.FRINGE].includes(lie)) {
-      attrs.lie = Lie.GREEN;
+    if (!fromLie || ![Lie.GREEN, Lie.FRINGE].includes(fromLie)) {
+      attrs.fromLie = Lie.GREEN;
     }
   }
 

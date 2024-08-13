@@ -7,15 +7,15 @@ export function calculateStrokeDistances(hole: Hole, strokes: Stroke[]) {
   return strokes.map((stroke, i) => {
     const pin = selectCurrentPinFromHole(hole);
     const distanceToHole =
-      pin && stroke.liePos
+      pin && stroke.fromPos
         ? calculateDistanceBetweenPositions(
-            stroke.liePos,
+            stroke.fromPos,
             stroke.intendedPos || pin
           )
         : undefined;
     const fromPos =
-      stroke.liePos || (i > 0 ? strokes[i - 1]?.strokePos : undefined); // || hole.teePos[tee]
-    const toPos = stroke.strokePos;
+      stroke.fromPos || (i > 0 ? strokes[i - 1]?.toPos : undefined); // || hole.teePos[tee]
+    const toPos = stroke.toPos;
     if (!fromPos || !toPos) {
       return {
         ...stroke,

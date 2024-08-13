@@ -22,11 +22,12 @@ export function setClub(
   if (
     validClub && [
       Club.D,
-      Club["1W"],
       Club["2W"],
       Club["3W"],
       Club["4W"],
       Club["5W"],
+      Club["7W"],
+      Club["9W"],
       Club["1H"],
       Club["2H"],
       Club["3H"],

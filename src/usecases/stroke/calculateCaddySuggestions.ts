@@ -25,15 +25,15 @@ const TEMP_clubStatistics: Partial<Record<Club, ClubStat>> = {
 
 export function calculateCaddySuggestions(
   hole: Pick<Hole, "pinPlayed" | "pins">,
-  currentStroke: Pick<Stroke, "strokePos" | "intendedPos">,
+  currentStroke: Pick<Stroke, "toPos" | "intendedPos">,
   clubStatistics = TEMP_clubStatistics
 ) {
   const holePos = selectCurrentPinFromHole(hole);
-  if (!holePos || !currentStroke.strokePos) return [];
+  if (!holePos || !currentStroke.toPos) return [];
   const targetPos = currentStroke.intendedPos || holePos;
 
   const distanceToTarget = calculateDistanceBetweenPositions(
-    currentStroke.strokePos,
+    currentStroke.toPos,
     targetPos
   );
 

@@ -15,17 +15,16 @@ import {
 import { Hole as HoleModel } from "model/Hole";
 import { Lie } from "model/Lie";
 import { useInput } from "presenters/utils/useInput/useInput";
-import { StrokeView } from "./components/StrokeRow/StrokeRow.view";
 import { Club } from "model/Club";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { LatLng } from "model/LatLng";
 import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
 import { Container, StrokesContainer } from "./Hole.styles";
 import { HoleOverview } from "./components/HoleOverview/HoleOverview.view";
-import { StrokeHeaderView } from "./components/StrokeRow/StrokeRow.header.view";
 import { StrokeType } from "model/StrokeType";
 // import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
+import { SingleStroke } from "./components/SingleStroke";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -38,7 +37,7 @@ export type HoleViewProps = {
   selectStrokeLie: (stroke: number, lie: Lie) => void;
   selectStrokeClub: (stroke: number, club: Club) => void;
   selectStrokeType: (stroke: number, strokeType: StrokeType) => void;
-  strokeInputList: StrokeWithDerivedFields[];
+  preprocessedStrokes: StrokeWithDerivedFields[];
   setLiePos: (stroke: number, pos: LatLng) => void;
   setStrokePos: (stroke: number, pos: LatLng) => void;
   caddySuggestions: CaddySuggestion[];
@@ -159,7 +158,7 @@ export function HoleView(props: HoleViewProps) {
               <Box mx={-4} mt={-4}>
                 <HoleOverview
                   holeNum={props.holeNum}
-                  currentStrokeNum={props.strokeInputList.length}
+                  currentStrokeNum={props.preprocessedStrokes.length}
                   distanceToHole={props.distanceToHole}
                   holeAltitudeDelta={props.holeAltitudeDelta}
                   holeLength={props.holeLength}
@@ -169,24 +168,20 @@ export function HoleView(props: HoleViewProps) {
                   setActiveStroke={viewLogic.setActiveStroke}
                 />
               </Box>
-              <StrokeHeaderView />
-              {props.strokeInputList.map((stroke, i) => {
-                return (
-                  <StrokeView
-                    key={i}
-                    strokeNum={i + 1}
-                    stroke={stroke}
-                    selectLie={props.selectStrokeLie}
-                    selectClub={props.selectStrokeClub}
-                    selectStrokeType={props.selectStrokeType}
-                    setLiePosition={viewLogic.setLiePosition}
-                    setStrokePosition={viewLogic.setStrokePosition}
-                    current={i === props.strokeInputList.length - 1}
-                  />
-                );
-              })}
-              <Button onClick={props.addStroke}>New stroke</Button>
+              <Box position="relative" flex={1}>
+                <SingleStroke
+                  strokeNum={viewLogic.activeStroke}
+                  stroke={props.preprocessedStrokes[viewLogic.activeStroke - 1]}
+                  selectLie={props.selectStrokeLie}
+                  selectClub={props.selectStrokeClub}
+                  selectStrokeType={props.selectStrokeType}
+                  setLiePosition={viewLogic.setLiePosition}
+                  setStrokePosition={viewLogic.setStrokePosition}
+                />
+              </Box>
+              <hr />
 
+              <Button onClick={props.addStroke}>New stroke</Button>
               <Flex columnGap={2} justifyContent="stretch">
                 <Button flexGrow={1} onClick={props.prevHole}>
                   Last

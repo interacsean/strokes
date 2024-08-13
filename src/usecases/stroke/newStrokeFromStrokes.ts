@@ -10,29 +10,30 @@ import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
   const lastStroke = last(strokes);
   let stroke: Stroke = {
-    lie: undefined,
-    liePos: undefined,
+    fromLie: undefined,
+    fromPos: undefined,
     club: undefined,
     intendedPos: undefined,
-    strokePos: undefined,
+    toPos: undefined,
+    toLie: undefined,
     strokeType: StrokeType.FULL,
   };
   const strokeNum = strokes.length + 1;
   setStrokeLie(
-    ({ lie }) => (stroke.lie = lie),
+    ({ fromLie }) => (stroke.fromLie = fromLie),
     strokeNum,
     stroke,
     strokeNum === 1
       ? Lie.TEE
-      : lastStroke?.lie === Lie.GREEN
+      : lastStroke?.fromLie === Lie.GREEN
       ? Lie.GREEN
       : undefined
   );
   if (lastStroke) {
-    stroke.liePos = lastStroke?.strokePos;
+    stroke.fromPos = lastStroke?.toPos;
   } else {
     const usedTee = selectCurrentTeeFromHole(hole);
-    if (usedTee) stroke.liePos = usedTee.pos;
+    if (usedTee) stroke.fromPos = usedTee.pos;
   }
   setStrokeType(
     ({ strokeType }) => (stroke.strokeType = strokeType),

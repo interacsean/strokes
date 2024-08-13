@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { TemplateView, TemplateViewProps } from "./Template.View";
+import { TemplateView, TemplateViewProps } from "./Template.view";
 
 type TemplatePublicProps = {};
 

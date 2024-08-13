@@ -1,4 +1,4 @@
-import { Flex, VStack } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { withTheme } from "@emotion/react";
 
 // @ts-ignore
@@ -10,12 +10,12 @@ export const Container = withTheme(({ theme, children }) => (
 
 // @ts-ignore
 export const StrokesContainer = withTheme(({ theme, children }) => (
-  <VStack
+  <Flex
+    flexDir="column"
     margin="0 auto"
-    spacing={2}
     maxW={theme.breakpoints.md}
     alignItems="stretch"
   >
     {children}
-  </VStack>
+  </Flex>
 ));

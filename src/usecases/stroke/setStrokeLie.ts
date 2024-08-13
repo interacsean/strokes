@@ -16,7 +16,7 @@ export function setStrokeLie(
       ? Lie.FAIRWAY
       : lie;
   const attrs: Partial<Stroke> = {
-    lie: validLie,
+    fromLie: validLie,
   };
   if (validLie === Lie.GREEN) {
     attrs.club = Club.P;

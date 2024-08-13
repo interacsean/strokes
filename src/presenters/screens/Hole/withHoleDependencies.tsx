@@ -4,7 +4,7 @@ import { prevHole } from "usecases/course/prevHole";
 import { saveHole } from "usecases/course/saveHole";
 import { FC, useCallback, useMemo, useState } from "react";
 import { useCourseState } from "state/course/courseState";
-import { HoleViewProps } from "./Hole.View";
+import { HoleViewProps } from "./Hole.view";
 import { Hole, Hole as HoleModel } from "model/Hole";
 import { setHolePar } from "usecases/hole/setHolePar";
 import { mergePartStroke } from "usecases/stroke/mergePartStroke";
@@ -64,7 +64,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const addStroke = useCallback(() => {
       const strokeToAdd = {
         ...newStrokeFromStrokes(strokes, currentHole),
-        liePos: last(strokes)?.strokePos,
+        fromPos: last(strokes)?.toPos,
       };
       saveStroke(
         updateCourseState,
@@ -171,19 +171,19 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const setStrokePos = useCallback(
       (strokeNum: number, pos: LatLng) => {
-        saveStrokeAndUpdate(strokeNum, { strokePos: pos });
+        saveStrokeAndUpdate(strokeNum, { toPos: pos });
       },
       [saveStrokeAndUpdate]
     );
 
     const setLiePos = useCallback(
       (strokeNum: number, pos: LatLng) => {
-        saveStrokeAndUpdate(strokeNum, { liePos: pos });
+        saveStrokeAndUpdate(strokeNum, { fromPos: pos });
       },
       [saveStrokeAndUpdate]
     );
 
-    const strokeInputList = useMemo(() => {
+    const preprocessedStrokes = useMemo(() => {
       if (shouldShowNewStroke(currentHole.strokes)) {
         const newStroke = newStrokeFromStrokes(
           currentHole.strokes,
@@ -195,8 +195,8 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     }, [currentHole]);
 
     const strokeListWithDistances = useMemo(
-      () => calculateStrokeDistances(currentHole, strokeInputList),
-      [currentHole, strokeInputList]
+      () => calculateStrokeDistances(currentHole, preprocessedStrokes),
+      [currentHole, preprocessedStrokes]
     );
 
     // todo: retry-on loop until high accuracy – how oftern to ping
@@ -248,7 +248,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     );
 
     const holeLength = useMemo(() => {
-      const chosenTeePos = head(strokeListWithDistances)?.liePos;
+      const chosenTeePos = head(strokeListWithDistances)?.fromPos;
       return chosenTeePos && currentPin
         ? calculateDistanceBetweenPositions(chosenTeePos, currentPin)
         : undefined;
@@ -274,7 +274,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       selectStrokeLie: setStrokeLieAndUpdate,
       selectStrokeClub: setStrokeClubAndUpdate,
       selectStrokeType: setStrokeTypeAndUpdate,
-      strokeInputList: strokeListWithDistances,
+      preprocessedStrokes: strokeListWithDistances,
       setStrokePos,
       setLiePos,
       currentPosition,

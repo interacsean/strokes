@@ -56,6 +56,12 @@ const TextTheme = {
       color: palette.heading[100],
       textTransform: "uppercase",
     },
+    inputLabel: {
+      fontFamily: fontFamilies.content,
+      fontSize: `${14 / 16}rem`,
+      color: palette.heading[100],
+      textTransform: "uppercase",
+    },
     ...makeVariants("content", {
       fontSize: "1rem",
       fontFamily: fontFamilies.content,
