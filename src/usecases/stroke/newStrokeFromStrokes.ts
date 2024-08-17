@@ -2,7 +2,7 @@ import { Lie } from "model/Lie";
 import { Stroke } from "model/Stroke";
 import { StrokeType } from "model/StrokeType";
 import { last } from "ramda";
-import { setStrokeLie } from "./setStrokeLie";
+import { setStrokeFromLie } from "./setStrokeFromLie";
 import { setStrokeType } from "./setStrokeType";
 import { Hole } from "model/Hole";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
@@ -19,7 +19,7 @@ export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
     strokeType: StrokeType.FULL,
   };
   const strokeNum = strokes.length + 1;
-  setStrokeLie(
+  setStrokeFromLie(
     ({ fromLie }) => (stroke.fromLie = fromLie),
     strokeNum,
     stroke,

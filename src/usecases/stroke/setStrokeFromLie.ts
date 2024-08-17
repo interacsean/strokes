@@ -3,14 +3,14 @@ import { Lie } from "model/Lie";
 import { Stroke } from "model/Stroke";
 import { StrokeType } from "model/StrokeType";
 
-export function setStrokeLie(
+export function setStrokeFromLie(
   setHoleAttr: (partStroke: Partial<Stroke>) => void,
   strokeNum: number,
   stroke: Stroke | undefined,
-  lie: Lie | undefined
+  lie: Lie | string | undefined
 ) {
   const validLie =
-    strokeNum === 1 && (!lie || ![Lie.TEE, Lie.TEE_GRASS].includes(lie))
+    strokeNum === 1 && (!lie || !([Lie.TEE, Lie.TEE_GRASS] as string[]).includes(lie))
       ? Lie.TEE
       : strokeNum > 1 && lie === Lie.TEE
       ? Lie.FAIRWAY
@@ -32,7 +32,7 @@ export function setStrokeLie(
   }
   if (
     validLie &&
-    ![Lie.FRINGE, Lie.GREEN, Lie.FAIRWAY, Lie.LIGHT_ROUGH].includes(validLie)
+    !([Lie.FRINGE, Lie.GREEN, Lie.FAIRWAY, Lie.LIGHT_ROUGH] as string[]).includes(validLie)
   ) {
     if (stroke?.club === Club.P) {
       attrs.club = undefined;

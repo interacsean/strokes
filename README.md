@@ -15,8 +15,14 @@ An app to track strokes on the golf course, and provide statistics and caddy-lik
 **Application**
 
 - [x] Persisting data to localStorage, as MVP
-- [ ] Load course from course data
+- [x] Load course from course data
 - [ ] Update UI from design
+- [ ] New shot - increment active shot by default
+- [ ] New shot - fill in some values from previous shot
+  - fromLie
+  - fromPos
+  - sensible club - i.e. if on green
+- Can I get caddie prior to arriving at ball, i.e. if I'm like 5m away from my ball, can I get caddie even though I haven't marked my shot yet
 - [ ] 'Finish hole' to mark hole as completed
 
 ---

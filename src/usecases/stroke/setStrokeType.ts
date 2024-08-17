@@ -28,7 +28,7 @@ export function setStrokeType(
   }
   if (validStrokeType === StrokeType.PUTT) {
     attrs.club = Club.P;
-    if (!fromLie || ![Lie.GREEN, Lie.FRINGE].includes(fromLie)) {
+    if (!fromLie || !([Lie.GREEN, Lie.FRINGE] as string[]).includes(fromLie)) {
       attrs.fromLie = Lie.GREEN;
     }
   }

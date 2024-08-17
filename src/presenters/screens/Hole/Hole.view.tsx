@@ -34,7 +34,8 @@ export type HoleViewProps = {
   nextHole: () => void;
   prevHole: () => void;
   setPar: (n: number) => void;
-  selectStrokeLie: (stroke: number, lie: Lie) => void;
+  selectStrokeFromLie: (stroke: number, lie: Lie | string) => void;
+  selectStrokeToLie: (stroke: number, lie: Lie) => void;
   selectStrokeClub: (stroke: number, club: Club) => void;
   selectStrokeType: (stroke: number, strokeType: StrokeType) => void;
   preprocessedStrokes: StrokeWithDerivedFields[];
@@ -172,7 +173,8 @@ export function HoleView(props: HoleViewProps) {
                 <SingleStroke
                   strokeNum={viewLogic.activeStroke}
                   stroke={props.preprocessedStrokes[viewLogic.activeStroke - 1]}
-                  selectLie={props.selectStrokeLie}
+                  selectFromLie={props.selectStrokeFromLie}
+                  selectToLie={props.selectStrokeToLie}
                   selectClub={props.selectStrokeClub}
                   selectStrokeType={props.selectStrokeType}
                   setLiePosition={viewLogic.setLiePosition}

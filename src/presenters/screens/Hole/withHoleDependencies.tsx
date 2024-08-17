@@ -10,7 +10,8 @@ import { setHolePar } from "usecases/hole/setHolePar";
 import { mergePartStroke } from "usecases/stroke/mergePartStroke";
 import { saveStroke } from "usecases/course/saveStroke";
 import { Lie } from "model/Lie";
-import { setStrokeLie } from "usecases/stroke/setStrokeLie";
+import { setStrokeFromLie } from "usecases/stroke/setStrokeFromLie";
+import { setStrokeToLie } from "usecases/stroke/setStrokeToLie";
 import { Stroke } from "model/Stroke";
 import { newStrokeFromStrokes } from "usecases/stroke/newStrokeFromStrokes";
 import { mergePartHole } from "usecases/hole/mergePartHole";
@@ -124,12 +125,27 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       [holeUpdateAndSave, currentHole]
     );
 
-    const setStrokeLieAndUpdate = useCallback(
+    const setStrokeFromLieAndUpdate = useCallback(
+      (strokeNum: number, lie: Lie | string) => {
+        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
+          strokeNum,
+        ]);
+        setStrokeFromLie(
+          saveStrokeNumAndUpdate,
+          strokeNum,
+          strokes[strokeNum - 1],
+          lie
+        );
+      },
+      [saveStrokeAndUpdate, strokes]
+    );
+
+    const setStrokeToLieAndUpdate = useCallback(
       (strokeNum: number, lie: Lie) => {
         const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
           strokeNum,
         ]);
-        setStrokeLie(
+        setStrokeToLie(
           saveStrokeNumAndUpdate,
           strokeNum,
           strokes[strokeNum - 1],
@@ -271,7 +287,8 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       hole: currentHole,
       holeNum: courseState.currentHoleNum,
       setPar: setParAndUpdate,
-      selectStrokeLie: setStrokeLieAndUpdate,
+      selectStrokeFromLie: setStrokeFromLieAndUpdate,
+      selectStrokeToLie: setStrokeToLieAndUpdate,
       selectStrokeClub: setStrokeClubAndUpdate,
       selectStrokeType: setStrokeTypeAndUpdate,
       preprocessedStrokes: strokeListWithDistances,

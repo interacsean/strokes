@@ -18,7 +18,8 @@ import { StrokeType } from "model/StrokeType";
 type StrokeViewProps = {
   strokeNum: number;
   stroke: StrokeWithDerivedFields;
-  selectLie: HoleViewProps["selectStrokeLie"];
+  selectFromLie: HoleViewProps["selectStrokeFromLie"];
+  selectToLie: HoleViewProps["selectStrokeToLie"];
   selectClub: HoleViewProps["selectStrokeClub"];
   selectStrokeType: HoleViewProps["selectStrokeType"];
   setStrokePosition: (strokeNum: number) => void;
@@ -31,7 +32,7 @@ const clubPairs = Object.entries(Club);
 const typePairs = Object.entries(StrokeType);
 
 export function StrokeView(props: StrokeViewProps) {
-  const selectCurStrokeLie = partial(props.selectLie, [props.strokeNum]) as (
+  const selectCurStrokeLie = partial(props.selectFromLie, [props.strokeNum]) as (
     lieAsStr: string
   ) => void;
   const selectCurStrokeClub = partial(props.selectClub, [props.strokeNum]) as (

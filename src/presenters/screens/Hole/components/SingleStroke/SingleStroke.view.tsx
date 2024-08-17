@@ -5,11 +5,14 @@ import { HoleViewProps } from "../../Hole.view";
 import { useMemo, useState } from "react";
 import { ClubSelectModal } from "./ClubSelectModal.view";
 import { Club } from "model/Club";
+import { ShotSelectModal } from "./ShotSelectModal.view";
+import { LieSelectModal } from "./LieSelectModal.view";
 
 export type SingleStrokeViewProps = {
   strokeNum: number;
   stroke: StrokeWithDerivedFields;
-  selectLie: HoleViewProps["selectStrokeLie"];
+  selectFromLie: HoleViewProps["selectStrokeFromLie"];
+  selectToLie: HoleViewProps["selectStrokeToLie"];
   selectClub: HoleViewProps["selectStrokeClub"];
   selectStrokeType: HoleViewProps["selectStrokeType"];
   setStrokePosition: (strokeNum: number) => void;
@@ -20,9 +23,7 @@ export type SingleStrokeViewProps = {
 enum Modals {
   Club = "Club",
   Shot = "Shot",
-  FromPos = "FromPos",
   FromLie = "FromLie",
-  ToPos = "ToPos",
   ToLie = "ToLie",
 }
 
@@ -55,6 +56,29 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
         clubs={viewLogic.clubOptions}
         selectClub={(club) => {
           props.selectClub(props.strokeNum, club);
+          viewLogic.setActiveModal(null);
+        }}
+      />
+    ) : viewLogic.activeModal === Modals.FromLie ? (
+      // todo: pass in valid from lies based on shot (i.e. tees)
+      // todo: if from selection = last shot / disable this
+      <LieSelectModal
+        selectLie={(lie) => {
+          props.selectFromLie(props.strokeNum, lie);
+          viewLogic.setActiveModal(null);
+        }}
+      />
+    ) : viewLogic.activeModal === Modals.Shot ? (
+      <ShotSelectModal
+        selectStroke={(stroke) => {
+          props.selectStrokeType(props.strokeNum, stroke);
+          viewLogic.setActiveModal(null);
+        }}
+      />
+    ) : viewLogic.activeModal === Modals.ToLie ? (
+      <LieSelectModal
+        selectLie={(lie) => {
+          props.selectToLie(props.strokeNum, lie);
           viewLogic.setActiveModal(null);
         }}
       />
@@ -91,7 +115,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               selectedText={props.stroke.strokeType}
               selectedValue={props.stroke.strokeType}
               placeholder="Club"
-              onOpen={() => viewLogic.setActiveModal(Modals.Club)}
+              onOpen={() => viewLogic.setActiveModal(Modals.Shot)}
             />
           </Box>
         </Flex>
@@ -112,7 +136,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               selectedText={props.stroke.fromLie}
               selectedValue={props.stroke.fromLie}
               placeholder="Select Lie"
-              onOpen={() => viewLogic.setActiveModal(Modals.Club)}
+              onOpen={() => viewLogic.setActiveModal(Modals.FromLie)}
             />
           </Box>
         </Flex>
@@ -130,10 +154,10 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           </Box>
           <Box flex={1}>
             <CustomModalSelect
-              selectedText={props.stroke.fromLie}
-              selectedValue={props.stroke.fromLie}
+              selectedText={props.stroke.toLie || undefined}
+              selectedValue={props.stroke.toLie || undefined}
               placeholder="Select Lie"
-              onOpen={() => viewLogic.setActiveModal(Modals.Club)}
+              onOpen={() => viewLogic.setActiveModal(Modals.ToLie)}
             />
           </Box>
         </Flex>

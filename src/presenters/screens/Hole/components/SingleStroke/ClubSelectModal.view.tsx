@@ -14,7 +14,7 @@ export function ClubSelectModal(props: ClubSelectModalprops) {
     <Flex flexDir={"column"} alignItems={"stretch"} columnGap={2}>
       {props.clubs.map((club) => (
         // todo: club.clubImage
-        <Button variant="ghost" onClick={() => props.selectClub(club.club)}>
+        <Button key={club.club} variant="ghost" onClick={() => props.selectClub(club.club)}>
           {club.club}
         </Button>
       ))}
