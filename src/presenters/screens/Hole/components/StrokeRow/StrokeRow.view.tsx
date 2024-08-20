@@ -32,9 +32,9 @@ const clubPairs = Object.entries(Club);
 const typePairs = Object.entries(StrokeType);
 
 export function StrokeView(props: StrokeViewProps) {
-  const selectCurStrokeLie = partial(props.selectFromLie, [props.strokeNum]) as (
-    lieAsStr: string
-  ) => void;
+  const selectCurStrokeLie = partial(props.selectFromLie, [
+    props.strokeNum,
+  ]) as (lieAsStr: string) => void;
   const selectCurStrokeClub = partial(props.selectClub, [props.strokeNum]) as (
     clubAsStr: string
   ) => void;

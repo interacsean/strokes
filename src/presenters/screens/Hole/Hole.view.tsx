@@ -63,6 +63,14 @@ function useHoleViewLogic(props: HoleViewProps) {
   } = props;
   // const pinPlayed = selectCurrentPinFromHole(props.hole);
   const [activeStroke, setActiveStroke] = useState(1);
+
+  useEffect(
+    function goToLastStrokeOnAdd() {
+      setActiveStroke(props.preprocessedStrokes.length || 1);
+    },
+    [props.preprocessedStrokes.length]
+  );
+
   const teePlayed = selectCurrentTeeFromHole(props.hole);
   const par = teePlayed?.par;
   const { inputProps: parInputProps, setCurrentValue: setParInputValue } =
@@ -87,17 +95,25 @@ function useHoleViewLogic(props: HoleViewProps) {
 
   const setStrokePosition = useCallback(
     (strokeNum: number) =>
-      currentPosition && parentSetStrokePos(strokeNum, currentPosition),
+      // @ts-ignore
+      console.log("setting stkPos") ||
+      (currentPosition && parentSetStrokePos(strokeNum, currentPosition)),
     [currentPosition, parentSetStrokePos]
   );
 
   const setLiePosition = useCallback(
+    // @ts-ignore
     (strokeNum: number) =>
       currentPosition && parentSetLiePos(strokeNum, currentPosition),
     [currentPosition, parentSetLiePos]
   );
 
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
+
+  const availableActiveStroke =
+    props.preprocessedStrokes[activeStroke - 1] === undefined
+      ? 1
+      : activeStroke;
 
   return {
     par,
@@ -108,13 +124,14 @@ function useHoleViewLogic(props: HoleViewProps) {
     switchViewStrokeList: useCallback(() => setTabIndex(1), [setTabIndex]),
     setStrokePosition,
     setLiePosition,
-    activeStroke,
+    activeStroke: availableActiveStroke,
     setActiveStroke,
   };
 }
 
 export function HoleView(props: HoleViewProps) {
   const viewLogic = useHoleViewLogic(props);
+  console.log({ props, viewLogic });
 
   return (
     <Container>
@@ -171,6 +188,7 @@ export function HoleView(props: HoleViewProps) {
               </Box>
               <Box position="relative" flex={1}>
                 <SingleStroke
+                  hole={props.hole}
                   strokeNum={viewLogic.activeStroke}
                   stroke={props.preprocessedStrokes[viewLogic.activeStroke - 1]}
                   selectFromLie={props.selectStrokeFromLie}
@@ -183,14 +201,17 @@ export function HoleView(props: HoleViewProps) {
               </Box>
               <hr />
 
-              <Button onClick={props.addStroke}>New stroke</Button>
-              <Flex columnGap={2} justifyContent="stretch">
-                <Button flexGrow={1} onClick={props.prevHole}>
-                  Last
-                </Button>
-                <Button flexGrow={1} onClick={props.nextHole}>
-                  Next
-                </Button>
+              <Flex flexDir="column" rowGap={3} mt={3}>
+                {/* Todo: Move to SingleStrokeView? */}
+                <Button onClick={props.addStroke}>New stroke</Button>
+                <Flex columnGap={2} justifyContent="stretch">
+                  <Button flexGrow={1} onClick={props.prevHole}>
+                    Last
+                  </Button>
+                  <Button flexGrow={1} onClick={props.nextHole}>
+                    Next
+                  </Button>
+                </Flex>
               </Flex>
             </StrokesContainer>
           </TabPanel>

@@ -12,7 +12,7 @@ import { saveStroke } from "usecases/course/saveStroke";
 import { Lie } from "model/Lie";
 import { setStrokeFromLie } from "usecases/stroke/setStrokeFromLie";
 import { setStrokeToLie } from "usecases/stroke/setStrokeToLie";
-import { Stroke } from "model/Stroke";
+import { Stroke, StrokeWithDerivedFields } from "model/Stroke";
 import { newStrokeFromStrokes } from "usecases/stroke/newStrokeFromStrokes";
 import { mergePartHole } from "usecases/hole/mergePartHole";
 import { Club } from "model/Club";
@@ -199,21 +199,23 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       [saveStrokeAndUpdate]
     );
 
-    const preprocessedStrokes = useMemo(() => {
+    const preprocessedStrokes: StrokeWithDerivedFields[] = useMemo(() => {
       if (shouldShowNewStroke(currentHole.strokes)) {
         const newStroke = newStrokeFromStrokes(
           currentHole.strokes,
           currentHole
         );
-        return [...currentHole.strokes, newStroke];
+        return calculateStrokeDistances(currentHole, [
+          ...currentHole.strokes,
+          newStroke,
+        ]) as StrokeWithDerivedFields[];
       }
-      return currentHole.strokes;
+      return calculateStrokeDistances(
+        currentHole,
+        currentHole.strokes
+      ) as StrokeWithDerivedFields[];
     }, [currentHole]);
-
-    const strokeListWithDistances = useMemo(
-      () => calculateStrokeDistances(currentHole, preprocessedStrokes),
-      [currentHole, preprocessedStrokes]
-    );
+    console.log({ preprocessedStrokes });
 
     // todo: retry-on loop until high accuracy – how oftern to ping
     const geo = useGeolocated({
@@ -241,11 +243,11 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     );
 
     const caddySuggestions = useMemo(() => {
-      const lastStroke = last(strokeListWithDistances);
+      const lastStroke = last(preprocessedStrokes);
       return lastStroke
         ? calculateCaddySuggestions(currentHole, lastStroke)
         : [];
-    }, [currentHole, strokeListWithDistances]);
+    }, [currentHole, preprocessedStrokes]);
 
     const distanceToHole = useMemo(
       () =>
@@ -264,11 +266,11 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     );
 
     const holeLength = useMemo(() => {
-      const chosenTeePos = head(strokeListWithDistances)?.fromPos;
+      const chosenTeePos = head(preprocessedStrokes)?.fromPos;
       return chosenTeePos && currentPin
         ? calculateDistanceBetweenPositions(chosenTeePos, currentPin)
         : undefined;
-    }, [currentPin, strokeListWithDistances]);
+    }, [currentPin, preprocessedStrokes]);
 
     const roundScore = useMemo(
       () =>
@@ -291,7 +293,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       selectStrokeToLie: setStrokeToLieAndUpdate,
       selectStrokeClub: setStrokeClubAndUpdate,
       selectStrokeType: setStrokeTypeAndUpdate,
-      preprocessedStrokes: strokeListWithDistances,
+      preprocessedStrokes,
       setStrokePos,
       setLiePos,
       currentPosition,

@@ -10,9 +10,13 @@ export function setStrokeFromLie(
   lie: Lie | string | undefined
 ) {
   const validLie =
-    strokeNum === 1 && (!lie || !([Lie.TEE, Lie.TEE_GRASS] as string[]).includes(lie))
-      ? Lie.TEE
-      : strokeNum > 1 && lie === Lie.TEE
+    strokeNum === 1 &&
+    (!lie ||
+      !(
+        [Lie.TEE_HIGH, Lie.TEE_MEDIUM, Lie.TEE_LOW, Lie.TEE_GRASS] as string[]
+      ).includes(lie))
+      ? Lie.TEE_HIGH
+      : strokeNum > 1 && lie === Lie.TEE_HIGH
       ? Lie.FAIRWAY
       : lie;
   const attrs: Partial<Stroke> = {
@@ -32,7 +36,9 @@ export function setStrokeFromLie(
   }
   if (
     validLie &&
-    !([Lie.FRINGE, Lie.GREEN, Lie.FAIRWAY, Lie.LIGHT_ROUGH] as string[]).includes(validLie)
+    !(
+      [Lie.FRINGE, Lie.GREEN, Lie.FAIRWAY, Lie.LIGHT_ROUGH] as string[]
+    ).includes(validLie)
   ) {
     if (stroke?.club === Club.P) {
       attrs.club = undefined;

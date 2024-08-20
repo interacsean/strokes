@@ -3,7 +3,6 @@ import { Flex, Text } from "@chakra-ui/react";
 
 type CustomModalSelectProps = {
   selectedText: undefined | string;
-  selectedValue: undefined | string;
   placeholder: string;
   onOpen: () => void;
 };
@@ -18,7 +17,7 @@ export function CustomModalSelect(props: CustomModalSelectProps) {
       border="1px solid"
       borderColor="neutral.500"
       px={2}
-      minHeight="44px"
+      minHeight="40px"
       width="100%"
     >
       {props.selectedText ? (

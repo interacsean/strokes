@@ -26,7 +26,11 @@ export function ShotSelectModal(props: ShotSelectModalprops) {
     <Flex flexDir={"column"} alignItems={"stretch"} columnGap={2}>
       {strokeTypes.map((strokeType) => (
         // todo: stroke image
-        <Button key={strokeType} variant="ghost" onClick={() => props.selectStroke(strokeType)}>
+        <Button
+          key={strokeType}
+          variant="ghost"
+          onClick={() => props.selectStroke(strokeType)}
+        >
           {strokeType}
         </Button>
       ))}

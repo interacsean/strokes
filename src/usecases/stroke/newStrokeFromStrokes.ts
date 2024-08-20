@@ -24,7 +24,7 @@ export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
     strokeNum,
     stroke,
     strokeNum === 1
-      ? Lie.TEE
+      ? Lie.TEE_HIGH
       : lastStroke?.fromLie === Lie.GREEN
       ? Lie.GREEN
       : undefined

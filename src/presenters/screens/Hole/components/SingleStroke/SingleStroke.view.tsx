@@ -7,8 +7,11 @@ import { ClubSelectModal } from "./ClubSelectModal.view";
 import { Club } from "model/Club";
 import { ShotSelectModal } from "./ShotSelectModal.view";
 import { LieSelectModal } from "./LieSelectModal.view";
+import { DropdownButton } from "presenters/components/DropdownButton/DropdownButton";
+import { Hole } from "model/Hole";
 
 export type SingleStrokeViewProps = {
+  hole: Hole;
   strokeNum: number;
   stroke: StrokeWithDerivedFields;
   selectFromLie: HoleViewProps["selectStrokeFromLie"];
@@ -27,6 +30,20 @@ enum Modals {
   ToLie = "ToLie",
 }
 
+// todo: button behaviour
+const PosOptions = {
+  Gps: { buttonText: "Set Pos", label: "Set Position from GPS", value: "GPS" },
+  LastShot: {
+    buttonText: "Last Shot",
+    label: "Use Last Shot",
+    value: "LAST_SHOT",
+  },
+  Custom: { buttonText: "Map Pos", label: "Choose on Map", value: "CUSTOM" },
+  Drop: { buttonText: "Set Pos", label: "Take Drop", value: "DROP" },
+  Pin: { buttonText: "Near Pin", label: "Near Pin", value: "PIN" },
+  Hole: { buttonText: "In Hole", label: "In Hole", value: "Hole" },
+};
+
 function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const [activeModal, setActiveModal] = useState<Modals | null>(null);
 
@@ -38,7 +55,46 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     [props.clubs]
   );
 
+  const fromPosOptions = useMemo(() => {
+    const fo = [PosOptions.Gps];
+    if (props.strokeNum === 1) {
+      const teeNames = Object.keys(props.hole.tees);
+      if (teeNames.length === 1) {
+        fo.push({
+          buttonText: `Tee`,
+          label: `Tee`,
+          value: `TEE`,
+        });
+      } else {
+        teeNames.map((tee) =>
+          fo.push({
+            buttonText: `Tee (${tee.slice(0, 3)})`,
+            label: `Tee (${tee})`,
+            value: `TEE_${tee}`,
+          })
+        );
+      }
+    }
+    // todo: exclude if last stroke's toLie was hazard/water
+    if (props.strokeNum > 1) {
+      fo.push(PosOptions.LastShot);
+    }
+    fo.push(PosOptions.Custom);
+    fo.push(PosOptions.Drop);
+    return fo;
+  }, [props.hole.tees, props.strokeNum]);
+
+  const toPosOptions = useMemo(() => {
+    const to = [PosOptions.Gps];
+    to.push(PosOptions.Custom);
+    to.push(PosOptions.Pin);
+    to.push(PosOptions.Hole);
+    return to;
+  }, []);
+
   return {
+    fromPosOptions,
+    toPosOptions,
     activeModal,
     setActiveModal,
     clubOptions,
@@ -98,6 +154,9 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           </Text>
           <Text>—</Text>
         </Flex>
+        <Box bgColor="primary.200" color="white">
+          [Mini-map to go here]
+        </Box>
         <Flex flexDir="row" alignItems={"center"} columnGap={2}>
           <Text variant="inputLabel" minWidth={inputLabelWidth}>
             Shot
@@ -105,7 +164,6 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           <Box flex={1}>
             <CustomModalSelect
               selectedText={props.stroke.club}
-              selectedValue={props.stroke.club}
               placeholder="Club"
               onOpen={() => viewLogic.setActiveModal(Modals.Club)}
             />
@@ -113,7 +171,6 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           <Box flex={1}>
             <CustomModalSelect
               selectedText={props.stroke.strokeType}
-              selectedValue={props.stroke.strokeType}
               placeholder="Club"
               onOpen={() => viewLogic.setActiveModal(Modals.Shot)}
             />
@@ -123,18 +180,18 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           <Text variant="inputLabel" minWidth={inputLabelWidth}>
             From
           </Text>
-          <Box flex={1}>
-            <CustomModalSelect
-              selectedText={"Last shot"}
-              selectedValue={undefined}
-              placeholder="Club"
-              onOpen={() => viewLogic.setActiveModal(Modals.Club)}
+          <Flex flex={1} flexDir={"row"}>
+            <DropdownButton
+              buttonText={"GPS Set"}
+              selectedValue={PosOptions.Gps.value}
+              options={viewLogic.fromPosOptions}
+              onSelectChange={() => {}}
+              onClick={() => props.setLiePosition(props.strokeNum)}
             />
-          </Box>
+          </Flex>
           <Box flex={1}>
             <CustomModalSelect
               selectedText={props.stroke.fromLie}
-              selectedValue={props.stroke.fromLie}
               placeholder="Select Lie"
               onOpen={() => viewLogic.setActiveModal(Modals.FromLie)}
             />
@@ -145,17 +202,20 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             To
           </Text>
           <Box flex={1}>
-            <CustomModalSelect
-              selectedText={"Last shot"}
-              selectedValue={undefined}
-              placeholder="Club"
-              onOpen={() => viewLogic.setActiveModal(Modals.Club)}
+            <DropdownButton
+              buttonText={
+                `${Math.round(props.stroke.strokeDistance || 0) || ""}` ||
+                "GPS Set"
+              }
+              selectedValue={PosOptions.Gps.value}
+              options={viewLogic.toPosOptions}
+              onSelectChange={() => {}}
+              onClick={() => props.setStrokePosition(props.strokeNum)}
             />
           </Box>
           <Box flex={1}>
             <CustomModalSelect
               selectedText={props.stroke.toLie || undefined}
-              selectedValue={props.stroke.toLie || undefined}
               placeholder="Select Lie"
               onOpen={() => viewLogic.setActiveModal(Modals.ToLie)}
             />

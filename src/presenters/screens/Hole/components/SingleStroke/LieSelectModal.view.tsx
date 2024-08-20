@@ -6,7 +6,9 @@ type LieSelectModalprops = {
 };
 
 const liesSet: Record<Lie, Lie> = {
-  [Lie.TEE]: Lie.TEE, // ? how to deal with the multiple tees
+  [Lie.TEE_HIGH]: Lie.TEE_HIGH, // ? how to deal with the multiple tees
+  [Lie.TEE_MEDIUM]: Lie.TEE_MEDIUM, // ? how to deal with the multiple tees
+  [Lie.TEE_LOW]: Lie.TEE_LOW, // ? how to deal with the multiple tees
   [Lie.TEE_GRASS]: Lie.TEE_GRASS,
   [Lie.FAIRWAY]: Lie.FAIRWAY,
   [Lie.LIGHT_ROUGH]: Lie.LIGHT_ROUGH,
