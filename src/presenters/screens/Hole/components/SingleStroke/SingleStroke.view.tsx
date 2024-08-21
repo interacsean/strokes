@@ -2,7 +2,7 @@ import { Box, Flex, Text } from "@chakra-ui/react";
 import { CustomModalSelect } from "presenters/components/CustomModalSelect/CustomModalSelect";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { HoleViewProps } from "../../Hole.view";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ClubSelectModal } from "./ClubSelectModal.view";
 import { Club } from "model/Club";
 import { ShotSelectModal } from "./ShotSelectModal.view";
@@ -52,14 +52,14 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
         fo.push({
           buttonText: `Tee`,
           label: `Tee`,
-          value: `TEE`,
+          value: `${PosOptionMethods.TEE}/${teeNames[0]}`,
         });
       } else {
         teeNames.map((tee) =>
           fo.push({
             buttonText: `Tee (${tee.slice(0, 3)})`,
             label: `Tee (${tee})`,
-            value: `TEE_${tee}`,
+            value: `${PosOptionMethods.TEE}/${tee}`,
           })
         );
       }
@@ -81,9 +81,36 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     return to;
   }, []);
 
+  const fromPosButtonText = useMemo(() => {
+    if (props.stroke.fromPosSetMethod === PosOptionMethods.TEE) {
+      // Show which Tee based on GPS match
+    }
+    return PosOptions[props.stroke.fromPosSetMethod]?.buttonText || "Set";
+  }, [props.stroke]);
+
+  const toPosButtonText = useMemo(() => {
+    if (props.stroke.toPosSetMethod === PosOptionMethods.TEE) {
+
+    }
+    /*
+     ||
+    `${Math.round(props.stroke.strokeDistance || 0) || ""}` ||
+    "GPS Set"
+    */
+    return PosOptions[props.stroke.toPosSetMethod]?.buttonText || "Set";
+  }, [props.stroke]);
+
+  const setFromPos = useCallback((value: string) => {
+    const [posMethod] = value.split("/");
+    props.setFromPosMethod(props.strokeNum, posMethod as PosOptionMethods)
+  }, [props.strokeNum, props.setFromPosMethod]);
+
   return {
     fromPosOptions,
+    fromPosButtonText,
     toPosOptions,
+    toPosButtonText,
+    setFromPos,
     activeModal,
     setActiveModal,
     clubOptions,
@@ -171,10 +198,10 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           </Text>
           <Flex flex={1} flexDir={"row"}>
             <DropdownButton
-              buttonText={"GPS Set"}
-              selectedValue={PosOptions.Gps.value}
+              buttonText={viewLogic.fromPosButtonText}
+              selectedValue={props.stroke.fromPosSetMethod}
               options={viewLogic.fromPosOptions}
-              onSelectChange={(value: string) => props.setFromPosMethod(props.strokeNum, value as PosOptionMethods)}
+              onSelectChange={viewLogic.setFromPos}
               onClick={() => props.setLiePosition(props.strokeNum)}
             />
           </Flex>
@@ -192,11 +219,8 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           </Text>
           <Box flex={1}>
             <DropdownButton
-              buttonText={
-                `${Math.round(props.stroke.strokeDistance || 0) || ""}` ||
-                "GPS Set"
-              }
-              selectedValue={PosOptions.Gps.value}
+              buttonText={viewLogic.toPosButtonText}
+              selectedValue={props.stroke.toPosSetMethod}
               options={viewLogic.toPosOptions}
               onSelectChange={(value: string) => props.setToPosMethod(props.strokeNum, value as PosOptionMethods)}
               onClick={() => props.setStrokePosition(props.strokeNum)}

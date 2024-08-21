@@ -3,6 +3,7 @@ export enum Lie {
   TEE_MEDIUM = "Tee (Medium)",
   TEE_LOW = "Tee (Low)",
   TEE_GRASS = "Tee (Grass)",
+  TEE_ARTIFICIAL_GRASS = "Tee (Artificial Grass)",
   FAIRWAY = "Fairway",
   LIGHT_ROUGH = "Light rough",
   DEEP_ROUGH = "Deep rough",

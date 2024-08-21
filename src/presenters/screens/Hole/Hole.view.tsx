@@ -98,8 +98,6 @@ function useHoleViewLogic(props: HoleViewProps) {
 
   const setStrokePosition = useCallback(
     (strokeNum: number) =>
-      // @ts-ignore
-      console.log("setting stkPos") ||
       (currentPosition && parentSetStrokePos(strokeNum, currentPosition)),
     [currentPosition, parentSetStrokePos]
   );

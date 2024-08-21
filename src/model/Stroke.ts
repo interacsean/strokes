@@ -9,7 +9,7 @@ export type Stroke = {
   fromPosSetMethod: PosOptionMethods;
   fromLie: Lie | string | undefined;
   toPos: LatLng | undefined;
-  toPosSetMethod: PosOptionMethods | undefined;
+  toPosSetMethod: PosOptionMethods;
   toLie: Lie | undefined | null;
   strokeType: StrokeType | undefined;
   intendedPos: LatLng | undefined;

@@ -45,7 +45,11 @@ export function DropdownButton(props: DropdownButtonProps) {
             {props.placeholder || "—"}
           </option>
           {props.options.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option
+              key={option.value}
+              value={option.value}
+              selected={option.value === props.selectedValue}
+            >
               {option.label}
             </option>
           ))}

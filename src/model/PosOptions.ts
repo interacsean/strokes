@@ -17,7 +17,7 @@ export type PosOption = {
 export const PosOptions: Record<PosOptionMethods, PosOption> = {
   [PosOptionMethods.GPS]: { buttonText: "Set Pos", label: "Set Position from GPS", value: PosOptionMethods.GPS },
   [PosOptionMethods.LAST_SHOT]: {
-    buttonText: "Last Shot",
+    buttonText: "Update Last Shot",
     label: "Use Last Shot",
     value: PosOptionMethods.LAST_SHOT,
   },
