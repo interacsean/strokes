@@ -9,13 +9,16 @@ import { ShotSelectModal } from "./ShotSelectModal.view";
 import { LieSelectModal } from "./LieSelectModal.view";
 import { DropdownButton } from "presenters/components/DropdownButton/DropdownButton";
 import { Hole } from "model/Hole";
+import { PosOptionMethods, PosOptions } from "model/PosOptions";
 
 export type SingleStrokeViewProps = {
   hole: Hole;
   strokeNum: number;
   stroke: StrokeWithDerivedFields;
   selectFromLie: HoleViewProps["selectStrokeFromLie"];
+  setFromPosMethod: HoleViewProps["setFromPosMethod"];
   selectToLie: HoleViewProps["selectStrokeToLie"];
+  setToPosMethod: HoleViewProps["setToPosMethod"];
   selectClub: HoleViewProps["selectStrokeClub"];
   selectStrokeType: HoleViewProps["selectStrokeType"];
   setStrokePosition: (strokeNum: number) => void;
@@ -30,20 +33,6 @@ enum Modals {
   ToLie = "ToLie",
 }
 
-// todo: button behaviour
-const PosOptions = {
-  Gps: { buttonText: "Set Pos", label: "Set Position from GPS", value: "GPS" },
-  LastShot: {
-    buttonText: "Last Shot",
-    label: "Use Last Shot",
-    value: "LAST_SHOT",
-  },
-  Custom: { buttonText: "Map Pos", label: "Choose on Map", value: "CUSTOM" },
-  Drop: { buttonText: "Set Pos", label: "Take Drop", value: "DROP" },
-  Pin: { buttonText: "Near Pin", label: "Near Pin", value: "PIN" },
-  Hole: { buttonText: "In Hole", label: "In Hole", value: "Hole" },
-};
-
 function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const [activeModal, setActiveModal] = useState<Modals | null>(null);
 
@@ -56,7 +45,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   );
 
   const fromPosOptions = useMemo(() => {
-    const fo = [PosOptions.Gps];
+    const fo = [PosOptions[PosOptionMethods.GPS]];
     if (props.strokeNum === 1) {
       const teeNames = Object.keys(props.hole.tees);
       if (teeNames.length === 1) {
@@ -77,18 +66,18 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     }
     // todo: exclude if last stroke's toLie was hazard/water
     if (props.strokeNum > 1) {
-      fo.push(PosOptions.LastShot);
+      fo.push(PosOptions[PosOptionMethods.LAST_SHOT]);
     }
-    fo.push(PosOptions.Custom);
-    fo.push(PosOptions.Drop);
+    fo.push(PosOptions[PosOptionMethods.CUSTOM]);
+    fo.push(PosOptions[PosOptionMethods.DROP]);
     return fo;
   }, [props.hole.tees, props.strokeNum]);
 
   const toPosOptions = useMemo(() => {
-    const to = [PosOptions.Gps];
-    to.push(PosOptions.Custom);
-    to.push(PosOptions.Pin);
-    to.push(PosOptions.Hole);
+    const to = [PosOptions[PosOptionMethods.GPS]];
+    to.push(PosOptions[PosOptionMethods.CUSTOM]);
+    to.push(PosOptions[PosOptionMethods.NEAR_PIN]);
+    to.push(PosOptions[PosOptionMethods.HOLE]);
     return to;
   }, []);
 
@@ -185,7 +174,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               buttonText={"GPS Set"}
               selectedValue={PosOptions.Gps.value}
               options={viewLogic.fromPosOptions}
-              onSelectChange={() => {}}
+              onSelectChange={(value: string) => props.setFromPosMethod(props.strokeNum, value as PosOptionMethods)}
               onClick={() => props.setLiePosition(props.strokeNum)}
             />
           </Flex>
@@ -209,7 +198,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               }
               selectedValue={PosOptions.Gps.value}
               options={viewLogic.toPosOptions}
-              onSelectChange={() => {}}
+              onSelectChange={(value: string) => props.setToPosMethod(props.strokeNum, value as PosOptionMethods)}
               onClick={() => props.setStrokePosition(props.strokeNum)}
             />
           </Box>

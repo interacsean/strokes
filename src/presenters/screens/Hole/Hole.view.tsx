@@ -25,6 +25,7 @@ import { StrokeType } from "model/StrokeType";
 // import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { SingleStroke } from "./components/SingleStroke";
+import { PosOptionMethods } from "model/PosOptions";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -36,6 +37,8 @@ export type HoleViewProps = {
   setPar: (n: number) => void;
   selectStrokeFromLie: (stroke: number, lie: Lie | string) => void;
   selectStrokeToLie: (stroke: number, lie: Lie) => void;
+  setFromPosMethod: (stroke: number, posMethod: PosOptionMethods) => void;
+  setToPosMethod: (stroke: number, posMethod: PosOptionMethods) => void;
   selectStrokeClub: (stroke: number, club: Club) => void;
   selectStrokeType: (stroke: number, strokeType: StrokeType) => void;
   preprocessedStrokes: StrokeWithDerivedFields[];
@@ -197,6 +200,8 @@ export function HoleView(props: HoleViewProps) {
                   selectStrokeType={props.selectStrokeType}
                   setLiePosition={viewLogic.setLiePosition}
                   setStrokePosition={viewLogic.setStrokePosition}
+                  setFromPosMethod={props.setFromPosMethod}
+                  setToPosMethod={props.setToPosMethod}
                 />
               </Box>
               <hr />

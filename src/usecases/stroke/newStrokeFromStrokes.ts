@@ -6,15 +6,20 @@ import { setStrokeFromLie } from "./setStrokeFromLie";
 import { setStrokeType } from "./setStrokeType";
 import { Hole } from "model/Hole";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
+import { PosOptionMethods } from "model/PosOptions";
 
 export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
   const lastStroke = last(strokes);
   let stroke: Stroke = {
-    fromLie: undefined,
     fromPos: undefined,
+    fromPosSetMethod: strokes.length === 0
+      ? PosOptionMethods.TEE
+      : PosOptionMethods.LAST_SHOT,
+    fromLie: undefined,
     club: undefined,
     intendedPos: undefined,
     toPos: undefined,
+    toPosSetMethod: PosOptionMethods.GPS,
     toLie: undefined,
     strokeType: StrokeType.FULL,
   };

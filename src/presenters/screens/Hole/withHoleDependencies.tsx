@@ -31,6 +31,7 @@ import { GeoHUD } from "presenters/screens/Hole/components/GeoHUD";
 import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { DeepPartial } from "types/DeepPartial";
+import { PosOptionMethods } from "model/PosOptions";
 
 type HolePublicProps = {};
 
@@ -108,6 +109,26 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
         holeUpdateAndSave({ pins: { pin: holePos } });
       },
       [holeUpdateAndSave]
+    );
+
+    const setFromPosMethod = useCallback(
+      (strokeNum: number, posMethod: PosOptionMethods) => {
+        saveStrokeAndUpdate(
+          strokeNum,
+          { fromPosSetMethod: posMethod }
+        );
+      },
+      [saveStrokeAndUpdate],
+    );
+
+    const setToPosMethod = useCallback(
+      (strokeNum: number, posMethod: PosOptionMethods) => {
+        saveStrokeAndUpdate(
+          strokeNum,
+          { toPosSetMethod: posMethod }
+        );
+      },
+      [saveStrokeAndUpdate],
     );
 
     const setTeePos = useCallback(
@@ -293,6 +314,8 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       selectStrokeToLie: setStrokeToLieAndUpdate,
       selectStrokeClub: setStrokeClubAndUpdate,
       selectStrokeType: setStrokeTypeAndUpdate,
+      setFromPosMethod,
+      setToPosMethod,
       preprocessedStrokes,
       setStrokePos,
       setLiePos,

@@ -1,12 +1,15 @@
 import { LatLng } from "./LatLng";
 import { Lie } from "./Lie";
+import { PosOption, PosOptionMethods } from "./PosOptions";
 import { StrokeType } from "./StrokeType";
 
 export type Stroke = {
   club: string | undefined;
-  fromLie: Lie | string | undefined;
   fromPos: LatLng | undefined;
+  fromPosSetMethod: PosOptionMethods;
+  fromLie: Lie | string | undefined;
   toPos: LatLng | undefined;
+  toPosSetMethod: PosOptionMethods | undefined;
   toLie: Lie | undefined | null;
   strokeType: StrokeType | undefined;
   intendedPos: LatLng | undefined;
