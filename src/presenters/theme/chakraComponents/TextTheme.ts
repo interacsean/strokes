@@ -56,6 +56,16 @@ const TextTheme = {
       color: palette.heading[100],
       textTransform: "uppercase",
     },
+    button: {
+      fontFamily: fontFamilies.content,
+      fontWeight: fontWeights.bold,
+      fontSize: `${14 / 16}rem`,
+    },
+    buttonSub: {
+      fontFamily: fontFamilies.content,
+      fontWeight: fontWeights.bold,
+      fontSize: `${11.5 / 16}rem`,
+    },
     inputLabel: {
       fontFamily: fontFamilies.content,
       fontSize: `${14 / 16}rem`,

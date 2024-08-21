@@ -14,6 +14,7 @@ type HoleOverviewProps = {
   weather?: string | undefined;
   activeStroke: number;
   setActiveStroke: (stroke: number) => void;
+  distanceUnit: string;
 };
 
 function StrokesCount({
@@ -79,8 +80,6 @@ function StrokesCount({
 }
 
 export function HoleOverview(props: HoleOverviewProps) {
-  const distUnit = "m"; // todo
-
   const roundScoreBg =
     props.roundScore === undefined
       ? "black"
@@ -135,7 +134,7 @@ export function HoleOverview(props: HoleOverviewProps) {
             {props.holeLength && (
               <Text variant="minor" lineHeight={"1.1em"} fontWeight={800}>
                 {Math.round(props.holeLength)}
-                {distUnit}
+                {props.distanceUnit}
               </Text>
             )}
           </Flex>
@@ -186,7 +185,7 @@ export function HoleOverview(props: HoleOverviewProps) {
               </Text>
               <Text variant="heading2" color="white" lineHeight={"1em"}>
                 {Math.round(props.distanceToHole)}
-                {distUnit}
+                {props.distanceUnit}
               </Text>
             </Flex>
           )}

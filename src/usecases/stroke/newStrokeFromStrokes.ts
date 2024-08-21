@@ -12,9 +12,8 @@ export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
   const lastStroke = last(strokes);
   let stroke: Stroke = {
     fromPos: undefined,
-    fromPosSetMethod: strokes.length === 0
-      ? PosOptionMethods.TEE
-      : PosOptionMethods.LAST_SHOT,
+    fromPosSetMethod:
+      strokes.length === 0 ? PosOptionMethods.TEE : PosOptionMethods.LAST_SHOT,
     fromLie: undefined,
     club: undefined,
     intendedPos: undefined,

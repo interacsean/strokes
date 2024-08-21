@@ -98,7 +98,7 @@ function useHoleViewLogic(props: HoleViewProps) {
 
   const setStrokePosition = useCallback(
     (strokeNum: number) =>
-      (currentPosition && parentSetStrokePos(strokeNum, currentPosition)),
+      currentPosition && parentSetStrokePos(strokeNum, currentPosition),
     [currentPosition, parentSetStrokePos]
   );
 
@@ -130,9 +130,12 @@ function useHoleViewLogic(props: HoleViewProps) {
   };
 }
 
+const DEBUG = true;
+
 export function HoleView(props: HoleViewProps) {
+  const distanceUnit = "m"; // todo
   const viewLogic = useHoleViewLogic(props);
-  console.log({ props, viewLogic });
+  if (DEBUG) console.log({ props, viewLogic });
 
   return (
     <Container>
@@ -185,6 +188,7 @@ export function HoleView(props: HoleViewProps) {
                   roundScore={props.roundScore}
                   activeStroke={viewLogic.activeStroke}
                   setActiveStroke={viewLogic.setActiveStroke}
+                  distanceUnit={distanceUnit}
                 />
               </Box>
               <Box position="relative" flex={1}>
@@ -200,6 +204,8 @@ export function HoleView(props: HoleViewProps) {
                   setStrokePosition={viewLogic.setStrokePosition}
                   setFromPosMethod={props.setFromPosMethod}
                   setToPosMethod={props.setToPosMethod}
+                  distanceUnit={distanceUnit}
+                  currentPosition={props.currentPosition}
                 />
               </Box>
               <hr />

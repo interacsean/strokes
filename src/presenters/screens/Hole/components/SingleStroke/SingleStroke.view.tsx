@@ -10,6 +10,8 @@ import { LieSelectModal } from "./LieSelectModal.view";
 import { DropdownButton } from "presenters/components/DropdownButton/DropdownButton";
 import { Hole } from "model/Hole";
 import { PosOptionMethods, PosOptions } from "model/PosOptions";
+import { LatLng } from "model/LatLng";
+import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 
 export type SingleStrokeViewProps = {
   hole: Hole;
@@ -24,6 +26,8 @@ export type SingleStrokeViewProps = {
   setStrokePosition: (strokeNum: number) => void;
   setLiePosition: (strokeNum: number) => void;
   clubs: Club[];
+  distanceUnit: string;
+  currentPosition: LatLng | undefined;
 };
 
 enum Modals {
@@ -73,37 +77,81 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     return fo;
   }, [props.hole.tees, props.strokeNum]);
 
+  const fromPosButtonText = useMemo(() => {
+    if (props.stroke.fromPosSetMethod === PosOptionMethods.TEE) {
+      return [
+        // todo: Show which Tee based on GPS match
+        `Tee (TBD)`,
+      ];
+    }
+
+    const matchingFPO = fromPosOptions.find(
+      (fromPosOp) => fromPosOp.value === props.stroke.fromPosSetMethod
+    );
+    return [matchingFPO?.buttonText, matchingFPO?.buttonTextSmall];
+  }, [fromPosOptions, props.stroke.fromPosSetMethod]);
+
+  // todo: decide if buttonText is worked out here or in xPosButtonText
   const toPosOptions = useMemo(() => {
     const to = [PosOptions[PosOptionMethods.GPS]];
     to.push(PosOptions[PosOptionMethods.CUSTOM]);
     to.push(PosOptions[PosOptionMethods.NEAR_PIN]);
     to.push(PosOptions[PosOptionMethods.HOLE]);
     return to;
-  }, []);
+  }, [props.stroke.strokeDistance, props.distanceUnit]);
 
-  const fromPosButtonText = useMemo(() => {
-    if (props.stroke.fromPosSetMethod === PosOptionMethods.TEE) {
-      // Show which Tee based on GPS match
+  const prevStroke = useMemo(() => {
+    if (props.strokeNum <= 1 || !props.hole.strokes[props.strokeNum - 1])
+      return null;
+    return props.hole.strokes[props.strokeNum - 1 - 1];
+  }, [props.hole.strokes, props.strokeNum]);
+
+  const distSinceFrom = useMemo(() => {
+    if (!props.stroke?.fromPos || !props.currentPosition) {
+      return null;
     }
-    return PosOptions[props.stroke.fromPosSetMethod]?.buttonText || "Set";
-  }, [props.stroke]);
+    return Math.round(
+      calculateDistanceBetweenPositions(
+        props.stroke.fromPos,
+        props.currentPosition
+      )
+    );
+  }, [props.stroke, props.currentPosition]);
 
   const toPosButtonText = useMemo(() => {
-    if (props.stroke.toPosSetMethod === PosOptionMethods.TEE) {
+    if (props.stroke.toPosSetMethod === PosOptionMethods.GPS) {
+      const roundedShotDist = Math.round(props.stroke.strokeDistance || 0);
 
+      return [
+        roundedShotDist ? `${roundedShotDist}${props.distanceUnit}` : "Set GPS",
+        ...(distSinceFrom
+          ? [
+              roundedShotDist === distSinceFrom
+                ? "-"
+                : `> ${distSinceFrom}${props.distanceUnit}`,
+            ]
+          : []),
+      ];
     }
-    /*
-     ||
-    `${Math.round(props.stroke.strokeDistance || 0) || ""}` ||
-    "GPS Set"
-    */
-    return PosOptions[props.stroke.toPosSetMethod]?.buttonText || "Set";
-  }, [props.stroke]);
+    const matchingTPO = toPosOptions.find(
+      (toPosOp) => toPosOp.value === props.stroke.toPosSetMethod
+    );
+    return [matchingTPO?.buttonText, matchingTPO?.buttonTextSmall];
+  }, [
+    props.stroke.strokeDistance,
+    props.distanceUnit,
+    distSinceFrom,
+    toPosOptions,
+    props.stroke.toPosSetMethod,
+  ]);
 
-  const setFromPos = useCallback((value: string) => {
-    const [posMethod] = value.split("/");
-    props.setFromPosMethod(props.strokeNum, posMethod as PosOptionMethods)
-  }, [props.strokeNum, props.setFromPosMethod]);
+  const setFromPos = useCallback(
+    (value: string) => {
+      const [posMethod] = value.split("/");
+      props.setFromPosMethod(props.strokeNum, posMethod as PosOptionMethods);
+    },
+    [props.strokeNum, props.setFromPosMethod]
+  );
 
   return {
     fromPosOptions,
@@ -198,7 +246,8 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           </Text>
           <Flex flex={1} flexDir={"row"}>
             <DropdownButton
-              buttonText={viewLogic.fromPosButtonText}
+              buttonText={viewLogic.fromPosButtonText[0]}
+              buttonTextSmall={viewLogic.fromPosButtonText[1]}
               selectedValue={props.stroke.fromPosSetMethod}
               options={viewLogic.fromPosOptions}
               onSelectChange={viewLogic.setFromPos}
@@ -219,10 +268,13 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           </Text>
           <Box flex={1}>
             <DropdownButton
-              buttonText={viewLogic.toPosButtonText}
+              buttonText={viewLogic.toPosButtonText[0]}
+              buttonTextSmall={viewLogic.toPosButtonText[1]}
               selectedValue={props.stroke.toPosSetMethod}
               options={viewLogic.toPosOptions}
-              onSelectChange={(value: string) => props.setToPosMethod(props.strokeNum, value as PosOptionMethods)}
+              onSelectChange={(value: string) =>
+                props.setToPosMethod(props.strokeNum, value as PosOptionMethods)
+              }
               onClick={() => props.setStrokePosition(props.strokeNum)}
             />
           </Box>

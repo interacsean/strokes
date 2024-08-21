@@ -113,22 +113,16 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const setFromPosMethod = useCallback(
       (strokeNum: number, posMethod: PosOptionMethods) => {
-        saveStrokeAndUpdate(
-          strokeNum,
-          { fromPosSetMethod: posMethod }
-        );
+        saveStrokeAndUpdate(strokeNum, { fromPosSetMethod: posMethod });
       },
-      [saveStrokeAndUpdate],
+      [saveStrokeAndUpdate]
     );
 
     const setToPosMethod = useCallback(
       (strokeNum: number, posMethod: PosOptionMethods) => {
-        saveStrokeAndUpdate(
-          strokeNum,
-          { toPosSetMethod: posMethod }
-        );
+        saveStrokeAndUpdate(strokeNum, { toPosSetMethod: posMethod });
       },
-      [saveStrokeAndUpdate],
+      [saveStrokeAndUpdate]
     );
 
     const setTeePos = useCallback(

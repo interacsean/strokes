@@ -1,8 +1,9 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { Button, Flex } from "@chakra-ui/react";
+import { Button, Flex, Text } from "@chakra-ui/react";
 
 type DropdownButtonProps = {
   buttonText: string | undefined;
+  buttonTextSmall: string | undefined;
   selectedValue: string | undefined;
   placeholder?: string;
   onClick: () => void;
@@ -13,8 +14,18 @@ type DropdownButtonProps = {
 export function DropdownButton(props: DropdownButtonProps) {
   return (
     <Flex flexDir="row" flex={1}>
-      <Button flex={1} borderRightRadius={0} onClick={props.onClick}>
-        {props.buttonText}
+      <Button
+        flex={1}
+        // variant={}
+        borderRightRadius={0}
+        onClick={props.onClick}
+      >
+        <Flex flexDir="column">
+          <Text variant="button">{props.buttonText}</Text>
+          {props.buttonTextSmall && (
+            <Text variant="buttonSub">{props.buttonTextSmall}</Text>
+          )}
+        </Flex>
       </Button>
       <Flex
         position="relative"
@@ -37,7 +48,7 @@ export function DropdownButton(props: DropdownButtonProps) {
             left: 0,
             width: "100%",
             height: "100%",
-            opacity: 0, // Fully hide the select
+            opacity: 0,
             cursor: "pointer",
           }}
         >
