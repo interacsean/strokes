@@ -31,7 +31,7 @@ export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
       ? Lie.TEE_HIGH
       : lastStroke?.fromLie === Lie.GREEN
       ? Lie.GREEN
-      : undefined
+      : lastStroke?.toLie || undefined
   );
   if (lastStroke) {
     stroke.fromPos = lastStroke?.toPos;
