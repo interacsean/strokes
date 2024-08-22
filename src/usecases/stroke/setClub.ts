@@ -33,9 +33,17 @@ export function setClub(
       Club["3H"],
       Club["4H"],
       Club["5H"],
+      Club["2I"],
+      Club["3I"],
+      Club["4I"],
+      Club["5I"],
+      Club["6I"],
+      Club["7I"],
+      Club["8I"],
+      Club["9I"],
     ]
   ) {
-    if (stroke?.strokeType !== StrokeType.FULL) {
+    if (stroke?.strokeType === undefined) {
       attrs.strokeType = StrokeType.FULL;
     }
   }

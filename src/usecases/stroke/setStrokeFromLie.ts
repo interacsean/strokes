@@ -25,12 +25,18 @@ export function setStrokeFromLie(
   if (validLie === Lie.GREEN) {
     attrs.club = Club.P;
     attrs.strokeType = StrokeType.PUTT;
-  }
-  if (validLie === Lie.FRINGE) {
+  } else if (validLie === Lie.FRINGE) {
     if (stroke?.club === undefined) {
-      attrs.club = Club.PW;
+      attrs.club = Club.P;
       if (stroke?.strokeType === undefined) {
-        attrs.strokeType = StrokeType.CHIP;
+        attrs.strokeType = StrokeType.PUTT;
+      }
+    }
+  } else if (validLie === Lie.BUNKER) {
+    if (stroke?.club === undefined) {
+      attrs.club = Club.SW;
+      if (stroke?.strokeType === undefined) {
+        attrs.strokeType = StrokeType.FLOP;
       }
     }
   }

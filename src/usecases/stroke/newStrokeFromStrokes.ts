@@ -7,6 +7,7 @@ import { setStrokeType } from "./setStrokeType";
 import { Hole } from "model/Hole";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { PosOptionMethods } from "model/PosOptions";
+import { setClub } from "./setClub";
 
 export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
   const lastStroke = last(strokes);
@@ -24,15 +25,16 @@ export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
   };
   const strokeNum = strokes.length + 1;
   setStrokeFromLie(
-    ({ fromLie }) => (stroke.fromLie = fromLie),
+    ({ fromLie, club, strokeType }) => {
+      if (fromLie) stroke.fromLie = fromLie;
+      if (club) stroke.club = club;
+      if (strokeType) stroke.strokeType = strokeType;
+    },
     strokeNum,
     stroke,
-    strokeNum === 1
-      ? Lie.TEE_HIGH
-      : lastStroke?.fromLie === Lie.GREEN
-      ? Lie.GREEN
-      : lastStroke?.toLie || undefined
+    strokeNum === 1 ? Lie.TEE_HIGH : lastStroke?.toLie || undefined
   );
+
   if (lastStroke) {
     stroke.fromPos = lastStroke?.toPos;
   } else {
