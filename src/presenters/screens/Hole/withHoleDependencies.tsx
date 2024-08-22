@@ -55,8 +55,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const saveStrokeAndUpdate = useCallback(
       (strokeNum: number, partStroke: Partial<Stroke>) => {
         const currentStroke =
-          currentHole.strokes[strokeNum - 1] ||
-          newStrokeFromStrokes(strokes, currentHole);
+          strokes[strokeNum - 1] || newStrokeFromStrokes(strokes, currentHole);
         const updatedStroke = mergePartStroke(currentStroke, partStroke);
         saveStroke(updateCourseState, currentHole, strokeNum, updatedStroke);
       },
@@ -200,15 +199,16 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       [saveStrokeAndUpdate, strokes]
     );
 
-    const setStrokePos = useCallback(
+    const setToPosition = useCallback(
       (strokeNum: number, pos: LatLng) => {
         saveStrokeAndUpdate(strokeNum, { toPos: pos });
       },
       [saveStrokeAndUpdate]
     );
 
-    const setLiePos = useCallback(
+    const setFromPosition = useCallback(
       (strokeNum: number, pos: LatLng) => {
+        console.log({ setFromPos: true, strokeNum, pos });
         saveStrokeAndUpdate(strokeNum, { fromPos: pos });
       },
       [saveStrokeAndUpdate]
@@ -311,8 +311,8 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       setFromPosMethod,
       setToPosMethod,
       preprocessedStrokes,
-      setStrokePos,
-      setLiePos,
+      setToPosition,
+      setFromPosition,
       currentPosition,
       caddySuggestions,
       setHolePos,

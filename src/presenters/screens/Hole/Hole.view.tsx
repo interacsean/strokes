@@ -26,6 +26,7 @@ import { StrokeType } from "model/StrokeType";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { SingleStroke } from "./components/SingleStroke";
 import { PosOptionMethods } from "model/PosOptions";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -42,8 +43,8 @@ export type HoleViewProps = {
   selectStrokeClub: (stroke: number, club: Club) => void;
   selectStrokeType: (stroke: number, strokeType: StrokeType) => void;
   preprocessedStrokes: StrokeWithDerivedFields[];
-  setLiePos: (stroke: number, pos: LatLng) => void;
-  setStrokePos: (stroke: number, pos: LatLng) => void;
+  setFromPosition: (stroke: number, pos: LatLng) => void;
+  setToPosition: (stroke: number, pos: LatLng) => void;
   caddySuggestions: CaddySuggestion[];
   setHolePos: (pos: LatLng) => void;
   setTeePos: (teeName: string, pos: LatLng) => void;
@@ -61,8 +62,8 @@ function useHoleViewLogic(props: HoleViewProps) {
   const {
     setPar,
     currentPosition,
-    setStrokePos: parentSetStrokePos,
-    setLiePos: parentSetLiePos,
+    setToPosition: parentSetToPosition,
+    setFromPosition: parentSetFromPosition,
   } = props;
   // const pinPlayed = selectCurrentPinFromHole(props.hole);
   const [activeStroke, setActiveStroke] = useState(1);
@@ -96,17 +97,16 @@ function useHoleViewLogic(props: HoleViewProps) {
     [setParInputValue, props.holeNum, par]
   );
 
-  const setStrokePosition = useCallback(
+  const setToPosition = useCallback(
     (strokeNum: number) =>
-      currentPosition && parentSetStrokePos(strokeNum, currentPosition),
-    [currentPosition, parentSetStrokePos]
+      currentPosition && parentSetToPosition(strokeNum, currentPosition),
+    [currentPosition, parentSetToPosition]
   );
 
-  const setLiePosition = useCallback(
-    // @ts-ignore
+  const setFromPosition = useCallback(
     (strokeNum: number) =>
-      currentPosition && parentSetLiePos(strokeNum, currentPosition),
-    [currentPosition, parentSetLiePos]
+      currentPosition && parentSetFromPosition(strokeNum, currentPosition),
+    [currentPosition, parentSetFromPosition]
   );
 
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
@@ -123,8 +123,8 @@ function useHoleViewLogic(props: HoleViewProps) {
     setTabIndex,
     switchViewMap: useCallback(() => setTabIndex(0), [setTabIndex]),
     switchViewStrokeList: useCallback(() => setTabIndex(1), [setTabIndex]),
-    setStrokePosition,
-    setLiePosition,
+    setToPosition,
+    setFromPosition,
     activeStroke: availableActiveStroke,
     setActiveStroke,
   };
@@ -179,6 +179,11 @@ export function HoleView(props: HoleViewProps) {
             <StrokesContainer>
               <Box mx={-4} mt={-4}>
                 <HoleOverview
+                  nextHole={() => {
+                    console.log("nexthoel");
+                    props.nextHole();
+                  }}
+                  prevHole={props.prevHole}
                   holeNum={props.holeNum}
                   currentStrokeNum={props.preprocessedStrokes.length}
                   distanceToHole={props.distanceToHole}
@@ -200,25 +205,60 @@ export function HoleView(props: HoleViewProps) {
                   selectToLie={props.selectStrokeToLie}
                   selectClub={props.selectStrokeClub}
                   selectStrokeType={props.selectStrokeType}
-                  setLiePosition={viewLogic.setLiePosition}
-                  setStrokePosition={viewLogic.setStrokePosition}
+                  setFromPosition={viewLogic.setFromPosition}
+                  setToPosition={viewLogic.setToPosition}
                   setFromPosMethod={props.setFromPosMethod}
                   setToPosMethod={props.setToPosMethod}
                   distanceUnit={distanceUnit}
                   currentPosition={props.currentPosition}
                 />
               </Box>
-              <hr />
+              <Box my={4}>
+                <hr />
+              </Box>
 
-              <Flex flexDir="column" rowGap={3} mt={3}>
-                {/* Todo: Move to SingleStrokeView? */}
-                <Button onClick={props.addStroke}>New stroke</Button>
-                <Flex columnGap={2} justifyContent="stretch">
-                  <Button flexGrow={1} onClick={props.prevHole}>
-                    Last
+              <Flex flexDir="column" justifyContent="center" rowGap={3} mt={3}>
+                <Flex
+                  columnGap={2}
+                  justifyContent="stretch"
+                  alignItems="center"
+                >
+                  <Button variant="ghost" px={2} onClick={props.prevHole}>
+                    <ChevronLeftIcon boxSize={6} />
                   </Button>
-                  <Button flexGrow={1} onClick={props.nextHole}>
-                    Next
+                  <Flex flex={1} justifyContent="center" alignItems="center">
+                    <Button
+                      variant="ghost"
+                      px={2}
+                      onClick={() =>
+                        viewLogic.setActiveStroke(viewLogic.activeStroke - 1)
+                      }
+                    >
+                      <ChevronLeftIcon boxSize={6} />
+                    </Button>
+                    <Text>Shot {viewLogic.activeStroke}</Text>
+                    <Button
+                      variant="ghost"
+                      px={2}
+                      onClick={() =>
+                        viewLogic.activeStroke ===
+                        props.preprocessedStrokes.length
+                          ? props.addStroke()
+                          : viewLogic.setActiveStroke(
+                              viewLogic.activeStroke + 1
+                            )
+                      }
+                    >
+                      {viewLogic.activeStroke ===
+                      props.preprocessedStrokes.length ? (
+                        "+"
+                      ) : (
+                        <ChevronRightIcon boxSize={6} />
+                      )}
+                    </Button>
+                  </Flex>
+                  <Button variant="ghost" px={2} onClick={props.nextHole}>
+                    <ChevronRightIcon boxSize={6} />
                   </Button>
                 </Flex>
               </Flex>

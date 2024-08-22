@@ -22,8 +22,8 @@ type StrokeViewProps = {
   selectToLie: HoleViewProps["selectStrokeToLie"];
   selectClub: HoleViewProps["selectStrokeClub"];
   selectStrokeType: HoleViewProps["selectStrokeType"];
-  setStrokePosition: (strokeNum: number) => void;
-  setLiePosition: (strokeNum: number) => void;
+  setToPosition: (strokeNum: number) => void;
+  setFromPosition: (strokeNum: number) => void;
   current: boolean;
 };
 
@@ -41,8 +41,8 @@ export function StrokeView(props: StrokeViewProps) {
   const selectCurStrokeType = partial(props.selectStrokeType, [
     props.strokeNum,
   ]) as (strokeTypeAsStr: string) => void;
-  const setCurStrokePos = partial(props.setStrokePosition, [props.strokeNum]);
-  const setCurLiePos = partial(props.setLiePosition, [props.strokeNum]);
+  const setCurStrokePos = partial(props.setToPosition, [props.strokeNum]);
+  const setCurLiePos = partial(props.setFromPosition, [props.strokeNum]);
 
   return (
     <Container>

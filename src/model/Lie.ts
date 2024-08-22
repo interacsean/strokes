@@ -5,6 +5,7 @@ export enum Lie {
   TEE_GRASS = "Tee (Grass)",
   TEE_ARTIFICIAL_GRASS = "Tee (Artificial Grass)",
   FAIRWAY = "Fairway",
+  WRONG_FAIRWAY = "Wrong Fairway",
   LIGHT_ROUGH = "Light rough",
   DEEP_ROUGH = "Deep rough",
   BUNKER = "Bunker",

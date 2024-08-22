@@ -28,7 +28,7 @@ export function setStrokeFromLie(
   } else if (validLie === Lie.FRINGE) {
     if (stroke?.club === undefined) {
       attrs.club = Club.P;
-      if (stroke?.strokeType === undefined) {
+      if ([undefined, StrokeType.FULL].includes(stroke?.strokeType)) {
         attrs.strokeType = StrokeType.PUTT;
       }
     }

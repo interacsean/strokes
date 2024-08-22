@@ -40,7 +40,6 @@ export function DropdownButton(props: DropdownButtonProps) {
         minHeight="40px"
       >
         <select
-          value={props.selectedValue}
           onChange={(e) => props.onSelectChange(e.target.value)}
           style={{
             position: "absolute",
@@ -55,15 +54,21 @@ export function DropdownButton(props: DropdownButtonProps) {
           <option disabled value="">
             {props.placeholder || "—"}
           </option>
-          {props.options.map((option) => (
-            <option
-              key={option.value}
-              value={option.value}
-              selected={option.value === props.selectedValue}
-            >
-              {option.label}
-            </option>
-          ))}
+          {props.options.map((option) => {
+            // todo: support multiple tees
+            const selected = !props.selectedValue
+              ? false
+              : option.value.startsWith(props.selectedValue);
+            return (
+              <option
+                key={option.value}
+                value={option.value}
+                selected={selected}
+              >
+                {option.label}
+              </option>
+            );
+          })}
         </select>
         <ChevronDownIcon />
       </Flex>

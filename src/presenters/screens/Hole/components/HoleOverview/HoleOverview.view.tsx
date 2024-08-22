@@ -15,6 +15,8 @@ type HoleOverviewProps = {
   activeStroke: number;
   setActiveStroke: (stroke: number) => void;
   distanceUnit: string;
+  nextHole: () => void;
+  prevHole: () => void;
 };
 
 function StrokesCount({
@@ -119,7 +121,7 @@ export function HoleOverview(props: HoleOverviewProps) {
           justifyContent={"center"}
           flexGrow={1}
         >
-          <Button variant="ghost">
+          <Button variant="ghost" onClick={props.prevHole}>
             <ChevronLeftIcon boxSize={6} />
           </Button>
           <Text variant="heading" color="black" pr={2}>
@@ -138,7 +140,13 @@ export function HoleOverview(props: HoleOverviewProps) {
               </Text>
             )}
           </Flex>
-          <Button variant="ghost">
+          <Button
+            variant="ghost"
+            onClick={() => {
+              console.log("nh");
+              props.nextHole();
+            }}
+          >
             <ChevronRightIcon boxSize={6} />
           </Button>
         </Flex>

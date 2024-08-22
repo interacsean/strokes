@@ -23,8 +23,8 @@ export type SingleStrokeViewProps = {
   setToPosMethod: HoleViewProps["setToPosMethod"];
   selectClub: HoleViewProps["selectStrokeClub"];
   selectStrokeType: HoleViewProps["selectStrokeType"];
-  setStrokePosition: (strokeNum: number) => void;
-  setLiePosition: (strokeNum: number) => void;
+  setToPosition: (strokeNum: number) => void;
+  setFromPosition: (strokeNum: number) => void;
   clubs: Club[];
   distanceUnit: string;
   currentPosition: LatLng | undefined;
@@ -98,25 +98,20 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     to.push(PosOptions[PosOptionMethods.NEAR_PIN]);
     to.push(PosOptions[PosOptionMethods.HOLE]);
     return to;
-  }, [props.stroke.strokeDistance, props.distanceUnit]);
+  }, []);
 
-  const prevStroke = useMemo(() => {
-    if (props.strokeNum <= 1 || !props.hole.strokes[props.strokeNum - 1])
-      return null;
-    return props.hole.strokes[props.strokeNum - 1 - 1];
-  }, [props.hole.strokes, props.strokeNum]);
-
+  const {
+    stroke: { fromPos },
+    currentPosition,
+  } = props;
   const distSinceFrom = useMemo(() => {
-    if (!props.stroke?.fromPos || !props.currentPosition) {
+    if (!fromPos || !currentPosition) {
       return null;
     }
     return Math.round(
-      calculateDistanceBetweenPositions(
-        props.stroke.fromPos,
-        props.currentPosition
-      )
+      calculateDistanceBetweenPositions(fromPos, currentPosition)
     );
-  }, [props.stroke, props.currentPosition]);
+  }, [fromPos, currentPosition]);
 
   const toPosButtonText = useMemo(() => {
     if (props.stroke.toPosSetMethod === PosOptionMethods.GPS) {
@@ -145,23 +140,51 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     props.stroke.toPosSetMethod,
   ]);
 
-  const setFromPos = useCallback(
+  const { setFromPosMethod, strokeNum } = props;
+  const viewSetFromPosMethod = useCallback(
     (value: string) => {
       const [posMethod] = value.split("/");
-      props.setFromPosMethod(props.strokeNum, posMethod as PosOptionMethods);
+      setFromPosMethod(strokeNum, posMethod as PosOptionMethods);
     },
-    [props.strokeNum, props.setFromPosMethod]
+    [strokeNum, setFromPosMethod]
   );
+
+  const setToPosMethod = useCallback(
+    (value: string) => {
+      props.setToPosMethod(props.strokeNum, value as PosOptionMethods);
+    },
+    [props.strokeNum, props.setToPosMethod]
+  );
+
+  const {
+    setFromPosition,
+    setToPosition,
+    stroke: { fromPosSetMethod },
+  } = props;
+  const setFromPosOnClick = useCallback(() => {
+    // setFromPosition(strokeNum);
+    // console.log({ inclickHandler: true })
+    switch (fromPosSetMethod) {
+      case PosOptionMethods.LAST_SHOT:
+        setFromPosition(strokeNum);
+        if (strokeNum >= 2) {
+          // Bug: at the time of calling, `setToPosition` updates the state based on the unupdated from position
+          // setToPosition(strokeNum - 1);
+        }
+    }
+  }, [strokeNum, fromPosSetMethod, setFromPosition, setToPosition]);
 
   return {
     fromPosOptions,
     fromPosButtonText,
+    setFromPosMethod: viewSetFromPosMethod,
     toPosOptions,
     toPosButtonText,
-    setFromPos,
+    setToPosMethod,
     activeModal,
     setActiveModal,
     clubOptions,
+    setFromPosOnClick,
   };
 }
 
@@ -250,8 +273,12 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               buttonTextSmall={viewLogic.fromPosButtonText[1]}
               selectedValue={props.stroke.fromPosSetMethod}
               options={viewLogic.fromPosOptions}
-              onSelectChange={viewLogic.setFromPos}
-              onClick={() => props.setLiePosition(props.strokeNum)}
+              onSelectChange={viewLogic.setFromPosMethod}
+              onClick={() => {
+                console.log("in clickhandler");
+                viewLogic.setFromPosOnClick();
+                // props.setFromPosition(props.strokeNum)
+              }}
             />
           </Flex>
           <Box flex={1}>
@@ -272,10 +299,8 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               buttonTextSmall={viewLogic.toPosButtonText[1]}
               selectedValue={props.stroke.toPosSetMethod}
               options={viewLogic.toPosOptions}
-              onSelectChange={(value: string) =>
-                props.setToPosMethod(props.strokeNum, value as PosOptionMethods)
-              }
-              onClick={() => props.setStrokePosition(props.strokeNum)}
+              onSelectChange={viewLogic.setToPosMethod}
+              onClick={() => props.setToPosition(props.strokeNum)}
             />
           </Box>
           <Box flex={1}>
