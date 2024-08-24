@@ -9,9 +9,10 @@ import { ShotSelectModal } from "./ShotSelectModal.view";
 import { LieSelectModal } from "./LieSelectModal.view";
 import { DropdownButton } from "presenters/components/DropdownButton/DropdownButton";
 import { Hole } from "model/Hole";
-import { PosOptionMethods, PosOptions } from "model/PosOptions";
+import { PosOption, PosOptionMethods } from "model/PosOptions";
 import { LatLng } from "model/LatLng";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
+import { Lie } from "model/Lie";
 
 export type SingleStrokeViewProps = {
   hole: Hole;
@@ -23,8 +24,10 @@ export type SingleStrokeViewProps = {
   setToPosMethod: HoleViewProps["setToPosMethod"];
   selectClub: HoleViewProps["selectStrokeClub"];
   selectStrokeType: HoleViewProps["selectStrokeType"];
-  setToPosition: (strokeNum: number) => void;
-  setFromPosition: (strokeNum: number) => void;
+  setToPosition:  (strokeNum: number, optPos?: LatLng) => void;
+  setFromPosition: (strokeNum: number, optPos?: LatLng) => void;
+  fromPosOptions: PosOption[];
+  toPosOptions: PosOption[];
   clubs: Club[];
   distanceUnit: string;
   currentPosition: LatLng | undefined;
@@ -40,6 +43,18 @@ enum Modals {
 function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const [activeModal, setActiveModal] = useState<Modals | null>(null);
 
+  const {
+    setFromPosition,
+    setToPosition,
+    stroke: { fromPosSetMethod, fromPos, toPosSetMethod, toLie },
+    hole: { pinPlayed, pins },
+    currentPosition,
+    setFromPosMethod,
+    setToPosMethod,
+    strokeNum,
+    selectToLie,
+  } = props;
+
   const clubOptions = useMemo(
     () =>
       props.clubs.map((club) => ({
@@ -47,35 +62,6 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
       })),
     [props.clubs]
   );
-
-  const fromPosOptions = useMemo(() => {
-    const fo = [PosOptions[PosOptionMethods.GPS]];
-    if (props.strokeNum === 1) {
-      const teeNames = Object.keys(props.hole.tees);
-      if (teeNames.length === 1) {
-        fo.push({
-          buttonText: `Tee`,
-          label: `Tee`,
-          value: `${PosOptionMethods.TEE}/${teeNames[0]}`,
-        });
-      } else {
-        teeNames.map((tee) =>
-          fo.push({
-            buttonText: `Tee (${tee.slice(0, 3)})`,
-            label: `Tee (${tee})`,
-            value: `${PosOptionMethods.TEE}/${tee}`,
-          })
-        );
-      }
-    }
-    // todo: exclude if last stroke's toLie was hazard/water
-    if (props.strokeNum > 1) {
-      fo.push(PosOptions[PosOptionMethods.LAST_SHOT]);
-    }
-    fo.push(PosOptions[PosOptionMethods.CUSTOM]);
-    fo.push(PosOptions[PosOptionMethods.DROP]);
-    return fo;
-  }, [props.hole.tees, props.strokeNum]);
 
   const fromPosButtonText = useMemo(() => {
     if (props.stroke.fromPosSetMethod === PosOptionMethods.TEE) {
@@ -85,25 +71,12 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
       ];
     }
 
-    const matchingFPO = fromPosOptions.find(
+    const matchingFPO = props.fromPosOptions.find(
       (fromPosOp) => fromPosOp.value === props.stroke.fromPosSetMethod
     );
     return [matchingFPO?.buttonText, matchingFPO?.buttonTextSmall];
-  }, [fromPosOptions, props.stroke.fromPosSetMethod]);
+  }, [props.fromPosOptions, props.stroke.fromPosSetMethod]);
 
-  // todo: decide if buttonText is worked out here or in xPosButtonText
-  const toPosOptions = useMemo(() => {
-    const to = [PosOptions[PosOptionMethods.GPS]];
-    to.push(PosOptions[PosOptionMethods.CUSTOM]);
-    to.push(PosOptions[PosOptionMethods.NEAR_PIN]);
-    to.push(PosOptions[PosOptionMethods.HOLE]);
-    return to;
-  }, []);
-
-  const {
-    stroke: { fromPos },
-    currentPosition,
-  } = props;
   const distSinceFrom = useMemo(() => {
     if (!fromPos || !currentPosition) {
       return null;
@@ -128,7 +101,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
           : []),
       ];
     }
-    const matchingTPO = toPosOptions.find(
+    const matchingTPO = props.toPosOptions.find(
       (toPosOp) => toPosOp.value === props.stroke.toPosSetMethod
     );
     return [matchingTPO?.buttonText, matchingTPO?.buttonTextSmall];
@@ -136,11 +109,10 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     props.stroke.strokeDistance,
     props.distanceUnit,
     distSinceFrom,
-    toPosOptions,
+    props.toPosOptions,
     props.stroke.toPosSetMethod,
   ]);
 
-  const { setFromPosMethod, strokeNum } = props;
   const viewSetFromPosMethod = useCallback(
     (value: string) => {
       const [posMethod] = value.split("/");
@@ -149,18 +121,13 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     [strokeNum, setFromPosMethod]
   );
 
-  const setToPosMethod = useCallback(
+  const viewSetToPosMethod = useCallback(
     (value: string) => {
-      props.setToPosMethod(props.strokeNum, value as PosOptionMethods);
+      setToPosMethod(strokeNum, value as PosOptionMethods);
     },
-    [props.strokeNum, props.setToPosMethod]
+    [strokeNum, setToPosMethod]
   );
 
-  const {
-    setFromPosition,
-    setToPosition,
-    stroke: { fromPosSetMethod },
-  } = props;
   const setFromPosOnClick = useCallback(() => {
     // setFromPosition(strokeNum);
     // console.log({ inclickHandler: true })
@@ -171,20 +138,50 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
           // Bug: at the time of calling, `setToPosition` updates the state based on the unupdated from position
           // setToPosition(strokeNum - 1);
         }
+        break;
+      case PosOptionMethods.GPS:
+      case PosOptionMethods.DROP:
+        setFromPosition(strokeNum);
+        break;
+      case PosOptionMethods.CUSTOM:
+        // todo: open map
+        break;
+      case PosOptionMethods.TEE:
+        // skip
     }
-  }, [strokeNum, fromPosSetMethod, setFromPosition, setToPosition]);
+  }, [strokeNum, fromPosSetMethod, setFromPosition]);
+
+  const setToPosOnClick = useCallback(() => {
+    let pinPlayedUsed: string;
+    switch (toPosSetMethod) {
+      case PosOptionMethods.HOLE:
+        pinPlayedUsed = pinPlayed || Object.keys(pins)[0];
+        setToPosition(strokeNum, pins[pinPlayedUsed]);
+        break;
+      case PosOptionMethods.NEAR_PIN:
+        pinPlayedUsed = pinPlayed || Object.keys(pins)[0];
+        setToPosition(strokeNum, pins[pinPlayedUsed]);
+        // todo:
+        // 1) this should happen on change, not onClick
+        // 2) queing up change as this call overwrites the previous update since it is paired with the current course
+        // if (!toLie) selectToLie(strokeNum, Lie.GREEN);
+        break;
+      case PosOptionMethods.GPS:
+        setToPosition(strokeNum);
+        break;
+    };
+  }, [toPosSetMethod, pinPlayed, pins, setToPosition, strokeNum, toLie, selectToLie]);
 
   return {
-    fromPosOptions,
     fromPosButtonText,
     setFromPosMethod: viewSetFromPosMethod,
-    toPosOptions,
+    setFromPosOnClick,
     toPosButtonText,
-    setToPosMethod,
+    setToPosMethod: viewSetToPosMethod,
+    setToPosOnClick,
     activeModal,
     setActiveModal,
     clubOptions,
-    setFromPosOnClick,
   };
 }
 
@@ -272,13 +269,9 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               buttonText={viewLogic.fromPosButtonText[0]}
               buttonTextSmall={viewLogic.fromPosButtonText[1]}
               selectedValue={props.stroke.fromPosSetMethod}
-              options={viewLogic.fromPosOptions}
+              options={props.fromPosOptions}
               onSelectChange={viewLogic.setFromPosMethod}
-              onClick={() => {
-                console.log("in clickhandler");
-                viewLogic.setFromPosOnClick();
-                // props.setFromPosition(props.strokeNum)
-              }}
+              onClick={viewLogic.setFromPosOnClick}
             />
           </Flex>
           <Box flex={1}>
@@ -298,9 +291,9 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               buttonText={viewLogic.toPosButtonText[0]}
               buttonTextSmall={viewLogic.toPosButtonText[1]}
               selectedValue={props.stroke.toPosSetMethod}
-              options={viewLogic.toPosOptions}
+              options={props.toPosOptions}
               onSelectChange={viewLogic.setToPosMethod}
-              onClick={() => props.setToPosition(props.strokeNum)}
+              onClick={viewLogic.setToPosOnClick}
             />
           </Box>
           <Box flex={1}>

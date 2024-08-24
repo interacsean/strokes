@@ -230,7 +230,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
         currentHole.strokes
       ) as StrokeWithDerivedFields[];
     }, [currentHole]);
-    console.log({ preprocessedStrokes });
+    console.log(preprocessedStrokes.map(({ fromPos, toPos, strokeDistance }) => ({ fromPos, toPos, strokeDistance })));
 
     // todo: retry-on loop until high accuracy – how oftern to ping
     const geo = useGeolocated({

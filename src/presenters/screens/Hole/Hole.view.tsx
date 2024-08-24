@@ -98,15 +98,23 @@ function useHoleViewLogic(props: HoleViewProps) {
   );
 
   const setToPosition = useCallback(
-    (strokeNum: number) =>
-      currentPosition && parentSetToPosition(strokeNum, currentPosition),
-    [currentPosition, parentSetToPosition]
+    (strokeNum: number, optionalPos?: LatLng) => {
+      if (optionalPos) {
+        return parentSetToPosition(strokeNum, optionalPos);
+      }
+      currentPosition && parentSetToPosition(strokeNum, currentPosition);
+    },
+    [currentPosition, parentSetToPosition],
   );
 
   const setFromPosition = useCallback(
-    (strokeNum: number) =>
-      currentPosition && parentSetFromPosition(strokeNum, currentPosition),
-    [currentPosition, parentSetFromPosition]
+    (strokeNum: number, optionalPos?: LatLng) => {
+      if (optionalPos) {
+        return parentSetFromPosition(strokeNum, optionalPos);
+      }
+      currentPosition && parentSetFromPosition(strokeNum, currentPosition);
+    },
+    [currentPosition, parentSetFromPosition],
   );
 
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
