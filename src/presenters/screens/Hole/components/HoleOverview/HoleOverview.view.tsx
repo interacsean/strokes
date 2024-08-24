@@ -1,5 +1,5 @@
 import { Flex, Box, Text, Button } from "@chakra-ui/react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { ChevronLeftIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons";
 
 type HoleOverviewProps = {
   holeNum: number;
@@ -17,6 +17,7 @@ type HoleOverviewProps = {
   distanceUnit: string;
   nextHole: () => void;
   prevHole: () => void;
+  navHome: () => void;
 };
 
 function StrokesCount({
@@ -111,8 +112,12 @@ export function HoleOverview(props: HoleOverviewProps) {
 
   return (
     <Box borderBottom="1px solid" borderColor="neutral.500">
-      <Flex justifyContent="stretch" bgColor="white">
-        <Flex width="3rem">{/* Spacer */}</Flex>
+      <Flex justifyContent="stretch" alignItems="center" bgColor="white">
+        <Flex width="3rem">
+          <Button variant="ghost" onClick={props.navHome} px={0}>
+            <CloseIcon boxSize={4}/>
+          </Button>
+        </Flex>
         <Flex
           py={1}
           px={2}

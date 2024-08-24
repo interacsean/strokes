@@ -12,6 +12,7 @@ import {
   TabPanel,
   Box,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 import { Hole as HoleModel } from "model/Hole";
 import { Lie } from "model/Lie";
 import { useInput } from "presenters/utils/useInput/useInput";
@@ -27,6 +28,7 @@ import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { SingleStroke } from "./components/SingleStroke";
 import { PosOptionMethods } from "model/PosOptions";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { RoutePaths } from "presenters/routes/RoutePaths";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -53,7 +55,6 @@ export type HoleViewProps = {
   holeAltitudeDelta: number | undefined;
   roundScore: number;
   holeLength: number | undefined;
-  // holedStroke: () => void;
 };
 
 const DEFAULT_HOLE_TAB = 1;
@@ -124,6 +125,9 @@ function useHoleViewLogic(props: HoleViewProps) {
       ? 1
       : activeStroke;
 
+  const navigate = useNavigate();
+  const navHome = () => navigate(RoutePaths.Home);
+
   return {
     par,
     parInputProps,
@@ -135,6 +139,7 @@ function useHoleViewLogic(props: HoleViewProps) {
     setFromPosition,
     activeStroke: availableActiveStroke,
     setActiveStroke,
+    navHome,
   };
 }
 
@@ -202,6 +207,7 @@ export function HoleView(props: HoleViewProps) {
                   activeStroke={viewLogic.activeStroke}
                   setActiveStroke={viewLogic.setActiveStroke}
                   distanceUnit={distanceUnit}
+                  navHome={viewLogic.navHome}
                 />
               </Box>
               <Box position="relative" flex={1}>
