@@ -215,6 +215,7 @@ export function HoleView(props: HoleViewProps) {
                   hole={props.hole}
                   strokeNum={viewLogic.activeStroke}
                   stroke={props.preprocessedStrokes[viewLogic.activeStroke - 1]}
+                  strokes={props.preprocessedStrokes}
                   selectFromLie={props.selectStrokeFromLie}
                   selectToLie={props.selectStrokeToLie}
                   selectClub={props.selectStrokeClub}

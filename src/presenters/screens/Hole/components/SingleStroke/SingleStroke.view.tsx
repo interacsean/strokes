@@ -18,6 +18,7 @@ export type SingleStrokeViewProps = {
   hole: Hole;
   strokeNum: number;
   stroke: StrokeWithDerivedFields;
+  strokes: StrokeWithDerivedFields[];
   selectFromLie: HoleViewProps["selectStrokeFromLie"];
   setFromPosMethod: HoleViewProps["setFromPosMethod"];
   selectToLie: HoleViewProps["selectStrokeToLie"];
@@ -31,6 +32,7 @@ export type SingleStrokeViewProps = {
   clubs: Club[];
   distanceUnit: string;
   currentPosition: LatLng | undefined;
+  prevStroke: StrokeWithDerivedFields | undefined;
 };
 
 enum Modals {
@@ -53,6 +55,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     setToPosMethod,
     strokeNum,
     selectToLie,
+    prevStroke,
   } = props;
 
   const [localStrokeNum, setLocalStrokeNum] = useState(strokeNum);
@@ -194,7 +197,8 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     // console.log({ inclickHandler: true })
     switch (fromPosSetMethod) {
       case PosOptionMethods.LAST_SHOT:
-        setFromPosition(strokeNum);
+        console.log(prevStroke?.toPos)
+        setFromPosition(strokeNum, prevStroke?.toPos);
         if (strokeNum >= 2) {
           // Bug: at the time of calling, `setToPosition` updates the state based on the unupdated from position
           // setToPosition(strokeNum - 1);
@@ -210,7 +214,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
       case PosOptionMethods.TEE:
       // skip
     }
-  }, [strokeNum, fromPosSetMethod, setFromPosition]);
+  }, [strokeNum, fromPosSetMethod, setFromPosition, prevStroke]);
 
   const setToPosOnClick = useCallback(() => {
     let pinPlayedUsed: string;
