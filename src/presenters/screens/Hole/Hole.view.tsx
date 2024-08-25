@@ -251,25 +251,27 @@ export function HoleView(props: HoleViewProps) {
                       <ChevronLeftIcon boxSize={6} />
                     </Button>
                     <Text>Shot {viewLogic.activeStroke}</Text>
-                    <Button
-                      variant="ghost"
-                      px={2}
-                      onClick={() =>
-                        viewLogic.activeStroke ===
-                        props.preprocessedStrokes.length
-                          ? props.addStroke()
-                          : viewLogic.setActiveStroke(
-                              viewLogic.activeStroke + 1
-                            )
-                      }
-                    >
-                      {viewLogic.activeStroke ===
-                      props.preprocessedStrokes.length ? (
-                        "+"
-                      ) : (
-                        <ChevronRightIcon boxSize={6} />
-                      )}
-                    </Button>
+                    {props.preprocessedStrokes[viewLogic.activeStroke - 1].toPosSetMethod !== PosOptionMethods.HOLE && (
+                      <Button
+                        variant="ghost"
+                        px={2}
+                        onClick={() =>
+                          viewLogic.activeStroke ===
+                          props.preprocessedStrokes.length
+                            ? props.addStroke()
+                            : viewLogic.setActiveStroke(
+                                viewLogic.activeStroke + 1
+                              )
+                        }
+                      >
+                        {viewLogic.activeStroke ===
+                        props.preprocessedStrokes.length ? (
+                          "+"
+                        ) : (
+                          <ChevronRightIcon boxSize={6} />
+                        )}
+                      </Button>
+                    )}
                   </Flex>
                   <Button variant="ghost" px={2} onClick={props.nextHole}>
                     <ChevronRightIcon boxSize={6} />

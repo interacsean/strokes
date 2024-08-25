@@ -16,6 +16,7 @@ export function DropdownButton(props: DropdownButtonProps) {
     <Flex flexDir="row" flex={1}>
       <Button
         flex={1}
+        px={1}
         // variant={}
         borderRightRadius={0}
         onClick={props.onClick}

@@ -156,7 +156,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
         ...(distSinceFrom
           ? [
               roundedShotDist === distSinceFrom
-                ? "-"
+                ? undefined
                 : `> ${distSinceFrom}${props.distanceUnit}`,
             ]
           : []),
@@ -354,11 +354,13 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             />
           </Box>
           <Box flex={1}>
-            <CustomModalSelect
-              selectedText={props.stroke.toLie || undefined}
-              placeholder="Select Lie"
-              onOpen={() => viewLogic.setActiveModal(Modals.ToLie)}
-            />
+            {props.stroke.toPosSetMethod !== PosOptionMethods.HOLE && (
+              <CustomModalSelect
+                selectedText={props.stroke.toLie || undefined}
+                placeholder="Select Lie"
+                onOpen={() => viewLogic.setActiveModal(Modals.ToLie)}
+              />
+            )}
           </Box>
         </Flex>
       </Flex>
