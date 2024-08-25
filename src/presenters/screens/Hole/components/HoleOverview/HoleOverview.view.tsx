@@ -115,7 +115,7 @@ export function HoleOverview(props: HoleOverviewProps) {
       <Flex justifyContent="stretch" alignItems="center" bgColor="white">
         <Flex width="3rem">
           <Button variant="ghost" onClick={props.navHome} px={0}>
-            <CloseIcon boxSize={4}/>
+            <CloseIcon boxSize={4} />
           </Button>
         </Flex>
         <Flex

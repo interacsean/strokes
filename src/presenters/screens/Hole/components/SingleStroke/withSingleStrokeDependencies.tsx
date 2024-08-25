@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, useMemo, useState } from "react";
 import { SingleStrokeView, SingleStrokeViewProps } from "./SingleStroke.view";
 import { Club } from "model/Club";
 import { PosOptionMethods, PosOptions } from "model/PosOptions";
@@ -6,14 +6,16 @@ import { PosOptionMethods, PosOptions } from "model/PosOptions";
 type GeneratedPropKeys = "clubs" | "fromPosOptions" | "toPosOptions";
 type SingleStrokePublicProps = Omit<SingleStrokeViewProps, GeneratedPropKeys>;
 
-
 export function withSingleStrokeDependencies(
   HoleView: FC<SingleStrokeViewProps>
 ) {
   return function Hole(props: SingleStrokePublicProps) {
     // todo: get possible clubs from Bag state
 
-    const { hole: { tees, pins, pinPlayed }, strokeNum } = props;
+    const {
+      hole: { tees, pins, pinPlayed },
+      strokeNum,
+    } = props;
 
     const fromPosOptions = useMemo(() => {
       const fo = [PosOptions[PosOptionMethods.GPS]];
@@ -46,7 +48,9 @@ export function withSingleStrokeDependencies(
 
     // todo: decide if buttonText is worked out here or in xPosButtonText
     const toPosOptions = useMemo(() => {
-      const pinPlayedUsed = pinPlayed ? pins[pinPlayed] : Object.values(pins)[0];
+      const pinPlayedUsed = pinPlayed
+        ? pins[pinPlayed]
+        : Object.values(pins)[0];
       const to = [PosOptions[PosOptionMethods.GPS]];
       to.push(PosOptions[PosOptionMethods.CUSTOM]);
       if (pinPlayedUsed) {
@@ -55,7 +59,6 @@ export function withSingleStrokeDependencies(
       }
       return to;
     }, [pinPlayed, pins]);
-
 
     const viewProps: SingleStrokeViewProps = {
       ...props,

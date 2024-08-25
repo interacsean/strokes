@@ -2,7 +2,7 @@ import { Box, Flex, Text } from "@chakra-ui/react";
 import { CustomModalSelect } from "presenters/components/CustomModalSelect/CustomModalSelect";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { HoleViewProps } from "../../Hole.view";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ClubSelectModal } from "./ClubSelectModal.view";
 import { Club } from "model/Club";
 import { ShotSelectModal } from "./ShotSelectModal.view";
@@ -24,7 +24,7 @@ export type SingleStrokeViewProps = {
   setToPosMethod: HoleViewProps["setToPosMethod"];
   selectClub: HoleViewProps["selectStrokeClub"];
   selectStrokeType: HoleViewProps["selectStrokeType"];
-  setToPosition:  (strokeNum: number, optPos?: LatLng) => void;
+  setToPosition: (strokeNum: number, optPos?: LatLng) => void;
   setFromPosition: (strokeNum: number, optPos?: LatLng) => void;
   fromPosOptions: PosOption[];
   toPosOptions: PosOption[];
@@ -47,13 +47,74 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     setFromPosition,
     setToPosition,
     stroke: { fromPosSetMethod, fromPos, toPosSetMethod, toLie },
-    hole: { pinPlayed, pins },
+    hole: { pinPlayed, pins, holeNum },
     currentPosition,
     setFromPosMethod,
     setToPosMethod,
     strokeNum,
     selectToLie,
   } = props;
+
+  const [localStrokeNum, setLocalStrokeNum] = useState(strokeNum);
+  useEffect(
+    function updateLocalStrokeNumOnStrokeNumChange() {
+      setLocalStrokeNum(strokeNum);
+    },
+    [strokeNum]
+  );
+  const [localHoleNum, setLocalHoleNum] = useState(holeNum);
+  useEffect(
+    function updateLocalHoleNumOnHoleNumChange() {
+      setLocalHoleNum(holeNum);
+    },
+    [holeNum]
+  );
+
+  useEffect(
+    function takeActionOnFromMethodChange() {
+      if (holeNum === localHoleNum && strokeNum === localStrokeNum) {
+        // fromPosSetMethod and not because of changing shots or holes
+        switch (fromPosSetMethod) {
+          case PosOptionMethods.CUSTOM:
+            // todo: open map
+            break;
+          case PosOptionMethods.DROP:
+            // todo: show drop stuff?
+            break;
+          case PosOptionMethods.LAST_SHOT:
+            setFromPosition(strokeNum);
+            break;
+        }
+      }
+    },
+    [fromPosSetMethod]
+  );
+
+  useEffect(
+    function takeActionOnToMethodChange() {
+      if (holeNum === localHoleNum && strokeNum === localStrokeNum) {
+        // toPosSetMethod and not because of changing shots or holes
+        let pinPlayedUsed: string;
+        switch (toPosSetMethod) {
+          case PosOptionMethods.CUSTOM:
+            // todo: open map
+            break;
+          case PosOptionMethods.HOLE:
+            pinPlayedUsed = pinPlayed || Object.keys(pins)[0];
+            setToPosition(strokeNum, pins[pinPlayedUsed]);
+            break;
+          case PosOptionMethods.NEAR_PIN:
+            pinPlayedUsed = pinPlayed || Object.keys(pins)[0];
+            setToPosition(strokeNum, pins[pinPlayedUsed]);
+            // todo:
+            // 2) queing up change as this call overwrites the previous update since it is paired with the current course
+            // if (!toLie) selectToLie(strokeNum, Lie.GREEN);
+            break;
+        }
+      }
+    },
+    [toPosSetMethod]
+  );
 
   const clubOptions = useMemo(
     () =>
@@ -147,30 +208,26 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
         // todo: open map
         break;
       case PosOptionMethods.TEE:
-        // skip
+      // skip
     }
   }, [strokeNum, fromPosSetMethod, setFromPosition]);
 
   const setToPosOnClick = useCallback(() => {
     let pinPlayedUsed: string;
     switch (toPosSetMethod) {
-      case PosOptionMethods.HOLE:
-        pinPlayedUsed = pinPlayed || Object.keys(pins)[0];
-        setToPosition(strokeNum, pins[pinPlayedUsed]);
-        break;
-      case PosOptionMethods.NEAR_PIN:
-        pinPlayedUsed = pinPlayed || Object.keys(pins)[0];
-        setToPosition(strokeNum, pins[pinPlayedUsed]);
-        // todo:
-        // 1) this should happen on change, not onClick
-        // 2) queing up change as this call overwrites the previous update since it is paired with the current course
-        // if (!toLie) selectToLie(strokeNum, Lie.GREEN);
-        break;
       case PosOptionMethods.GPS:
         setToPosition(strokeNum);
         break;
-    };
-  }, [toPosSetMethod, pinPlayed, pins, setToPosition, strokeNum, toLie, selectToLie]);
+    }
+  }, [
+    toPosSetMethod,
+    pinPlayed,
+    pins,
+    setToPosition,
+    strokeNum,
+    toLie,
+    selectToLie,
+  ]);
 
   return {
     fromPosButtonText,

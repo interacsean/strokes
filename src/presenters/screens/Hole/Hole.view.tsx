@@ -105,7 +105,7 @@ function useHoleViewLogic(props: HoleViewProps) {
       }
       currentPosition && parentSetToPosition(strokeNum, currentPosition);
     },
-    [currentPosition, parentSetToPosition],
+    [currentPosition, parentSetToPosition]
   );
 
   const setFromPosition = useCallback(
@@ -115,7 +115,7 @@ function useHoleViewLogic(props: HoleViewProps) {
       }
       currentPosition && parentSetFromPosition(strokeNum, currentPosition);
     },
-    [currentPosition, parentSetFromPosition],
+    [currentPosition, parentSetFromPosition]
   );
 
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);

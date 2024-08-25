@@ -33,7 +33,7 @@ function useChooseCourseViewLogic(props: ChooseCourseViewProps) {
       setCourse(course);
       navigate(RoutePaths.Hole);
     },
-    [setCourse, navigate],
+    [setCourse, navigate]
   );
 
   return {
