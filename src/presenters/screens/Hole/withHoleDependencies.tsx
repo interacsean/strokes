@@ -296,7 +296,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const roundScore = useMemo(
       () =>
         courseState.holes.reduce((scoreAcc, hole) => {
-          if (hole.strokes.length && hole.completed) {
+          if (hole.strokes.length && hole.strokes.find((s) => s.toPosSetMethod === PosOptionMethods.HOLE)) {
             return scoreAcc + hole.strokes.length - (currentTee?.par || 0);
           }
           return scoreAcc;
@@ -329,6 +329,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       holeLength,
       roundScore,
       par: currentTee?.par,
+      course: courseState,
     };
 
     return (

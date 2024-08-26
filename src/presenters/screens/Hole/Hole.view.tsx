@@ -27,8 +27,10 @@ import { StrokeType } from "model/StrokeType";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { SingleStroke } from "./components/SingleStroke";
 import { PosOptionMethods } from "model/PosOptions";
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { ChevronLeftIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons";
 import { RoutePaths } from "presenters/routes/RoutePaths";
+import { copyToClipboard } from "usecases/device/copyToClipboard";
+import { Course } from "model/Course";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -55,6 +57,7 @@ export type HoleViewProps = {
   holeAltitudeDelta: number | undefined;
   roundScore: number;
   holeLength: number | undefined;
+  course: Course;
 };
 
 const DEFAULT_HOLE_TAB = 1;
@@ -153,10 +156,16 @@ export function HoleView(props: HoleViewProps) {
   return (
     <Container>
       <Tabs index={viewLogic.tabIndex} onChange={viewLogic.setTabIndex}>
-        <TabList>
-          <Tab onClick={() => viewLogic.setTabIndex(0)}>Map</Tab>
-          <Tab onClick={() => viewLogic.setTabIndex(1)}>Strokes</Tab>
-        </TabList>
+        <Flex>
+          <TabList flex={1}>
+            <Tab onClick={() => viewLogic.setTabIndex(0)}>Map</Tab>
+            <Tab onClick={() => viewLogic.setTabIndex(1)}>Strokes</Tab>
+            <Tab onClick={() => viewLogic.setTabIndex(2)}>Export</Tab>
+          </TabList>
+          <Button variant="ghost" onClick={viewLogic.navHome} px={0}>
+            <CloseIcon boxSize={4} />
+          </Button>
+        </Flex>
         <TabPanels>
           <TabPanel>
             <FormLabel>
@@ -208,7 +217,6 @@ export function HoleView(props: HoleViewProps) {
                   activeStroke={viewLogic.activeStroke}
                   setActiveStroke={viewLogic.setActiveStroke}
                   distanceUnit={distanceUnit}
-                  navHome={viewLogic.navHome}
                 />
               </Box>
               <Box position="relative" flex={1}>
@@ -281,6 +289,11 @@ export function HoleView(props: HoleViewProps) {
                 </Flex>
               </Flex>
             </StrokesContainer>
+          </TabPanel>
+          <TabPanel>
+            <Button onClick={() => copyToClipboard(JSON.stringify(props.course))}>
+              Copy course
+            </Button>
           </TabPanel>
         </TabPanels>
       </Tabs>
