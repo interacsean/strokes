@@ -50,6 +50,7 @@ export function ChooseCourseView(props: ChooseCourseViewProps) {
       <Flex flexDir="column" alignItems="flex-start">
         <Button
           variant="link"
+          py={3}
           onClick={() => viewLogic.selectCourse(props.newCourse())}
         >
           New course

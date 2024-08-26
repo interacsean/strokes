@@ -1,5 +1,5 @@
 import { Flex, Box, Text, Button } from "@chakra-ui/react";
-import { ChevronLeftIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
 type HoleOverviewProps = {
   holeNum: number;
@@ -17,7 +17,6 @@ type HoleOverviewProps = {
   distanceUnit: string;
   nextHole: () => void;
   prevHole: () => void;
-  navHome: () => void;
   setPar: (par: number) => void;
 };
 
@@ -38,19 +37,13 @@ function StrokesCount({
     .fill(0)
     .map((_, i) => i + 1)
     .slice(-6);
+
   // todo: consider activeStroke, if user is scrolling back through
   return (
     <Flex>
-      {strokes.map((n, i) => (
-        <Button
-          variant="ghost"
-          onClick={() => strokeClick(n)}
-          p={0}
-          minWidth={`${sz}px`}
-          height={`${sz - 3}px`}
-        >
+      {strokes.map((n, i) => {
+        const txt = (
           <Text
-            key={n}
             display="inline-flex"
             justifyContent="center"
             alignItems="center"
@@ -73,8 +66,30 @@ function StrokesCount({
           >
             {strokes.length < numStrokesToShow && i === 0 ? "-" : n}
           </Text>
-        </Button>
-      ))}
+        );
+
+        return (n <= totalStrokes) ? (
+          <Button
+            key={n}
+            variant="ghost"
+            onClick={() => {
+              n <= totalStrokes && strokeClick(n)
+            }}
+            p={0}
+            minWidth={`${sz}px`}
+            height={`${sz - 3}px`}
+          >
+            {txt}
+          </Button>
+        ) : (
+          <Box
+            key={n}
+            minWidth={`${sz}px`}
+            height={`${sz - 3}px`}>
+            {txt}
+          </Box>
+        );
+      })}
     </Flex>
   );
 }
@@ -85,7 +100,7 @@ export function HoleOverview(props: HoleOverviewProps) {
     props.roundScore === undefined
       ? "black"
       : props.roundScore > 0
-      ? "#ff0000"
+      ? "#c00000"
       : props.roundScore < 0
       ? "black"
       : "neutral.800";
@@ -110,12 +125,8 @@ export function HoleOverview(props: HoleOverviewProps) {
 
   return (
     <Box borderBottom="1px solid" borderColor="neutral.500">
-      <Flex justifyContent="stretch" alignItems="center" bgColor="white">
-        <Flex width="3rem">
-          <Button variant="ghost" onClick={props.navHome} px={0}>
-            <CloseIcon boxSize={4} />
-          </Button>
-        </Flex>
+      <Flex justifyContent="stretch" alignItems="stretch" bgColor="white">
+        <Flex width="3rem"></Flex>
         <Flex
           py={1}
           px={2}
@@ -131,7 +142,7 @@ export function HoleOverview(props: HoleOverviewProps) {
             {props.holeNum}
           </Text>
           <Flex flexDir={"column"} color={"neutral.800"}>
-            <Button variant="ghost" p={0} position="relative">
+            <Button variant="ghost" p={0} height="auto" position="relative">
               <select onChange={(e) => {
                 const parNum = parseInt(e.target.value, 10);
                 if (parNum) props.setPar(parNum);
@@ -180,7 +191,7 @@ export function HoleOverview(props: HoleOverviewProps) {
           >
             <Text variant="heading" color="white">
               {props.roundScore > 0 ? "+" : props.roundScore < 0 ? "-" : ""}
-              {props.roundScore === 0 ? "E" : props.roundScore}
+              {props.roundScore === 0 ? "E" : Math.abs(props.roundScore)}
             </Text>
           </Flex>
         )}
