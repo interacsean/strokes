@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo } from "react";
 import { SingleStrokeView, SingleStrokeViewProps } from "./SingleStroke.view";
 import { Club } from "model/Club";
 import { PosOptionMethods, PosOptions } from "model/PosOptions";

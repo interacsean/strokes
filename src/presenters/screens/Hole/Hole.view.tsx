@@ -192,6 +192,7 @@ export function HoleView(props: HoleViewProps) {
             <StrokesContainer>
               <Box mx={-4} mt={-4}>
                 <HoleOverview
+                  setPar={props.setPar}
                   nextHole={() => {
                     console.log("nexthoel");
                     props.nextHole();

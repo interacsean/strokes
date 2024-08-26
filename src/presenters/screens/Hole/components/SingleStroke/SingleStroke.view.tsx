@@ -12,7 +12,6 @@ import { Hole } from "model/Hole";
 import { PosOption, PosOptionMethods } from "model/PosOptions";
 import { LatLng } from "model/LatLng";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
-import { Lie } from "model/Lie";
 
 export type SingleStrokeViewProps = {
   hole: Hole;
@@ -48,13 +47,12 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const {
     setFromPosition,
     setToPosition,
-    stroke: { fromPosSetMethod, fromPos, toPosSetMethod, toLie },
+    stroke: { fromPosSetMethod, fromPos, toPosSetMethod },
     hole: { pinPlayed, pins, holeNum },
     currentPosition,
     setFromPosMethod,
     setToPosMethod,
     strokeNum,
-    selectToLie,
     prevStroke,
   } = props;
 
@@ -217,7 +215,6 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   }, [strokeNum, fromPosSetMethod, setFromPosition, prevStroke]);
 
   const setToPosOnClick = useCallback(() => {
-    let pinPlayedUsed: string;
     switch (toPosSetMethod) {
       case PosOptionMethods.GPS:
         setToPosition(strokeNum);
@@ -225,12 +222,8 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     }
   }, [
     toPosSetMethod,
-    pinPlayed,
-    pins,
     setToPosition,
     strokeNum,
-    toLie,
-    selectToLie,
   ]);
 
   return {

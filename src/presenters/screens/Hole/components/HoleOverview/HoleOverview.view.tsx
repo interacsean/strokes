@@ -18,6 +18,7 @@ type HoleOverviewProps = {
   nextHole: () => void;
   prevHole: () => void;
   navHome: () => void;
+  setPar: (par: number) => void;
 };
 
 function StrokesCount({
@@ -31,7 +32,7 @@ function StrokesCount({
   totalStrokes: number;
   strokeClick: (stroke: number) => void;
 }) {
-  const sz = "32"; // size
+  const sz = 32; // size
   const numStrokesToShow = Math.max(par || 1, totalStrokes);
   const strokes = Array(isNaN(numStrokesToShow) ? par : numStrokesToShow)
     .fill(0)
@@ -46,7 +47,7 @@ function StrokesCount({
           onClick={() => strokeClick(n)}
           p={0}
           minWidth={`${sz}px`}
-          height={`${sz}px`}
+          height={`${sz - 3}px`}
         >
           <Text
             key={n}
@@ -59,20 +60,16 @@ function StrokesCount({
             bgColor={
               n === activeStroke
                 ? "white"
-                : n === totalStrokes
-                ? "primary.500"
                 : "transparent"
             }
             color={
               n === activeStroke
                 ? "primary.200"
-                : n === totalStrokes
-                ? "primary.200"
                 : "white"
             }
-            border={`1px solid`}
-            borderColor="white"
-            borderRight={i !== strokes.length - 1 ? "none" : undefined}
+            borderBottom={n === totalStrokes ? `3px solid` : `3px solid`}
+            borderColor={n === totalStrokes ? `white` : 'transparent'}
+            borderRight={n !== totalStrokes  ? "none" : undefined}
           >
             {strokes.length < numStrokesToShow && i === 0 ? "-" : n}
           </Text>
@@ -83,6 +80,7 @@ function StrokesCount({
 }
 
 export function HoleOverview(props: HoleOverviewProps) {
+  // todo: move to logic hook
   const roundScoreBg =
     props.roundScore === undefined
       ? "black"
@@ -133,11 +131,29 @@ export function HoleOverview(props: HoleOverviewProps) {
             {props.holeNum}
           </Text>
           <Flex flexDir={"column"} color={"neutral.800"}>
-            {props.par && (
+            <Button variant="ghost" p={0} position="relative">
+              <select onChange={(e) => {
+                const parNum = parseInt(e.target.value, 10);
+                if (parNum) props.setPar(parNum);
+              }} value={props.par}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  opacity: 0,
+                  cursor: "pointer",
+                }}
+              >
+                <option value={3}>3</option>
+                <option value={4}>4</option>
+                <option value={5}>5</option>
+              </select>  
               <Text variant="minor" lineHeight={"1.1em"} fontWeight={800}>
-                Par {props.par}
+                {props.par ? `Par ${props.par}` : "Set Par"}
               </Text>
-            )}
+            </Button>
             {props.holeLength && (
               <Text variant="minor" lineHeight={"1.1em"} fontWeight={800}>
                 {Math.round(props.holeLength)}
@@ -183,7 +199,7 @@ export function HoleOverview(props: HoleOverviewProps) {
             totalStrokes={props.currentStrokeNum}
             strokeClick={props.setActiveStroke}
           />
-          <Text color="white" variant="solidLabel" mt={1} lineHeight="1em">
+          <Text color="white" variant="solidLabel" mt={2} lineHeight="1em">
             {forScoreOutcomeDescription && (
               <>For {forScoreOutcomeDescription}</>
             )}
@@ -201,6 +217,11 @@ export function HoleOverview(props: HoleOverviewProps) {
                 {props.distanceUnit}
               </Text>
             </Flex>
+          )}
+          {!props.holeLength && (
+            <Button variant="ghost" p={0}>
+              <Text variant="minor" lineHeight="1.1em" fontWeight={800}>Set Pin</Text>
+            </Button>
           )}
           {/* Todo: Wind */}
         </Flex>
