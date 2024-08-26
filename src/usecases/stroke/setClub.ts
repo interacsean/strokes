@@ -1,4 +1,5 @@
 import { Club } from "model/Club";
+import { Lie } from "model/Lie";
 import { Stroke } from "model/Stroke";
 import { StrokeType } from "model/StrokeType";
 
@@ -15,6 +16,8 @@ export function setClub(
   };
   if (validClub === Club.P) {
     attrs.strokeType = StrokeType.PUTT;
+    if (stroke && !stroke.fromLie) attrs.fromLie = Lie.GREEN;
+    if (stroke && !stroke.toLie) attrs.toLie = Lie.GREEN;
   }
   if (validClub !== Club.P && stroke?.strokeType === StrokeType.PUTT) {
     attrs.strokeType = undefined;

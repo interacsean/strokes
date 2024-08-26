@@ -27,6 +27,7 @@ export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
   setStrokeFromLie(
     ({ fromLie, club, strokeType }) => {
       if (fromLie) stroke.fromLie = fromLie;
+      if (lastStroke && lastStroke.toLie === Lie.GREEN) stroke.toLie = Lie.GREEN;
       if (club) stroke.club = club;
       if (strokeType) stroke.strokeType = strokeType;
     },
