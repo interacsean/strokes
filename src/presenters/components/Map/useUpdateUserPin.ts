@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function useUpdateUserPin(userLocation: any, followUser: any, map: any, mapRef: any) {
+export function useUpdateUserPin(userLocation: any, map: any, mapRef: any) {
   // @ts-ignore - todo: fix window
   const gmaps = window.google?.maps; // Assuming you have a Maps Maps API script loaded with your API key
 
@@ -45,9 +45,5 @@ export function useUpdateUserPin(userLocation: any, followUser: any, map: any, m
         // userMarker.setPosition(userLocation);
       }
     }
-    if (userLocation && followUser && mapRef.current) {
-      const newCenter = { lat: userLocation.lat, lng: userLocation.lng };
-      mapRef.current?.setCenter(newCenter); // Update map center only if following
-    }
-  }, [gmaps?.marker?.AdvancedMarkerElement, userLocation, map, mapRef, userMarker, followUser]);
+  }, [gmaps?.marker?.AdvancedMarkerElement, userLocation, map, mapRef, userMarker]);
 }

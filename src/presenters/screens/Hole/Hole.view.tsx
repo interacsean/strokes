@@ -179,7 +179,10 @@ export function HoleView(props: HoleViewProps) {
             {/* Map */}
             {/* todo: does not work if window.google.maps is undefined */}
             <Box height="100%">
-              <Map />
+              { props.currentPosition ?
+                <Map hole={props.hole} currentPosition={props.currentPosition} />
+                : "Loading map"
+              }
             </Box>
             <Box>
               <Box>
