@@ -330,16 +330,16 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       roundScore,
       par: currentTee?.par,
       course: courseState,
+      gpsComponent: USE_FAKE_POSITION ? (
+          <FakeGeo pos={fakePos} setPos={setFakePos} />
+        ) : (
+          <GeoHUD currentPosition={currentPosition} geo={geo} />
+        )
     };
 
     return (
       <>
         <HoleView {...viewProps} />
-        {USE_FAKE_POSITION ? (
-          <FakeGeo pos={fakePos} setPos={setFakePos} />
-        ) : (
-          <GeoHUD currentPosition={currentPosition} geo={geo} />
-        )}
       </>
     );
   };

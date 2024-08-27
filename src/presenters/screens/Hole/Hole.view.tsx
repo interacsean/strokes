@@ -59,6 +59,7 @@ export type HoleViewProps = {
   roundScore: number;
   holeLength: number | undefined;
   course: Course;
+  gpsComponent: React.ReactNode;
 };
 
 const DEFAULT_HOLE_TAB = 1;
@@ -156,7 +157,13 @@ export function HoleView(props: HoleViewProps) {
 
   return (
     <Container>
-      <Tabs index={viewLogic.tabIndex} onChange={viewLogic.setTabIndex}>
+      <Tabs
+        index={viewLogic.tabIndex}
+        onChange={viewLogic.setTabIndex}
+        flex={1}
+        display="flex"
+        flexDir="column"
+      >
         <Flex>
           <TabList flex={1}>
             <Tab onClick={() => viewLogic.setTabIndex(0)}>Map</Tab>
@@ -167,41 +174,45 @@ export function HoleView(props: HoleViewProps) {
             <CloseIcon boxSize={4} />
           </Button>
         </Flex>
-        <TabPanels>
-          <TabPanel>
+        <TabPanels flex={1} overflowY="auto">
+          <TabPanel height="100%" p={0}>
             {/* Map */}
-            <FormLabel>
-              {/* todo: does not work if window.google.maps is undefined */}
-              <Box height="100vh">
-                <Map />
+            {/* todo: does not work if window.google.maps is undefined */}
+            <Box height="100%">
+              <Map />
+            </Box>
+            <Box>
+              <Box>
+                <FormLabel>
+                  <Text>Set tee pos</Text>
+                  <Button
+                    variant="primaryOutline"
+                    onClick={() =>
+                      props.currentPosition &&
+                      props.setTeePos("default", props.currentPosition)
+                    }
+                  >
+                    📍⛳️
+                  </Button>
+                </FormLabel>
+                <FormLabel>
+                  <Text>Par {props.par}</Text>
+                  <Input name="par" {...viewLogic.parInputProps} />
+                </FormLabel>
+                <FormLabel>
+                  <Text>Set hole pos</Text>
+                  <Button
+                    variant="primaryOutline"
+                    onClick={() =>
+                      props.currentPosition &&
+                      props.setHolePos(props.currentPosition)
+                    }
+                  >
+                    📍⛳️
+                  </Button>
+                </FormLabel>
               </Box>
-              <Text>Set tee pos</Text>
-              <Button
-                variant="primaryOutline"
-                onClick={() =>
-                  props.currentPosition &&
-                  props.setTeePos("default", props.currentPosition)
-                }
-              >
-                📍⛳️
-              </Button>
-            </FormLabel>
-            <FormLabel>
-              <Text>Par {props.par}</Text>
-              <Input name="par" {...viewLogic.parInputProps} />
-            </FormLabel>
-            <FormLabel>
-              <Text>Set hole pos</Text>
-              <Button
-                variant="primaryOutline"
-                onClick={() =>
-                  props.currentPosition &&
-                  props.setHolePos(props.currentPosition)
-                }
-              >
-                📍⛳️
-              </Button>
-            </FormLabel>
+            </Box>
           </TabPanel>
           <TabPanel>
             {/* Strokes */}
@@ -297,14 +308,18 @@ export function HoleView(props: HoleViewProps) {
               </Flex>
             </StrokesContainer>
           </TabPanel>
-          <TabPanel>
+          <TabPanel flex={1}>
             {/* Strokes */}
+            <Text>
+              Copy the JSON data of your current course + round, for external use and analysis.
+            </Text>
             <Button onClick={() => copyToClipboard(JSON.stringify(props.course))}>
-              Copy course
+              Copy round
             </Button>
           </TabPanel>
         </TabPanels>
       </Tabs>
+      {props.gpsComponent}
     </Container>
   );
 }
