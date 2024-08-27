@@ -31,6 +31,7 @@ import { ChevronLeftIcon, ChevronRightIcon, CloseIcon } from "@chakra-ui/icons";
 import { RoutePaths } from "presenters/routes/RoutePaths";
 import { copyToClipboard } from "usecases/device/copyToClipboard";
 import { Course } from "model/Course";
+import Map from "presenters/components/Map/Map";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -168,7 +169,12 @@ export function HoleView(props: HoleViewProps) {
         </Flex>
         <TabPanels>
           <TabPanel>
+            {/* Map */}
             <FormLabel>
+              {/* todo: does not work if window.google.maps is undefined */}
+              <Box height="100vh">
+                <Map />
+              </Box>
               <Text>Set tee pos</Text>
               <Button
                 variant="primaryOutline"
@@ -198,6 +204,7 @@ export function HoleView(props: HoleViewProps) {
             </FormLabel>
           </TabPanel>
           <TabPanel>
+            {/* Strokes */}
             <StrokesContainer>
               <Box mx={-4} mt={-4}>
                 <HoleOverview
@@ -291,6 +298,7 @@ export function HoleView(props: HoleViewProps) {
             </StrokesContainer>
           </TabPanel>
           <TabPanel>
+            {/* Strokes */}
             <Button onClick={() => copyToClipboard(JSON.stringify(props.course))}>
               Copy course
             </Button>

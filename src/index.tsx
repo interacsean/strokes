@@ -3,6 +3,12 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+// Include the Google Maps API script with your API key
+const script = document.createElement('script');
+script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyCTwQkUKfzUpHO_4JjINo4svNKqGiG50eI&libraries=`;
+script.async = true;
+document.body.appendChild(script);
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
