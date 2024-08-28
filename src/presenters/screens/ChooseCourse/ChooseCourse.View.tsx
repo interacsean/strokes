@@ -57,8 +57,9 @@ export function ChooseCourseView(props: ChooseCourseViewProps) {
         </Button>
         {props.courses.map((course) => (
           <Button
-            variant="link"
             key={course.courseName}
+            variant="link"
+            py={3}
             onClick={() => viewLogic.selectCourse(course)}
           >
             {course.courseName}
