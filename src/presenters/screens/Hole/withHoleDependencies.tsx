@@ -35,7 +35,7 @@ import { PosOptionMethods } from "model/PosOptions";
 
 type HolePublicProps = {};
 
-const USE_FAKE_POSITION = true;
+const USE_FAKE_POSITION = false;
 
 function shouldShowNewStroke(strokes: Stroke[]) {
   return strokes.length === 0;

@@ -69,7 +69,8 @@ function useViewLogic(props: MapProps, map: Map) {
     // }, 1000);
 
     const latDiff = pinPos.lat - teePos.lat;
-    const lngDiff = pinPos.lng - teePos.lng;
+    const avgLat = (teePos.lat + pinPos.lat) / 2;
+    const lngDiff = (pinPos.lng - teePos.lng) * Math.cos(avgLat * Math.PI / 180); // Adjust lngDiff by cosine of average latitude
 
     // Calculate the angle in radians
     const angleRad = Math.atan2(lngDiff, latDiff); // Note: reversed latDiff and lngDiff
