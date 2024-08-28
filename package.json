@@ -35,7 +35,8 @@
     "eject": "react-scripts eject",
     "format": "prettier --write .",
     "lint:fix": "eslint --fix 'src/**'",
-    "deploy": "npm run build && mv build/index.html build/200.html && surge build strokes.surge.sh"
+    "deploy": "npm run build && mv build/index.html build/200.html && surge build strokes.surge.sh",
+    "deploy-only": "mv build/index.html build/200.html & surge build strokes.surge.sh"
   },
   "eslintConfig": {
     "extends": [
