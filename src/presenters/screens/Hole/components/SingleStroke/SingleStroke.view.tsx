@@ -195,8 +195,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     // console.log({ inclickHandler: true })
     switch (fromPosSetMethod) {
       case PosOptionMethods.LAST_SHOT:
-        console.log(prevStroke?.toPos)
-        setFromPosition(strokeNum, prevStroke?.toPos);
+        setFromPosition(strokeNum);
         if (strokeNum >= 2) {
           // Bug: at the time of calling, `setToPosition` updates the state based on the unupdated from position
           // setToPosition(strokeNum - 1);
