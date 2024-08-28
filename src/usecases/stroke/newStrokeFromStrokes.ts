@@ -11,10 +11,13 @@ import { setClub } from "./setClub";
 
 export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
   const lastStroke = last(strokes);
+  const usedTee = selectCurrentTeeFromHole(hole);
   let stroke: Stroke = {
     fromPos: undefined,
     fromPosSetMethod:
-      strokes.length === 0 ? PosOptionMethods.TEE : PosOptionMethods.LAST_SHOT,
+      strokes.length > 0 ? PosOptionMethods.LAST_SHOT
+        : usedTee ? PosOptionMethods.TEE
+        : PosOptionMethods.GPS,
     fromLie: undefined,
     club: undefined,
     intendedPos: undefined,
@@ -39,7 +42,6 @@ export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
   if (lastStroke) {
     stroke.fromPos = lastStroke?.toPos;
   } else {
-    const usedTee = selectCurrentTeeFromHole(hole);
     if (usedTee) stroke.fromPos = usedTee.pos;
   }
   setStrokeType(
