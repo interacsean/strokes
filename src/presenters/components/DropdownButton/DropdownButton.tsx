@@ -4,6 +4,8 @@ import { Button, Flex, Text } from "@chakra-ui/react";
 type DropdownButtonProps = {
   buttonText: string | undefined;
   buttonTextSmall: string | undefined;
+  buttonColor?: string | undefined;
+  buttonTextColor?: string | undefined;
   selectedValue: string | undefined;
   placeholder?: string;
   onClick: () => void;
@@ -12,14 +14,32 @@ type DropdownButtonProps = {
 };
 
 export function DropdownButton(props: DropdownButtonProps) {
+  const textColor = {
+    buttonPrimary: 'buttonPrimaryText',
+    buttonUnsatisfied: 'buttonUnsatisfiedText',
+    buttonReadOnly: 'buttonReadOnlyText',
+  }[props.buttonColor || 'buttonPrimary'];
+  const borderColor = {
+    buttonPrimary: undefined,
+    buttonUnsatisfied: 'buttonUnsatisfiedBorder',
+    buttonReadOnly: 'buttonReadOnlyBorder',
+  }[props.buttonColor || 'buttonPrimary'];
+
+  const disabled = props.buttonColor === 'buttonReadOnly';
+
   return (
     <Flex flexDir="row" flex={1}>
       <Button
         flex={1}
         px={1}
-        // variant={}
         borderRightRadius={0}
         onClick={props.onClick}
+        bgColor={props.buttonColor}
+        color={textColor}
+        border={borderColor ? '1px solid' : undefined}
+        borderColor={borderColor}
+        disabled={disabled}
+        borderRight='none'
       >
         <Flex flexDir="column">
           <Text variant="button">{props.buttonText}</Text>

@@ -47,7 +47,9 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const {
     setFromPosition,
     setToPosition,
-    stroke: { fromPosSetMethod, fromPos, toPosSetMethod },
+    fromPosOptions,
+    toPosOptions,
+    stroke: { fromPosSetMethod, fromPos, toPosSetMethod, toPos },
     hole: { pinPlayed, pins, holeNum },
     currentPosition,
     setFromPosMethod,
@@ -126,18 +128,18 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   );
 
   const fromPosButtonText = useMemo(() => {
-    if (props.stroke.fromPosSetMethod === PosOptionMethods.TEE) {
+    if (fromPosSetMethod === PosOptionMethods.TEE) {
       return [
         // todo: Show which Tee based on GPS match
         `Tee (TBD)`,
       ];
     }
 
-    const matchingFPO = props.fromPosOptions.find(
-      (fromPosOp) => fromPosOp.value === props.stroke.fromPosSetMethod
+    const matchingFPO = fromPosOptions.find(
+      (fromPosOp) => fromPosOp.value === fromPosSetMethod
     );
     return [matchingFPO?.buttonText, matchingFPO?.buttonTextSmall];
-  }, [props.fromPosOptions, props.stroke.fromPosSetMethod]);
+  }, [fromPosOptions, fromPosSetMethod]);
 
   const distSinceFrom = useMemo(() => {
     if (!fromPos || !currentPosition) {
@@ -147,6 +149,19 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
       calculateDistanceBetweenPositions(fromPos, currentPosition)
     );
   }, [fromPos, currentPosition]);
+
+  const fromPosButtonColor = useMemo(() => {
+    switch (fromPosSetMethod) {
+      case PosOptionMethods.TEE:
+        return 'buttonReadOnly';
+      case PosOptionMethods.DROP:
+      case PosOptionMethods.CUSTOM:
+      case PosOptionMethods.GPS:
+        return !fromPos ? 'buttonUnsatisfied' : 'buttonPrimary';
+      case PosOptionMethods.LAST_SHOT:
+        return 'buttonPrimary';
+    }
+  }, [fromPosSetMethod, fromPos]);
 
   const toPosButtonText = useMemo(() => {
     if (props.stroke.toPosSetMethod === PosOptionMethods.GPS) {
@@ -158,12 +173,12 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
           ? [
               roundedShotDist === distSinceFrom
                 ? undefined
-                : `> ${distSinceFrom}${props.distanceUnit}`,
+                : `update:${distSinceFrom}${props.distanceUnit}`,
             ]
           : []),
       ];
     }
-    const matchingTPO = props.toPosOptions.find(
+    const matchingTPO = toPosOptions.find(
       (toPosOp) => toPosOp.value === props.stroke.toPosSetMethod
     );
     return [matchingTPO?.buttonText, matchingTPO?.buttonTextSmall];
@@ -171,9 +186,21 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     props.stroke.strokeDistance,
     props.distanceUnit,
     distSinceFrom,
-    props.toPosOptions,
+    toPosOptions,
     props.stroke.toPosSetMethod,
   ]);
+
+  const toPosButtonColor = useMemo(() => {
+    switch (toPosSetMethod) {
+      case PosOptionMethods.CUSTOM:
+        return !toPos ? 'buttonUnsatisfied' : 'buttonPrimary';
+      case PosOptionMethods.GPS:
+        return !toPos ? 'buttonUnsatisfied' : 'buttonPrimary';
+      case PosOptionMethods.HOLE:
+      case PosOptionMethods.NEAR_PIN:
+        return 'buttonReadOnly';
+    }
+  }, [toPosSetMethod, toPos]);
 
   const viewSetFromPosMethod = useCallback(
     (value: string) => {
@@ -228,8 +255,10 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   return {
     fromPosButtonText,
     setFromPosMethod: viewSetFromPosMethod,
+    fromPosButtonColor,
     setFromPosOnClick,
     toPosButtonText,
+    toPosButtonColor,
     setToPosMethod: viewSetToPosMethod,
     setToPosOnClick,
     activeModal,
@@ -325,6 +354,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               options={props.fromPosOptions}
               onSelectChange={viewLogic.setFromPosMethod}
               onClick={viewLogic.setFromPosOnClick}
+              buttonColor={viewLogic.fromPosButtonColor}
             />
           </Flex>
           <Box flex={1}>
@@ -347,6 +377,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               options={props.toPosOptions}
               onSelectChange={viewLogic.setToPosMethod}
               onClick={viewLogic.setToPosOnClick}
+              buttonColor={viewLogic.toPosButtonColor}
             />
           </Box>
           <Box flex={1}>

@@ -44,7 +44,7 @@ const elementColors = {
   },
   panel: {
     100: "#dee5ef",
-    700: colorPalette.primary["300"],
+    700: colorPalette.primary[300],
     900: "#051c30",
   },
   placeholder: {
@@ -53,6 +53,14 @@ const elementColors = {
   disabled: {
     100: "#7c7c7c",
   },
+  buttonPrimary: colorPalette.primary[500],
+  buttonPrimaryText: colorPalette.white,
+  buttonUnsatisfied: "#ffff00",
+  buttonUnsatisfiedBorder: colorPalette.neutral[500],
+  buttonUnsatisfiedText: colorPalette.black,
+  buttonReadOnly: colorPalette.neutral[100],
+  buttonReadOnlyBorder: colorPalette.neutral[500],
+  buttonReadOnlyText: colorPalette.black,
 };
 
 const palette = {
