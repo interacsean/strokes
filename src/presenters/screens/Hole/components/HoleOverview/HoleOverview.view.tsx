@@ -1,5 +1,6 @@
 import { Flex, Box, Text, Button } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { StrokeCounter } from "./StrokeCounter.view";
 
 const MIN_DIST_FOR_RESULT_TEXT = 270;
 
@@ -21,69 +22,6 @@ type HoleOverviewProps = {
   prevHole: () => void;
   setPar: (par: number) => void;
 };
-
-function StrokesCount({
-  par,
-  activeStroke,
-  totalStrokes,
-  strokeClick,
-}: {
-  par: number | undefined;
-  activeStroke: number;
-  totalStrokes: number;
-  strokeClick: (stroke: number) => void;
-}) {
-  const sz = 32; // size
-  const numStrokesToShow = Math.max(par || 1, totalStrokes);
-  const strokes = Array(isNaN(numStrokesToShow) ? par : numStrokesToShow)
-    .fill(0)
-    .map((_, i) => i + 1)
-    .slice(-6);
-
-  // todo: consider activeStroke, if user is scrolling back through
-  return (
-    <Flex>
-      {strokes.map((n, i) => {
-        const txt = (
-          <Text
-            display="inline-flex"
-            justifyContent="center"
-            alignItems="center"
-            fontWeight="600"
-            minWidth={`${sz}px`}
-            height={`${sz}px`}
-            bgColor={n === activeStroke ? "white" : "transparent"}
-            color={n === activeStroke ? "primary.200" : "white"}
-            borderBottom={n === totalStrokes ? `3px solid` : `3px solid`}
-            borderColor={n === totalStrokes ? `white` : "transparent"}
-            borderRight={n !== totalStrokes ? "none" : undefined}
-          >
-            {strokes.length < numStrokesToShow && i === 0 ? "-" : n}
-          </Text>
-        );
-
-        return n <= totalStrokes ? (
-          <Button
-            key={n}
-            variant="ghost"
-            onClick={() => {
-              n <= totalStrokes && strokeClick(n);
-            }}
-            p={0}
-            minWidth={`${sz}px`}
-            height={`${sz - 3}px`}
-          >
-            {txt}
-          </Button>
-        ) : (
-          <Box key={n} minWidth={`${sz}px`} height={`${sz - 3}px`}>
-            {txt}
-          </Box>
-        );
-      })}
-    </Flex>
-  );
-}
 
 export function HoleOverview(props: HoleOverviewProps) {
   // todo: move to logic hook
@@ -203,7 +141,7 @@ export function HoleOverview(props: HoleOverviewProps) {
         px={4}
       >
         <Flex flexDir={"column"}>
-          <StrokesCount
+          <StrokeCounter
             par={props.par}
             activeStroke={props.activeStroke}
             totalStrokes={props.currentStrokeNum}
