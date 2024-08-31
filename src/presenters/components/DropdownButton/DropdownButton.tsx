@@ -15,17 +15,17 @@ type DropdownButtonProps = {
 
 export function DropdownButton(props: DropdownButtonProps) {
   const textColor = {
-    buttonPrimary: 'buttonPrimaryText',
-    buttonUnsatisfied: 'buttonUnsatisfiedText',
-    buttonReadOnly: 'buttonReadOnlyText',
-  }[props.buttonColor || 'buttonPrimary'];
+    buttonPrimary: "buttonPrimaryText",
+    buttonUnsatisfied: "buttonUnsatisfiedText",
+    buttonReadOnly: "buttonReadOnlyText",
+  }[props.buttonColor || "buttonPrimary"];
   const borderColor = {
     buttonPrimary: undefined,
-    buttonUnsatisfied: 'buttonUnsatisfiedBorder',
-    buttonReadOnly: 'buttonReadOnlyBorder',
-  }[props.buttonColor || 'buttonPrimary'];
+    buttonUnsatisfied: "buttonUnsatisfiedBorder",
+    buttonReadOnly: "buttonReadOnlyBorder",
+  }[props.buttonColor || "buttonPrimary"];
 
-  const disabled = props.buttonColor === 'buttonReadOnly';
+  const disabled = props.buttonColor === "buttonReadOnly";
 
   return (
     <Flex flexDir="row" flex={1}>
@@ -36,10 +36,10 @@ export function DropdownButton(props: DropdownButtonProps) {
         onClick={props.onClick}
         bgColor={props.buttonColor}
         color={textColor}
-        border={borderColor ? '1px solid' : undefined}
+        border={borderColor ? "1px solid" : undefined}
         borderColor={borderColor}
         disabled={disabled}
-        borderRight='none'
+        borderRight="none"
       >
         <Flex flexDir="column">
           <Text variant="button">{props.buttonText}</Text>

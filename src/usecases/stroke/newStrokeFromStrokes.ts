@@ -13,20 +13,27 @@ export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
   const usedTee = selectCurrentTeeFromHole(hole);
   const strokeNum = strokes.length + 1;
   let stroke: Stroke = {
-    fromPos: strokeNum === 1 ? usedTee?.pos
-      : lastStroke ? lastStroke?.toPos
-      : undefined,
+    fromPos:
+      strokeNum === 1
+        ? usedTee?.pos
+        : lastStroke
+        ? lastStroke?.toPos
+        : undefined,
     fromPosSetMethod:
-      strokes.length > 0 ? PosOptionMethods.LAST_SHOT
-        : usedTee ? PosOptionMethods.TEE
+      strokes.length > 0
+        ? PosOptionMethods.LAST_SHOT
+        : usedTee
+        ? PosOptionMethods.TEE
         : PosOptionMethods.GPS,
     fromLie: undefined,
     club: undefined,
     intendedPos: undefined,
     toPos: undefined,
     toPosSetMethod: PosOptionMethods.GPS,
-    toLie: lastStroke?.toLie && [Lie.GREEN, Lie.FRINGE].includes(lastStroke.toLie)
-      ? Lie.GREEN : undefined,
+    toLie:
+      lastStroke?.toLie && [Lie.GREEN, Lie.FRINGE].includes(lastStroke.toLie)
+        ? Lie.GREEN
+        : undefined,
     strokeType: StrokeType.FULL,
   };
   setStrokeFromLie(

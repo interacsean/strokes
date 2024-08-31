@@ -179,10 +179,14 @@ export function HoleView(props: HoleViewProps) {
             {/* Map */}
             {/* todo: does not work if window.google.maps is undefined */}
             <Box height="100%">
-              { props.currentPosition ?
-                <Map hole={props.hole} currentPosition={props.currentPosition} />
-                : "Loading map"
-              }
+              {props.currentPosition ? (
+                <Map
+                  hole={props.hole}
+                  currentPosition={props.currentPosition}
+                />
+              ) : (
+                "Loading map"
+              )}
             </Box>
             <Box>
               <Box>
@@ -282,7 +286,8 @@ export function HoleView(props: HoleViewProps) {
                       <ChevronLeftIcon boxSize={6} />
                     </Button>
                     <Text>Shot {viewLogic.activeStroke}</Text>
-                    {props.preprocessedStrokes[viewLogic.activeStroke - 1].toPosSetMethod !== PosOptionMethods.HOLE && (
+                    {props.preprocessedStrokes[viewLogic.activeStroke - 1]
+                      .toPosSetMethod !== PosOptionMethods.HOLE && (
                       <Button
                         variant="ghost"
                         px={2}
@@ -314,9 +319,12 @@ export function HoleView(props: HoleViewProps) {
           <TabPanel flex={1}>
             {/* Strokes */}
             <Text>
-              Copy the JSON data of your current course + round, for external use and analysis.
+              Copy the JSON data of your current course + round, for external
+              use and analysis.
             </Text>
-            <Button onClick={() => copyToClipboard(JSON.stringify(props.course))}>
+            <Button
+              onClick={() => copyToClipboard(JSON.stringify(props.course))}
+            >
               Copy round
             </Button>
           </TabPanel>

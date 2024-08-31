@@ -3,7 +3,11 @@ import { SingleStrokeView, SingleStrokeViewProps } from "./SingleStroke.view";
 import { Club } from "model/Club";
 import { PosOptionMethods, PosOptions } from "model/PosOptions";
 
-type GeneratedPropKeys = "clubs" | "fromPosOptions" | "toPosOptions" | "prevStroke";
+type GeneratedPropKeys =
+  | "clubs"
+  | "fromPosOptions"
+  | "toPosOptions"
+  | "prevStroke";
 type SingleStrokePublicProps = Omit<SingleStrokeViewProps, GeneratedPropKeys>;
 
 export function withSingleStrokeDependencies(
@@ -18,13 +22,10 @@ export function withSingleStrokeDependencies(
       strokeNum,
     } = props;
 
-    const prevStroke = useMemo(
-      () => {
-        if (strokeNum < 2) return undefined;
-        return strokes[strokeNum - 2];
-      },
-      [strokeNum, strokes]
-    );
+    const prevStroke = useMemo(() => {
+      if (strokeNum < 2) return undefined;
+      return strokes[strokeNum - 2];
+    }, [strokeNum, strokes]);
 
     const fromPosOptions = useMemo(() => {
       const fo = [PosOptions[PosOptionMethods.GPS]];

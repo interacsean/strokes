@@ -1,6 +1,8 @@
 import { Flex, Box, Text, Button } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
+const MIN_DIST_FOR_RESULT_TEXT = 270;
+
 type HoleOverviewProps = {
   holeNum: number;
   holeLength: number | undefined;
@@ -50,30 +52,22 @@ function StrokesCount({
             fontWeight="600"
             minWidth={`${sz}px`}
             height={`${sz}px`}
-            bgColor={
-              n === activeStroke
-                ? "white"
-                : "transparent"
-            }
-            color={
-              n === activeStroke
-                ? "primary.200"
-                : "white"
-            }
+            bgColor={n === activeStroke ? "white" : "transparent"}
+            color={n === activeStroke ? "primary.200" : "white"}
             borderBottom={n === totalStrokes ? `3px solid` : `3px solid`}
-            borderColor={n === totalStrokes ? `white` : 'transparent'}
-            borderRight={n !== totalStrokes  ? "none" : undefined}
+            borderColor={n === totalStrokes ? `white` : "transparent"}
+            borderRight={n !== totalStrokes ? "none" : undefined}
           >
             {strokes.length < numStrokesToShow && i === 0 ? "-" : n}
           </Text>
         );
 
-        return (n <= totalStrokes) ? (
+        return n <= totalStrokes ? (
           <Button
             key={n}
             variant="ghost"
             onClick={() => {
-              n <= totalStrokes && strokeClick(n)
+              n <= totalStrokes && strokeClick(n);
             }}
             p={0}
             minWidth={`${sz}px`}
@@ -82,10 +76,7 @@ function StrokesCount({
             {txt}
           </Button>
         ) : (
-          <Box
-            key={n}
-            minWidth={`${sz}px`}
-            height={`${sz - 3}px`}>
+          <Box key={n} minWidth={`${sz}px`} height={`${sz - 3}px`}>
             {txt}
           </Box>
         );
@@ -105,23 +96,29 @@ export function HoleOverview(props: HoleOverviewProps) {
       ? "black"
       : "neutral.800";
 
-  const forScoreOutcomeDescription = !props.par
-    ? undefined
-    : props.currentStrokeNum === props.par - 2
-    ? "eagle"
-    : props.currentStrokeNum === props.par - 1
-    ? "birdie"
-    : props.currentStrokeNum === props.par
-    ? "par"
-    : props.currentStrokeNum === props.par + 1
-    ? "bogey"
-    : props.currentStrokeNum === props.par + 2
-    ? "double bogey"
-    : props.currentStrokeNum === props.par + 3
-    ? "triple bogey"
-    : props.currentStrokeNum >= props.par
-    ? `${props.currentStrokeNum - props.par}× bogey`
-    : undefined;
+  // todo: make relative to player's max strike, and lie - i.e. tee / other
+  // todo: hide this if hole finished
+  // bug!: this should be based on fromPos of activeStroe to hole, not currentPosition
+  const forScoreOutcomeDescription =
+    !props.par ||
+    (props.distanceToHole !== undefined &&
+      props.distanceToHole > MIN_DIST_FOR_RESULT_TEXT)
+      ? undefined
+      : props.currentStrokeNum === props.par - 2
+      ? "eagle"
+      : props.currentStrokeNum === props.par - 1
+      ? "birdie"
+      : props.currentStrokeNum === props.par
+      ? "par"
+      : props.currentStrokeNum === props.par + 1
+      ? "bogey"
+      : props.currentStrokeNum === props.par + 2
+      ? "double bogey"
+      : props.currentStrokeNum === props.par + 3
+      ? "triple bogey"
+      : props.currentStrokeNum >= props.par
+      ? `${props.currentStrokeNum - props.par}× bogey`
+      : undefined;
 
   return (
     <Box borderBottom="1px solid" borderColor="neutral.500">
@@ -143,10 +140,12 @@ export function HoleOverview(props: HoleOverviewProps) {
           </Text>
           <Flex flexDir={"column"} color={"neutral.800"}>
             <Button variant="ghost" p={0} height="auto" position="relative">
-              <select onChange={(e) => {
-                const parNum = parseInt(e.target.value, 10);
-                if (parNum) props.setPar(parNum);
-              }} value={props.par}
+              <select
+                onChange={(e) => {
+                  const parNum = parseInt(e.target.value, 10);
+                  if (parNum) props.setPar(parNum);
+                }}
+                value={props.par}
                 style={{
                   position: "absolute",
                   top: 0,
@@ -160,7 +159,7 @@ export function HoleOverview(props: HoleOverviewProps) {
                 <option value={3}>3</option>
                 <option value={4}>4</option>
                 <option value={5}>5</option>
-              </select>  
+              </select>
               <Text variant="minor" lineHeight={"1.1em"} fontWeight={800}>
                 {props.par ? `Par ${props.par}` : "Set Par"}
               </Text>
@@ -231,7 +230,9 @@ export function HoleOverview(props: HoleOverviewProps) {
           )}
           {!props.holeLength && (
             <Button variant="ghost" p={0}>
-              <Text variant="minor" lineHeight="1.1em" fontWeight={800}>Set Pin</Text>
+              <Text variant="minor" lineHeight="1.1em" fontWeight={800}>
+                Set Pin
+              </Text>
             </Button>
           )}
           {/* Todo: Wind */}

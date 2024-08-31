@@ -35,7 +35,7 @@ import { PosOptionMethods } from "model/PosOptions";
 
 type HolePublicProps = {};
 
-const USE_FAKE_POSITION = false;
+const USE_FAKE_POSITION = true;
 
 function shouldShowNewStroke(strokes: Stroke[]) {
   return strokes.length === 0;
@@ -296,7 +296,10 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const roundScore = useMemo(
       () =>
         courseState.holes.reduce((scoreAcc, hole) => {
-          if (hole.strokes.length && hole.strokes.find((s) => s.toPosSetMethod === PosOptionMethods.HOLE)) {
+          if (
+            hole.strokes.length &&
+            hole.strokes.find((s) => s.toPosSetMethod === PosOptionMethods.HOLE)
+          ) {
             return scoreAcc + hole.strokes.length - (currentTee?.par || 0);
           }
           return scoreAcc;
@@ -331,10 +334,10 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       par: currentTee?.par,
       course: courseState,
       gpsComponent: USE_FAKE_POSITION ? (
-          <FakeGeo pos={fakePos} setPos={setFakePos} />
-        ) : (
-          <GeoHUD currentPosition={currentPosition} geo={geo} />
-        )
+        <FakeGeo pos={fakePos} setPos={setFakePos} />
+      ) : (
+        <GeoHUD currentPosition={currentPosition} geo={geo} />
+      ),
     };
 
     return (

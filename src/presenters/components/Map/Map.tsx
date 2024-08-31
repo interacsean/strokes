@@ -1,23 +1,22 @@
-import { useState, useRef, useCallback } from 'react';
-import { Button } from '@chakra-ui/react';
-import { useInitialiseMap } from './useInitialiseMap';
-import { useInitialiseGeolocation } from './useInitialiseGeolocation';
-import { useUpdateUserPin } from './useUpdateUserPin';
-import { Hole } from 'model/Hole';
-import { LatLng } from 'model/LatLng';
-import { selectCurrentTeeFromHole } from 'state/course/selectors/currentTee';
-import { selectCurrentPinFromHole } from 'state/course/selectors/currentPin';
-import { calculateDistanceBetweenPositions } from 'usecases/hole/calculateDistanceBetweenPositions';
+import { useState, useRef, useCallback } from "react";
+import { Button } from "@chakra-ui/react";
+import { useInitialiseMap } from "./useInitialiseMap";
+import { useInitialiseGeolocation } from "./useInitialiseGeolocation";
+import { useUpdateUserPin } from "./useUpdateUserPin";
+import { Hole } from "model/Hole";
+import { LatLng } from "model/LatLng";
+import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
+import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
+import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 
 type Map = any;
 
 type MapProps = {
   hole: Hole;
   currentPosition: LatLng;
-}
+};
 
 function useViewLogic(props: MapProps, map: Map) {
-  
   // todo: optimisation
   const teePos = selectCurrentTeeFromHole(props.hole)?.pos;
   const pinPos = selectCurrentPinFromHole(props.hole);
@@ -49,11 +48,11 @@ function useViewLogic(props: MapProps, map: Map) {
     // Extend the bounds to include pinPos
     // @ts-ignore
     bounds.extend(new google.maps.LatLng(pinPos.lat, pinPos.lng));
-    
+
     // @ts-ignore
     map.panTo(new google.maps.LatLng(centerLat, centerLng));
     map.setZoom(19);
-    console.log('zoom', map.getZoom());
+    console.log("zoom", map.getZoom());
     // @ts-ignore
     // google.maps.event.addListenerOnce(map, 'idle', function() {
     //   map.fitBounds(bounds);
@@ -70,7 +69,8 @@ function useViewLogic(props: MapProps, map: Map) {
 
     const latDiff = pinPos.lat - teePos.lat;
     const avgLat = (teePos.lat + pinPos.lat) / 2;
-    const lngDiff = (pinPos.lng - teePos.lng) * Math.cos(avgLat * Math.PI / 180); // Adjust lngDiff by cosine of average latitude
+    const lngDiff =
+      (pinPos.lng - teePos.lng) * Math.cos((avgLat * Math.PI) / 180); // Adjust lngDiff by cosine of average latitude
 
     // Calculate the angle in radians
     const angleRad = Math.atan2(lngDiff, latDiff); // Note: reversed latDiff and lngDiff
@@ -83,7 +83,6 @@ function useViewLogic(props: MapProps, map: Map) {
 
     // Set the map's bearing (rotation) to the calculated angle
     map.setHeading(bearingDeg);
-
 
     // Optionally, you can set the tilt to get a 3D perspective
     map.setTilt(45); // Adjust the tilt as needed
@@ -118,7 +117,7 @@ function Map(props: MapProps) {
   const viewLogic = useViewLogic(props, map);
   // const [userLocation, setUserLocation] = useState<{ lat: number, lng: number} | null>(null);
 
-  const mapRef = useRef<Map | null>(null);  // Ref for map instance
+  const mapRef = useRef<Map | null>(null); // Ref for map instance
 
   useInitialiseMap(map, setMap, mapRef);
   useUpdateUserPin(userLocation, map, mapRef);
@@ -131,12 +130,19 @@ function Map(props: MapProps) {
   // }, [userLocation]);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <div id="map" style={{ width: '100%', height: '100%' }}></div>
-      <div style={{ position: 'absolute', left: '0.5rem', bottom: '0.5rem', backgroundColor: '#ffdddd' }}>
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      <div id="map" style={{ width: "100%", height: "100%" }}></div>
+      <div
+        style={{
+          position: "absolute",
+          left: "0.5rem",
+          bottom: "0.5rem",
+          backgroundColor: "#ffdddd",
+        }}
+      >
         message here
       </div>
-      <div style={{ position: 'absolute', right: '0.5rem', bottom: '0.5rem' }}>
+      <div style={{ position: "absolute", right: "0.5rem", bottom: "0.5rem" }}>
         {/* <Button onClick={handleRecenter}>$</Button> */}
       </div>
     </div>
