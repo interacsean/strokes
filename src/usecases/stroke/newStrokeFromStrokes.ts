@@ -16,7 +16,9 @@ export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
     fromPos:
       strokeNum === 1
         ? usedTee?.pos
-        : lastStroke
+        : lastStroke?.toPos &&
+          (!lastStroke.toLie ||
+            ![Lie.WATER, Lie.HAZARD].includes(lastStroke.toLie))
         ? lastStroke?.toPos
         : undefined,
     fromPosSetMethod:
