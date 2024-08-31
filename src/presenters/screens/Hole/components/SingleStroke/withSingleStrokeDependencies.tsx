@@ -2,13 +2,28 @@ import { FC, useMemo } from "react";
 import { SingleStrokeView, SingleStrokeViewProps } from "./SingleStroke.view";
 import { Club } from "model/Club";
 import { PosOptionMethods, PosOptions } from "model/PosOptions";
+import { Lie, TeeLies } from "model/Lie";
 
 type GeneratedPropKeys =
   | "clubs"
   | "fromPosOptions"
   | "toPosOptions"
-  | "prevStroke";
+  | "prevStroke"
+  | "fromLies"
+  | "toLies";
 type SingleStrokePublicProps = Omit<SingleStrokeViewProps, GeneratedPropKeys>;
+
+const toLies = [
+  Lie.FAIRWAY,
+  Lie.WRONG_FAIRWAY,
+  Lie.LIGHT_ROUGH,
+  Lie.DEEP_ROUGH,
+  Lie.BUNKER,
+  Lie.GREEN,
+  Lie.FRINGE,
+  Lie.WATER,
+  Lie.HAZARD,
+];
 
 export function withSingleStrokeDependencies(
   HoleView: FC<SingleStrokeViewProps>
@@ -70,11 +85,23 @@ export function withSingleStrokeDependencies(
       return to;
     }, [pinPlayed, pins]);
 
+    const fromLies = useMemo(() => {
+      if (strokeNum === 1) {
+        return TeeLies;
+      } else {
+        return Object.values(Lie).filter(
+          (lie) => !TeeLies.includes(lie) && lie !== Lie.WATER
+        );
+      }
+    }, [strokeNum]);
+
     const viewProps: SingleStrokeViewProps = {
       ...props,
       fromPosOptions,
       toPosOptions,
       prevStroke,
+      fromLies,
+      toLies,
       clubs: [
         Club.D,
         Club["3W"],

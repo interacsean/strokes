@@ -12,6 +12,7 @@ import { Hole } from "model/Hole";
 import { PosOption, PosOptionMethods } from "model/PosOptions";
 import { LatLng } from "model/LatLng";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
+import { Lie } from "model/Lie";
 
 export type SingleStrokeViewProps = {
   hole: Hole;
@@ -27,7 +28,9 @@ export type SingleStrokeViewProps = {
   setToPosition: (strokeNum: number, optPos?: LatLng) => void;
   setFromPosition: (strokeNum: number, optPos?: LatLng) => void;
   fromPosOptions: PosOption[];
+  fromLies: Lie[];
   toPosOptions: PosOption[];
+  toLies: Lie[];
   clubs: Club[];
   distanceUnit: string;
   currentPosition: LatLng | undefined;
@@ -205,6 +208,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const viewSetFromPosMethod = useCallback(
     (value: string) => {
       const [posMethod] = value.split("/");
+      //todo: do something with the tee type (after "/")
       setFromPosMethod(strokeNum, posMethod as PosOptionMethods);
     },
     [strokeNum, setFromPosMethod]
@@ -218,8 +222,6 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   );
 
   const setFromPosOnClick = useCallback(() => {
-    // setFromPosition(strokeNum);
-    // console.log({ inclickHandler: true })
     switch (fromPosSetMethod) {
       case PosOptionMethods.LAST_SHOT:
         setFromPosition(strokeNum);
@@ -244,6 +246,9 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     switch (toPosSetMethod) {
       case PosOptionMethods.GPS:
         setToPosition(strokeNum);
+        break;
+      case PosOptionMethods.CUSTOM:
+        // todo: open map
         break;
     }
   }, [toPosSetMethod, setToPosition, strokeNum]);
@@ -290,6 +295,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           viewLogic.setActiveModal(null);
         }}
         cancel={viewLogic.closeModal}
+        lies={props.fromLies}
       />
     ) : viewLogic.activeModal === Modals.Shot ? (
       <ShotSelectModal
@@ -306,6 +312,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           viewLogic.setActiveModal(null);
         }}
         cancel={viewLogic.closeModal}
+        lies={props.toLies}
       />
     ) : null;
 

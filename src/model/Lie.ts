@@ -14,3 +14,18 @@ export enum Lie {
   WATER = "Water hazard",
   HAZARD = "Hazard / Out of bounds",
 }
+
+export const TeeLies = [
+  Lie.TEE_HIGH,
+  Lie.TEE_MEDIUM,
+  Lie.TEE_LOW,
+  Lie.TEE_GRASS,
+  Lie.TEE_ARTIFICIAL_GRASS,
+];
+
+export const PuttableLies = [
+  Lie.GREEN,
+  Lie.FRINGE,
+  Lie.FAIRWAY,
+  Lie.LIGHT_ROUGH,
+];
