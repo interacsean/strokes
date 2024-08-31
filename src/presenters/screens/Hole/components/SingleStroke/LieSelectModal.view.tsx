@@ -1,8 +1,10 @@
 import { Button, Flex } from "@chakra-ui/react";
 import { Lie } from "model/Lie";
+import { Modal } from "presenters/components/Modal/Modal";
 
 type LieSelectModalprops = {
   selectLie: (lie: Lie) => void;
+  cancel: () => void;
 };
 
 const liesSet: Record<Lie, Lie> = {
@@ -25,13 +27,13 @@ const lies: Lie[] = Object.values(liesSet);
 
 export function LieSelectModal(props: LieSelectModalprops) {
   return (
-    <Flex flexDir={"column"} alignItems={"stretch"} columnGap={2}>
+    <Modal onClose={props.cancel}>
       {lies.map((lie) => (
         // todo: lie image
         <Button key={lie} variant="ghost" onClick={() => props.selectLie(lie)}>
           {lie}
         </Button>
       ))}
-    </Flex>
+    </Modal>
   );
 }

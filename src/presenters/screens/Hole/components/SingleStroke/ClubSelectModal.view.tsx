@@ -1,19 +1,20 @@
-import { Button, Flex } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { Club } from "model/Club";
+import { Modal } from "presenters/components/Modal/Modal";
 
-type ClubSelectModalprops = {
+type ClubSelectModalProps = {
   clubs: {
     club: Club;
-    clubImage?: string; // ?
+    clubImage?: string;
   }[];
   selectClub: (clubId: Club) => void;
+  cancel: () => void;
 };
 
-export function ClubSelectModal(props: ClubSelectModalprops) {
+export function ClubSelectModal(props: ClubSelectModalProps) {
   return (
-    <Flex flexDir={"column"} alignItems={"stretch"} columnGap={2}>
+    <Modal onClose={props.cancel}>
       {props.clubs.map((club) => (
-        // todo: club.clubImage
         <Button
           key={club.club}
           variant="ghost"
@@ -22,6 +23,6 @@ export function ClubSelectModal(props: ClubSelectModalprops) {
           {club.club}
         </Button>
       ))}
-    </Flex>
+    </Modal>
   );
 }

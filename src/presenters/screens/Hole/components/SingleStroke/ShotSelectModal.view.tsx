@@ -1,8 +1,10 @@
 import { Button, Flex } from "@chakra-ui/react";
 import { StrokeType } from "model/StrokeType";
+import { Modal } from "presenters/components/Modal/Modal";
 
 type ShotSelectModalprops = {
   selectStroke: (stroke: StrokeType) => void;
+  cancel: () => void;
 };
 
 const strokeTypesSet: Record<StrokeType, StrokeType> = {
@@ -23,7 +25,7 @@ const strokeTypes: StrokeType[] = Object.values(strokeTypesSet);
 
 export function ShotSelectModal(props: ShotSelectModalprops) {
   return (
-    <Flex flexDir={"column"} alignItems={"stretch"} columnGap={2}>
+    <Modal onClose={props.cancel}>
       {strokeTypes.map((strokeType) => (
         // todo: stroke image
         <Button
@@ -34,6 +36,6 @@ export function ShotSelectModal(props: ShotSelectModalprops) {
           {strokeType}
         </Button>
       ))}
-    </Flex>
+    </Modal>
   );
 }

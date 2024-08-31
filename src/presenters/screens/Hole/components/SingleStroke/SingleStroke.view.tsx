@@ -153,13 +153,13 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const fromPosButtonColor = useMemo(() => {
     switch (fromPosSetMethod) {
       case PosOptionMethods.TEE:
-        return 'buttonReadOnly';
+        return "buttonReadOnly";
       case PosOptionMethods.DROP:
       case PosOptionMethods.CUSTOM:
       case PosOptionMethods.GPS:
-        return !fromPos ? 'buttonUnsatisfied' : 'buttonPrimary';
+        return !fromPos ? "buttonUnsatisfied" : "buttonPrimary";
       case PosOptionMethods.LAST_SHOT:
-        return 'buttonPrimary';
+        return "buttonPrimary";
     }
   }, [fromPosSetMethod, fromPos]);
 
@@ -193,12 +193,12 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const toPosButtonColor = useMemo(() => {
     switch (toPosSetMethod) {
       case PosOptionMethods.CUSTOM:
-        return !toPos ? 'buttonUnsatisfied' : 'buttonPrimary';
+        return !toPos ? "buttonUnsatisfied" : "buttonPrimary";
       case PosOptionMethods.GPS:
-        return !toPos ? 'buttonUnsatisfied' : 'buttonPrimary';
+        return !toPos ? "buttonUnsatisfied" : "buttonPrimary";
       case PosOptionMethods.HOLE:
       case PosOptionMethods.NEAR_PIN:
-        return 'buttonReadOnly';
+        return "buttonReadOnly";
     }
   }, [toPosSetMethod, toPos]);
 
@@ -246,11 +246,9 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
         setToPosition(strokeNum);
         break;
     }
-  }, [
-    toPosSetMethod,
-    setToPosition,
-    strokeNum,
-  ]);
+  }, [toPosSetMethod, setToPosition, strokeNum]);
+
+  const closeModal = () => setActiveModal(null);
 
   return {
     fromPosButtonText,
@@ -264,6 +262,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     activeModal,
     setActiveModal,
     clubOptions,
+    closeModal,
   };
 }
 
@@ -280,6 +279,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           props.selectClub(props.strokeNum, club);
           viewLogic.setActiveModal(null);
         }}
+        cancel={viewLogic.closeModal}
       />
     ) : viewLogic.activeModal === Modals.FromLie ? (
       // todo: pass in valid from lies based on shot (i.e. tees)
@@ -289,6 +289,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           props.selectFromLie(props.strokeNum, lie);
           viewLogic.setActiveModal(null);
         }}
+        cancel={viewLogic.closeModal}
       />
     ) : viewLogic.activeModal === Modals.Shot ? (
       <ShotSelectModal
@@ -296,6 +297,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           props.selectStrokeType(props.strokeNum, stroke);
           viewLogic.setActiveModal(null);
         }}
+        cancel={viewLogic.closeModal}
       />
     ) : viewLogic.activeModal === Modals.ToLie ? (
       <LieSelectModal
@@ -303,6 +305,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           props.selectToLie(props.strokeNum, lie);
           viewLogic.setActiveModal(null);
         }}
+        cancel={viewLogic.closeModal}
       />
     ) : null;
 
