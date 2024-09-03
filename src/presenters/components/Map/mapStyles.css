@@ -6,3 +6,7 @@
 .gm-style .gmnoprint span {
   display: none !important;
 }
+.smallLogo img[alt=Google] {
+  width: 67% !important;
+  height: auto;
+}
