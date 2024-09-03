@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { ChooseCourseView, ChooseCourseViewProps } from "./ChooseCourse.View";
 import { auVicMelbourneNorthcote } from "data/courses/au_vic_melbourne_northcote";
 import { auVicMelbourneFlagstaffTest } from "data/courses/au_vic_melbourne_testCourse";
@@ -13,12 +13,16 @@ export function withChooseCourseDependencies(
   return function Hole(_props: ChooseCoursePublicProps) {
     const courses = [auVicMelbourneNorthcote, auVicMelbourneFlagstaffTest];
 
-    const { setState: setCourseState } = useCourseState();
+    const { setState: setCourseState, state: courseState } = useCourseState();
+    const hasIncompleteCourse = useMemo(() => {
+      return !!courseState;
+    }, [courseState]);
 
     const viewProps: ChooseCourseViewProps = {
       courses,
       setCourse: setCourseState,
       newCourse,
+      hasIncompleteCourse
     };
 
     return (

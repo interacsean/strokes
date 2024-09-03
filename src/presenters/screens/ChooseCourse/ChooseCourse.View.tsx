@@ -9,6 +9,7 @@ export type ChooseCourseViewProps = {
   courses: CourseDef[];
   setCourse: (course: Course) => void;
   newCourse: () => Course;
+  hasIncompleteCourse: boolean;
 };
 
 function useChooseCourseViewLogic(props: ChooseCourseViewProps) {
@@ -35,9 +36,16 @@ function useChooseCourseViewLogic(props: ChooseCourseViewProps) {
     },
     [setCourse, navigate]
   );
+  const continueRound = useCallback(
+    () => {
+      navigate(RoutePaths.Hole);
+    }, 
+    [navigate],
+  )
 
   return {
     selectCourse,
+    continueRound,
   };
 }
 
@@ -48,6 +56,18 @@ export function ChooseCourseView(props: ChooseCourseViewProps) {
     <Container>
       <Text variant="heading">Select course</Text>
       <Flex flexDir="column" alignItems="flex-start">
+        {props.hasIncompleteCourse && (
+          <>
+            <Button
+              variant="link"
+              py={3}
+              onClick={viewLogic.continueRound}
+            >
+              Continue round...
+            </Button>
+            <hr />
+          </>
+        )}
         <Button
           variant="link"
           py={3}

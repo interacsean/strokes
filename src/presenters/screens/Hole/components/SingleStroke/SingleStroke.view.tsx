@@ -331,7 +331,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           </Text>
           <Text>—</Text>
         </Flex>
-        <Box bgColor="primary.200" color="white" height="80px" mx={-4}>
+        <Box bgColor="primary.200" color="white" height="120px" mx={-4} className="smallLogo">
           {props.currentPosition && (
             <Map
               mapId="miniMap"
