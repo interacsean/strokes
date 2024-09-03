@@ -19,6 +19,27 @@ type MapProps = {
   tilt?: number;
 };
 
+const createRotatedIcon = (url: string, rotation: number, callback: (iconUrl: string) => void) => {
+  const img = new Image();
+  img.src = url;
+  img.setAttribute('crossorigin', 'anonymous');
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    const size = Math.max(img.width, img.height);
+    canvas.width = size;
+    canvas.height = size;
+
+    context.translate(size / 2, size / 2);
+    context.rotate((rotation * Math.PI) / 180);
+    context.drawImage(img, -img.width / 2, -img.height / 2);
+
+    callback(canvas.toDataURL());
+  };
+};
+
 function useViewLogic(props: MapProps, map: GoogleMap) {
   const { holeOrientation = "vertical" } = props;
   // todo: optimisation
@@ -57,15 +78,25 @@ function useViewLogic(props: MapProps, map: GoogleMap) {
 
     // todo track the markers so they don't keep getting added
     // Add a marker at the tee position
-    // @ts-ignore
-    new window.google.maps.Marker({
-      position: teePos,
-      map: map,
-      title: "Tee Position",
-      icon: {
-        url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png", // Custom marker for tee
-      },
-    });
+    createRotatedIcon(
+      "/images/white-tees.png",
+      holeOrientation === "horizontal" ? 90 : 0,
+      (iconUrl: string) => {
+      // @ts-ignore
+      new window.google.maps.Marker({
+        position: teePos,
+        map: map,
+        title: "Tee Position",
+        icon: {
+          url: iconUrl,
+          // @ts-ignore
+          scaledSize: new window.google.maps.Size(32, 32), // Adjust size as needed
+          // @ts-ignore
+          anchor: new window.google.maps.Point(16, 16), // Adjust anchor point as needed
+          rotation: 90,
+        },
+      });
+    })
 
     // Add a marker at the pin position
     // @ts-ignore
@@ -74,7 +105,7 @@ function useViewLogic(props: MapProps, map: GoogleMap) {
       map: map,
       title: "Pin Position",
       icon: {
-        url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png", // Custom marker for pin
+        url: "/images/flag.png", // Custom marker for pin
       },
     });
   }
