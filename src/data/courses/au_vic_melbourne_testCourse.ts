@@ -1,7 +1,7 @@
 import { CourseDef } from "model/Course";
 
 export const auVicMelbourneFlagstaffTest: CourseDef = {
-  courseName: "Flagstaf Test",
+  courseName: "Flagstaff Test",
   holes: [
     {
       holeNum: 1,
