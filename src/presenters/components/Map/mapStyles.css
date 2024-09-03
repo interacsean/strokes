@@ -1,0 +1,8 @@
+/* styles.css */
+.gm-style .gmnoprint,
+.gm-style .gm-style-cc,
+.gm-style .gmnoprint a,
+.gm-style .gmnoprint div,
+.gm-style .gmnoprint span {
+  display: none !important;
+}

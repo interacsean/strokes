@@ -176,11 +176,12 @@ export function HoleView(props: HoleViewProps) {
         </Flex>
         <TabPanels flex={1} overflowY="auto">
           <TabPanel height="100%" p={0}>
-            {/* Map */}
             {/* todo: does not work if window.google.maps is undefined */}
             <Box height="100%">
               {props.currentPosition ? (
                 <Map
+                  tilt={60}
+                  zoomFactor={2}
                   hole={props.hole}
                   currentPosition={props.currentPosition}
                 />

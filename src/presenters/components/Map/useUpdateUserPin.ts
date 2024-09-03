@@ -8,45 +8,26 @@ export function useUpdateUserPin(userLocation: any, map: any, mapRef: any) {
 
   useEffect(
     function updateUserPosition() {
+      // @ts-ignore
       if (userLocation && map && gmaps?.marker?.AdvancedMarkerElement) {
         if (!userMarker) {
           const iconImage = document.createElement("img");
           iconImage.src =
             // "https://developers.google.com/maps/documentation/javascript/examples/full/images/parking_lot_maps.png";
             'data:image/svg+xml;charset=utf-8,<svg width="20" height="20"><circle cx="10" cy="10" r="8" fill="#007bff" /></svg>';
+          // @ts-ignore
           const marker = new gmaps.marker.AdvancedMarkerElement({
             map: mapRef.current,
             position: userLocation,
             content: iconImage,
           });
-          // const marker = new window.gmaps.Marker({
-          //   position: userLocation,
-          //   map: mapRef,
-          //   icon: {
-          //   url: 'data:image/svg+xml;charset=utf-8,<svg width="20" height="20"><circle cx="10" cy="10" r="8" fill="#007bff" /></svg>',
-          //     scaledSize: new gmaps.Size(20, 20),
-          //     anchor: new gmaps.Point(10, 10), // Adjust anchor point as needed
-          //   },
-          // });
-
-          // Add the marker to the map (assuming mapRef.current is your map instance)
-          // mapRef.current.overlayView.addOverlay(newMarker);
-
-          // Optional: Clean up previous marker (if needed)
-          // if (userMarker) {
-          //   mapRef.current.overlayView.removeOverlay(userMarker);
-          // }
-
           setUserMarker(marker);
-
-          // setUserMarker(marker);
         } else {
-          // Update existing marker position
-          // userMarker.setPosition(userLocation);
         }
       }
     },
     [
+      // @ts-ignore
       gmaps?.marker?.AdvancedMarkerElement,
       userLocation,
       map,

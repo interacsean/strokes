@@ -13,6 +13,7 @@ import { PosOption, PosOptionMethods } from "model/PosOptions";
 import { LatLng } from "model/LatLng";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 import { Lie } from "model/Lie";
+import Map from "presenters/components/Map/Map";
 
 export type SingleStrokeViewProps = {
   hole: Hole;
@@ -240,7 +241,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
       case PosOptionMethods.TEE:
       // skip
     }
-  }, [strokeNum, fromPosSetMethod, setFromPosition, prevStroke]);
+  }, [strokeNum, fromPosSetMethod, setFromPosition]);
 
   const setToPosOnClick = useCallback(() => {
     switch (toPosSetMethod) {
@@ -330,8 +331,16 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           </Text>
           <Text>—</Text>
         </Flex>
-        <Box bgColor="primary.200" color="white">
-          [Mini-map to go here]
+        <Box bgColor="primary.200" color="white" height="80px" mx={-4}>
+          {props.currentPosition && (
+            <Map
+              mapId="miniMap"
+              holeOrientation="horizontal"
+              currentPosition={props.currentPosition}
+              hole={props.hole}
+              zoomFactor={0.8}
+            />
+          )}
         </Box>
         <Flex flexDir="row" alignItems={"center"} columnGap={2}>
           <Text variant="inputLabel" minWidth={inputLabelWidth}>
