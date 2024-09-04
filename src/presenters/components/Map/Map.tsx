@@ -1,3 +1,5 @@
+/// <reference types="@types/google.maps" />
+
 import { useState, useRef, useEffect } from "react";
 import { useInitialiseMap } from "./useInitialiseMap";
 import { useUpdateUserPin } from "./useUpdateUserPin";
@@ -45,11 +47,18 @@ const createRotatedIcon = (
   };
 };
 
-function useViewLogic(props: MapProps, map: GoogleMap) {
+function useViewLogic(props: MapProps, map: google.maps.Map | null) {
   const { holeOrientation = "vertical" } = props;
   // todo: optimisation
   const teePos = selectCurrentTeeFromHole(props.hole)?.pos;
   const pinPos = selectCurrentPinFromHole(props.hole);
+
+  const pinMarkerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(
+    null
+  );
+  const teeMarkerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(
+    null
+  );
 
   if (teePos && pinPos && map) {
     const tiltRadians = ((props.tilt || 0) * Math.PI) / 180;
@@ -67,10 +76,8 @@ function useViewLogic(props: MapProps, map: GoogleMap) {
     const mapSize = 50000000 * screenSizeFactor * (props.zoomFactor || 1);
     const zoomLevel = Math.log2(mapSize / (distance * bufferFactor));
 
-    // @ts-ignore
     map.panTo(new google.maps.LatLng(centerLat, centerLng));
     map.setZoom(zoomLevel);
-    console.log("zoom", map.getZoom());
 
     const latDiff = pinPos.lat - teePos.lat;
     const avgLat = (teePos.lat + pinPos.lat) / 2;
@@ -83,51 +90,61 @@ function useViewLogic(props: MapProps, map: GoogleMap) {
       (angleDeg + 360 + (holeOrientation === "horizontal" ? -90 : 0)) % 360;
     map.setHeading(bearingDeg);
     map.setTilt(props.tilt || 0);
+  }
 
-    // todo track the markers so they don't keep getting added
-    // Add a marker at the tee position
-    createRotatedIcon(
-      "/images/white-tees.png",
-      holeOrientation === "horizontal" ? 90 : 0,
-      (iconUrl: string) => {
-        // @ts-ignore
-        new window.google.maps.Marker({
+  useEffect(() => {
+    if (map && teePos) {
+      if (teeMarkerRef.current) {
+        teeMarkerRef.current.position = teePos;
+      } else {
+        teeMarkerRef.current = new google.maps.marker.AdvancedMarkerElement({
           position: teePos,
           map: map,
           title: "Tee Position",
-          clickable: true,
-          icon: {
-            url: iconUrl,
-            // @ts-ignore
-            scaledSize: new window.google.maps.Size(32, 32), // Adjust size as needed
-            // @ts-ignore
-            anchor: new window.google.maps.Point(16, 16), // Adjust anchor point as needed
-            rotation: 90,
-          },
-          // @ts-ignore
-        }).addListener("click", (e: google.maps.MapMouseEvent) => {
-          // @ts-ignore
-          google.maps.event.trigger(map, "click", e);
+          content: document.createElement("div"),
         });
-      }
-    );
 
-    // Add a marker at the pin position
-    // @ts-ignore
-    new window.google.maps.Marker({
-      position: pinPos,
-      map: map,
-      title: "Pin Position",
-      clickable: true,
-      icon: {
-        url: "/images/flag.png", // Custom marker for pin
-      },
-      // @ts-ignore
-    }).addListener("click", (e: google.maps.MapMouseEvent) => {
-      // @ts-ignore
-      google.maps.event.trigger(map, "click", e);
-    });
-  }
+        createRotatedIcon(
+          "/images/white-tees.png",
+          holeOrientation === "horizontal" ? 90 : 0,
+          (iconUrl: string) => {
+            const teeContent = teeMarkerRef.current?.content as HTMLDivElement;
+            if (teeContent?.style) {
+              teeContent.style.backgroundImage = `url('${iconUrl}')`;
+              teeContent.style.backgroundSize = "cover";
+              teeContent.style.width = "21px";
+              teeContent.style.height = "21px";
+              teeContent.style.bottom = "-11px";
+              teeContent.style.position = "relative";
+            }
+          }
+        );
+      }
+    }
+    if (map && pinPos) {
+      if (pinMarkerRef.current) {
+        pinMarkerRef.current.position = pinPos;
+      } else {
+        pinMarkerRef.current = new google.maps.marker.AdvancedMarkerElement({
+          position: pinPos,
+          map: map,
+          title: "Pin Position",
+          content: document.createElement("div"),
+        });
+
+        const pinContent = pinMarkerRef.current?.content as HTMLDivElement;
+        if (pinContent?.style) {
+          pinContent.style.backgroundImage = "url('/images/flag.png')";
+          pinContent.style.backgroundSize = "cover";
+          pinContent.style.width = "10px";
+          pinContent.style.height = "15.5px";
+          pinContent.style.left = "3px";
+          pinContent.style.position = "relative";
+        }
+      }
+    }
+  }, [pinPos, map]);
+
   const { setFakePos } = useFakeGps();
   useEffect(() => {
     if (map) {

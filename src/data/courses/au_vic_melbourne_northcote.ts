@@ -87,7 +87,7 @@ export const auVicMelbourneNorthcote: CourseDef = {
         tee: {
           par: 4,
           nominalDistance: 226,
-          pos: { lat: -37.76235279361025, lng: 144.98479427464073, alt: null },
+          pos: { lat: -37.76221846813064, lng: 144.98476832927184, alt: null },
         },
       },
       pins: {

@@ -238,7 +238,7 @@ export function HoleView(props: HoleViewProps) {
               <Box height="100%">
                 {props.currentPosition ? (
                   <Map
-                    tilt={60}
+                    tilt={52}
                     zoomFactor={2}
                     hole={props.hole}
                     currentPosition={props.currentPosition}
