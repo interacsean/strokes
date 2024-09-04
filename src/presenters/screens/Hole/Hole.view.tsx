@@ -11,6 +11,7 @@ import {
   Tab,
   TabPanel,
   Box,
+  Checkbox,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Hole as HoleModel } from "model/Hole";
@@ -133,6 +134,10 @@ function useHoleViewLogic(props: HoleViewProps) {
   const navigate = useNavigate();
   const navHome = () => navigate(RoutePaths.Home);
 
+  const [ showLeavingPrompt, setShowLeavingPrompt ] = useState(false);
+  const promptOnLeave = useCallback(() => setShowLeavingPrompt(true), []);
+  const cancelLeave = useCallback(() => setShowLeavingPrompt(false), []);
+
   return {
     par,
     parInputProps,
@@ -145,6 +150,9 @@ function useHoleViewLogic(props: HoleViewProps) {
     activeStroke: availableActiveStroke,
     setActiveStroke,
     navHome,
+    showLeavingPrompt,
+    promptOnLeave,
+    cancelLeave,
   };
 }
 
@@ -163,6 +171,7 @@ export function HoleView(props: HoleViewProps) {
         flex={1}
         display="flex"
         flexDir="column"
+        alignItems="stretch"
       >
         <Flex>
           <TabList flex={1}>
@@ -170,166 +179,185 @@ export function HoleView(props: HoleViewProps) {
             <Tab onClick={() => viewLogic.setTabIndex(1)}>Strokes</Tab>
             <Tab onClick={() => viewLogic.setTabIndex(2)}>Export</Tab>
           </TabList>
-          <Button variant="ghost" onClick={viewLogic.navHome} px={0}>
+          <Button variant="ghost" onClick={viewLogic.promptOnLeave} px={0}>
             <CloseIcon boxSize={4} />
           </Button>
         </Flex>
-        <TabPanels flex={1} overflowY="auto">
-          <TabPanel height="100%" p={0}>
-            {/* todo: does not work if window.google.maps is undefined */}
-            <Box height="100%">
-              {props.currentPosition ? (
-                <Map
-                  tilt={60}
-                  zoomFactor={2}
-                  hole={props.hole}
-                  currentPosition={props.currentPosition}
-                />
-              ) : (
-                "Loading map"
-              )}
-            </Box>
-            <Box>
-              <Box>
-                <FormLabel>
-                  <Text>Set tee pos</Text>
-                  <Button
-                    variant="primaryOutline"
-                    onClick={() =>
-                      props.currentPosition &&
-                      props.setTeePos("default", props.currentPosition)
-                    }
-                  >
-                    📍⛳️
-                  </Button>
-                </FormLabel>
-                <FormLabel>
-                  <Text>Par {props.par}</Text>
-                  <Input name="par" {...viewLogic.parInputProps} />
-                </FormLabel>
-                <FormLabel>
-                  <Text>Set hole pos</Text>
-                  <Button
-                    variant="primaryOutline"
-                    onClick={() =>
-                      props.currentPosition &&
-                      props.setHolePos(props.currentPosition)
-                    }
-                  >
-                    📍⛳️
-                  </Button>
-                </FormLabel>
-              </Box>
-            </Box>
-          </TabPanel>
-          <TabPanel>
-            {/* Strokes */}
-            <StrokesContainer>
-              <Box mx={-4} mt={-4}>
-                <HoleOverview
-                  setPar={props.setPar}
-                  nextHole={() => {
-                    console.log("nexthoel");
-                    props.nextHole();
-                  }}
-                  prevHole={props.prevHole}
-                  holeNum={props.holeNum}
-                  currentStrokeNum={props.preprocessedStrokes.length}
-                  distanceToHole={props.distanceToHole}
-                  holeAltitudeDelta={props.holeAltitudeDelta}
-                  holeLength={props.holeLength}
-                  par={props.par}
-                  roundScore={props.roundScore}
-                  activeStroke={viewLogic.activeStroke}
-                  setActiveStroke={viewLogic.setActiveStroke}
-                  distanceUnit={distanceUnit}
-                />
-              </Box>
-              <Box position="relative" flex={1}>
-                <SingleStroke
-                  hole={props.hole}
-                  strokeNum={viewLogic.activeStroke}
-                  stroke={props.preprocessedStrokes[viewLogic.activeStroke - 1]}
-                  strokes={props.preprocessedStrokes}
-                  selectFromLie={props.selectStrokeFromLie}
-                  selectToLie={props.selectStrokeToLie}
-                  selectClub={props.selectStrokeClub}
-                  selectStrokeType={props.selectStrokeType}
-                  setFromPosition={viewLogic.setFromPosition}
-                  setToPosition={viewLogic.setToPosition}
-                  setFromPosMethod={props.setFromPosMethod}
-                  setToPosMethod={props.setToPosMethod}
-                  distanceUnit={distanceUnit}
-                  currentPosition={props.currentPosition}
-                />
-              </Box>
-              <Box my={4}>
-                <hr />
-              </Box>
+        {viewLogic.showLeavingPrompt ? (
+          <Flex px={4} py={3}>
+            <Container>
+              <Text>Are you sure you want to leave?</Text>
 
-              <Flex flexDir="column" justifyContent="center" rowGap={3} mt={3}>
-                <Flex
-                  columnGap={2}
-                  justifyContent="stretch"
-                  alignItems="center"
-                >
-                  <Button variant="ghost" px={2} onClick={props.prevHole}>
-                    <ChevronLeftIcon boxSize={6} />
-                  </Button>
-                  <Flex flex={1} justifyContent="center" alignItems="center">
+              <Checkbox defaultChecked>Save round data</Checkbox>
+
+              <Flex columnGap={2} justifyContent="stretch">
+                <Button flex={1} variant="outline" onClick={viewLogic.cancelLeave}>
+                  Back to round
+                </Button>
+                <Button flex={1} variant="primary" onClick={viewLogic.navHome}>
+                  Leave
+                </Button>
+              </Flex>
+            </Container>
+          </Flex>
+        ) : (
+          <TabPanels flex={1} overflowY="auto">
+            <TabPanel height="100%" p={0}>
+              {/* todo: does not work if window.google.maps is undefined */}
+              <Box height="100%">
+                {props.currentPosition ? (
+                  <Map
+                    tilt={60}
+                    zoomFactor={2}
+                    hole={props.hole}
+                    currentPosition={props.currentPosition}
+                  />
+                ) : (
+                  "Loading map"
+                )}
+              </Box>
+              <Box>
+                <Box>
+                  <FormLabel>
+                    <Text>Set tee pos</Text>
                     <Button
-                      variant="ghost"
-                      px={2}
+                      variant="primaryOutline"
                       onClick={() =>
-                        viewLogic.setActiveStroke(viewLogic.activeStroke - 1)
+                        props.currentPosition &&
+                        props.setTeePos("default", props.currentPosition)
                       }
                     >
+                      📍⛳️
+                    </Button>
+                  </FormLabel>
+                  <FormLabel>
+                    <Text>Par {props.par}</Text>
+                    <Input name="par" {...viewLogic.parInputProps} />
+                  </FormLabel>
+                  <FormLabel>
+                    <Text>Set hole pos</Text>
+                    <Button
+                      variant="primaryOutline"
+                      onClick={() =>
+                        props.currentPosition &&
+                        props.setHolePos(props.currentPosition)
+                      }
+                    >
+                      📍⛳️
+                    </Button>
+                  </FormLabel>
+                </Box>
+              </Box>
+            </TabPanel>
+            <TabPanel>
+              {/* Strokes */}
+              <StrokesContainer>
+                <Box mx={-4} mt={-4}>
+                  <HoleOverview
+                    setPar={props.setPar}
+                    nextHole={() => {
+                      console.log("nexthoel");
+                      props.nextHole();
+                    }}
+                    prevHole={props.prevHole}
+                    holeNum={props.holeNum}
+                    currentStrokeNum={props.preprocessedStrokes.length}
+                    distanceToHole={props.distanceToHole}
+                    holeAltitudeDelta={props.holeAltitudeDelta}
+                    holeLength={props.holeLength}
+                    par={props.par}
+                    roundScore={props.roundScore}
+                    activeStroke={viewLogic.activeStroke}
+                    setActiveStroke={viewLogic.setActiveStroke}
+                    distanceUnit={distanceUnit}
+                  />
+                </Box>
+                <Box position="relative" flex={1}>
+                  <SingleStroke
+                    hole={props.hole}
+                    strokeNum={viewLogic.activeStroke}
+                    stroke={props.preprocessedStrokes[viewLogic.activeStroke - 1]}
+                    strokes={props.preprocessedStrokes}
+                    selectFromLie={props.selectStrokeFromLie}
+                    selectToLie={props.selectStrokeToLie}
+                    selectClub={props.selectStrokeClub}
+                    selectStrokeType={props.selectStrokeType}
+                    setFromPosition={viewLogic.setFromPosition}
+                    setToPosition={viewLogic.setToPosition}
+                    setFromPosMethod={props.setFromPosMethod}
+                    setToPosMethod={props.setToPosMethod}
+                    distanceUnit={distanceUnit}
+                    currentPosition={props.currentPosition}
+                  />
+                </Box>
+                <Box my={4}>
+                  <hr />
+                </Box>
+
+                <Flex flexDir="column" justifyContent="center" rowGap={3} mt={3}>
+                  <Flex
+                    columnGap={2}
+                    justifyContent="stretch"
+                    alignItems="center"
+                  >
+                    <Button variant="ghost" px={2} onClick={props.prevHole}>
                       <ChevronLeftIcon boxSize={6} />
                     </Button>
-                    <Text>Shot {viewLogic.activeStroke}</Text>
-                    {props.preprocessedStrokes[viewLogic.activeStroke - 1]
-                      .toPosSetMethod !== PosOptionMethods.HOLE && (
+                    <Flex flex={1} justifyContent="center" alignItems="center">
                       <Button
                         variant="ghost"
                         px={2}
                         onClick={() =>
-                          viewLogic.activeStroke ===
-                          props.preprocessedStrokes.length
-                            ? props.addStroke()
-                            : viewLogic.setActiveStroke(
-                                viewLogic.activeStroke + 1
-                              )
+                          viewLogic.setActiveStroke(viewLogic.activeStroke - 1)
                         }
                       >
-                        {viewLogic.activeStroke ===
-                        props.preprocessedStrokes.length ? (
-                          "+"
-                        ) : (
-                          <ChevronRightIcon boxSize={6} />
-                        )}
+                        <ChevronLeftIcon boxSize={6} />
                       </Button>
-                    )}
+                      <Text>Shot {viewLogic.activeStroke}</Text>
+                      {props.preprocessedStrokes[viewLogic.activeStroke - 1]
+                        .toPosSetMethod !== PosOptionMethods.HOLE && (
+                        <Button
+                          variant="ghost"
+                          px={2}
+                          onClick={() =>
+                            viewLogic.activeStroke ===
+                            props.preprocessedStrokes.length
+                              ? props.addStroke()
+                              : viewLogic.setActiveStroke(
+                                  viewLogic.activeStroke + 1
+                                )
+                          }
+                        >
+                          {viewLogic.activeStroke ===
+                          props.preprocessedStrokes.length ? (
+                            "+"
+                          ) : (
+                            <ChevronRightIcon boxSize={6} />
+                          )}
+                        </Button>
+                      )}
+                    </Flex>
+                    <Button variant="ghost" px={2} onClick={props.nextHole}>
+                      <ChevronRightIcon boxSize={6} />
+                    </Button>
                   </Flex>
-                  <Button variant="ghost" px={2} onClick={props.nextHole}>
-                    <ChevronRightIcon boxSize={6} />
-                  </Button>
                 </Flex>
-              </Flex>
-            </StrokesContainer>
-          </TabPanel>
-          <TabPanel flex={1}>
-            {/* Strokes */}
-            <Text>
-              Copy the JSON data of your current course + round, for external
-              use and analysis.
-            </Text>
-            <Button
-              onClick={() => copyToClipboard(JSON.stringify(props.course))}
-            >
-              Copy round
-            </Button>
-          </TabPanel>
-        </TabPanels>
+              </StrokesContainer>
+            </TabPanel>
+            <TabPanel flex={1}>
+              {/* Strokes */}
+              <Text>
+                Copy the JSON data of your current course + round, for external
+                use and analysis.
+              </Text>
+              <Button
+                onClick={() => copyToClipboard(JSON.stringify(props.course))}
+              >
+                Copy round
+              </Button>
+            </TabPanel>
+          </TabPanels>
+        )}
       </Tabs>
       {props.gpsComponent}
     </Container>
