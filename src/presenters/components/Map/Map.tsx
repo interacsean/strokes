@@ -131,9 +131,9 @@ function useViewLogic(props: MapProps, map: GoogleMap) {
   const { setFakePos } = useFakeGps();
   useEffect(() => {
     if (map) {
-      // @ts-ignore
       const listener = map.addListener(
         "click",
+        // @ts-ignore
         (e: google.maps.MapMouseEvent) => {
           if (e.latLng) {
             const lat = e.latLng.lat();

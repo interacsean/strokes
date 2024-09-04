@@ -2,7 +2,7 @@ import { head, last, partial } from "ramda";
 import { nextHole } from "usecases/course/nextHole";
 import { prevHole } from "usecases/course/prevHole";
 import { saveHole } from "usecases/course/saveHole";
-import { FC, useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useMemo } from "react";
 import { useCourseState } from "state/course/courseState";
 import { HoleViewProps } from "./Hole.view";
 import { Hole, Hole as HoleModel } from "model/Hole";
