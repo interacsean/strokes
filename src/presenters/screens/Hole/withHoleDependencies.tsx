@@ -359,9 +359,7 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     holeLength,
     roundScore: roundScore || 0,
     par: currentTee?.par,
-    gpsComponent: USE_FAKE_POSITION ? (
-      <FakeGeo />
-    ) : (
+    gpsComponent: USE_FAKE_POSITION ? null : (
       <GeoHUD currentPosition={currentPosition} geo={geo} />
     ),
   };
