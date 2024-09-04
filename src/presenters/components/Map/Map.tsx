@@ -6,7 +6,7 @@ import { LatLng } from "model/LatLng";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
-import './mapStyles.css';
+import "./mapStyles.css";
 
 type GoogleMap = any;
 
@@ -14,18 +14,22 @@ type MapProps = {
   hole: Hole;
   currentPosition: LatLng;
   mapId?: string;
-  holeOrientation?: "horizontal" | "vertical",
+  holeOrientation?: "horizontal" | "vertical";
   zoomFactor?: number;
   tilt?: number;
 };
 
-const createRotatedIcon = (url: string, rotation: number, callback: (iconUrl: string) => void) => {
+const createRotatedIcon = (
+  url: string,
+  rotation: number,
+  callback: (iconUrl: string) => void
+) => {
   const img = new Image();
   img.src = url;
-  img.setAttribute('crossorigin', 'anonymous');
+  img.setAttribute("crossorigin", "anonymous");
   img.onload = () => {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
     if (!context) return;
 
     const size = Math.max(img.width, img.height);
@@ -50,8 +54,10 @@ function useViewLogic(props: MapProps, map: GoogleMap) {
     const tiltRadians = ((props.tilt || 0) * Math.PI) / 180;
     const weightFactor = Math.sin(tiltRadians) / 6;
 
-    const centerLat = (teePos.lat * (0.5 + weightFactor) + pinPos.lat * (0.5 - weightFactor));
-    const centerLng = (teePos.lng * (0.5 + weightFactor) + pinPos.lng * (0.5 - weightFactor));
+    const centerLat =
+      teePos.lat * (0.5 + weightFactor) + pinPos.lat * (0.5 - weightFactor);
+    const centerLng =
+      teePos.lng * (0.5 + weightFactor) + pinPos.lng * (0.5 - weightFactor);
 
     const distance = calculateDistanceBetweenPositions(teePos, pinPos);
 
@@ -72,7 +78,8 @@ function useViewLogic(props: MapProps, map: GoogleMap) {
 
     const angleRad = Math.atan2(lngDiff, latDiff); // Note: reversed latDiff and lngDiff
     const angleDeg = (angleRad * 180) / Math.PI;
-    const bearingDeg = (angleDeg + 360 + (holeOrientation === "horizontal" ? -90 : 0)) % 360;
+    const bearingDeg =
+      (angleDeg + 360 + (holeOrientation === "horizontal" ? -90 : 0)) % 360;
     map.setHeading(bearingDeg);
     map.setTilt(props.tilt || 0);
 
@@ -82,21 +89,22 @@ function useViewLogic(props: MapProps, map: GoogleMap) {
       "/images/white-tees.png",
       holeOrientation === "horizontal" ? 90 : 0,
       (iconUrl: string) => {
-      // @ts-ignore
-      new window.google.maps.Marker({
-        position: teePos,
-        map: map,
-        title: "Tee Position",
-        icon: {
-          url: iconUrl,
-          // @ts-ignore
-          scaledSize: new window.google.maps.Size(32, 32), // Adjust size as needed
-          // @ts-ignore
-          anchor: new window.google.maps.Point(16, 16), // Adjust anchor point as needed
-          rotation: 90,
-        },
-      });
-    })
+        // @ts-ignore
+        new window.google.maps.Marker({
+          position: teePos,
+          map: map,
+          title: "Tee Position",
+          icon: {
+            url: iconUrl,
+            // @ts-ignore
+            scaledSize: new window.google.maps.Size(32, 32), // Adjust size as needed
+            // @ts-ignore
+            anchor: new window.google.maps.Point(16, 16), // Adjust anchor point as needed
+            rotation: 90,
+          },
+        });
+      }
+    );
 
     // Add a marker at the pin position
     // @ts-ignore
@@ -111,10 +119,7 @@ function useViewLogic(props: MapProps, map: GoogleMap) {
   }
 }
 
-function Map({
-  mapId = "map",
-  ...props
-}: MapProps) {
+function Map({ mapId = "map", ...props }: MapProps) {
   const [map, setMap] = useState<GoogleMap | null>(null);
   const userLocation = props.currentPosition;
   useViewLogic(props, map);

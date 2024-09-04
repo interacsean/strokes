@@ -36,12 +36,9 @@ function useChooseCourseViewLogic(props: ChooseCourseViewProps) {
     },
     [setCourse, navigate]
   );
-  const continueRound = useCallback(
-    () => {
-      navigate(RoutePaths.Hole);
-    }, 
-    [navigate],
-  )
+  const continueRound = useCallback(() => {
+    navigate(RoutePaths.Hole);
+  }, [navigate]);
 
   return {
     selectCourse,
@@ -58,11 +55,7 @@ export function ChooseCourseView(props: ChooseCourseViewProps) {
       <Flex flexDir="column" alignItems="flex-start">
         {props.hasIncompleteCourse && (
           <>
-            <Button
-              variant="link"
-              py={3}
-              onClick={viewLogic.continueRound}
-            >
+            <Button variant="link" py={3} onClick={viewLogic.continueRound}>
               Continue round...
             </Button>
             <hr />

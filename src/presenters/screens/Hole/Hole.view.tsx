@@ -134,7 +134,7 @@ function useHoleViewLogic(props: HoleViewProps) {
   const navigate = useNavigate();
   const navHome = () => navigate(RoutePaths.Home);
 
-  const [ showLeavingPrompt, setShowLeavingPrompt ] = useState(false);
+  const [showLeavingPrompt, setShowLeavingPrompt] = useState(false);
   const promptOnLeave = useCallback(() => setShowLeavingPrompt(true), []);
   const cancelLeave = useCallback(() => setShowLeavingPrompt(false), []);
 
@@ -191,7 +191,11 @@ export function HoleView(props: HoleViewProps) {
               <Checkbox defaultChecked>Save round data</Checkbox>
 
               <Flex columnGap={2} justifyContent="stretch">
-                <Button flex={1} variant="outline" onClick={viewLogic.cancelLeave}>
+                <Button
+                  flex={1}
+                  variant="outline"
+                  onClick={viewLogic.cancelLeave}
+                >
                   Back to round
                 </Button>
                 <Button flex={1} variant="primary" onClick={viewLogic.navHome}>
@@ -276,7 +280,9 @@ export function HoleView(props: HoleViewProps) {
                   <SingleStroke
                     hole={props.hole}
                     strokeNum={viewLogic.activeStroke}
-                    stroke={props.preprocessedStrokes[viewLogic.activeStroke - 1]}
+                    stroke={
+                      props.preprocessedStrokes[viewLogic.activeStroke - 1]
+                    }
                     strokes={props.preprocessedStrokes}
                     selectFromLie={props.selectStrokeFromLie}
                     selectToLie={props.selectStrokeToLie}
@@ -294,7 +300,12 @@ export function HoleView(props: HoleViewProps) {
                   <hr />
                 </Box>
 
-                <Flex flexDir="column" justifyContent="center" rowGap={3} mt={3}>
+                <Flex
+                  flexDir="column"
+                  justifyContent="center"
+                  rowGap={3}
+                  mt={3}
+                >
                   <Flex
                     columnGap={2}
                     justifyContent="stretch"

@@ -7,9 +7,18 @@ type Props = {};
 export function Home(props: Props) {
   return (
     <Flex flexDir="column">
-      <Flex bgColor="primary.500" height="40vh" px={4} py={2} justifyContent="flex-end" alignItems="flex-end">
-        <Text color="white" variant="heading">Strokes</Text>
-       </Flex>
+      <Flex
+        bgColor="primary.500"
+        height="40vh"
+        px={4}
+        py={2}
+        justifyContent="flex-end"
+        alignItems="flex-end"
+      >
+        <Text color="white" variant="heading">
+          Strokes
+        </Text>
+      </Flex>
       <Flex flexDir="column" px={4} py={3}>
         <Button variant="link" as={Link} to={RoutePaths.ChooseCourse} py={3}>
           New Round
@@ -24,4 +33,3 @@ export function Home(props: Props) {
     </Flex>
   );
 }
-

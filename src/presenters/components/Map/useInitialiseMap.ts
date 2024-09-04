@@ -7,7 +7,7 @@ export function useInitialiseMap(
   mapId: string,
   map: any,
   setMap: any,
-  mapRef: any,
+  mapRef: any
 ) {
   // @ts-ignore - todo: fix window
   const gmaps = window.google?.maps; // Assuming you have a Maps Maps API script loaded with your API key
@@ -37,7 +37,7 @@ export function useInitialiseMap(
             // styles: googleMapStyle,
             mapId: "91eaa2523d3531c5",
           };
-          
+
           // @ts-ignore
           const newMap = new gmaps.Map(mapElement, mapOptions);
           setMap(newMap);

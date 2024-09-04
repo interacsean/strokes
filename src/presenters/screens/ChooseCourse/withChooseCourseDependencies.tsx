@@ -22,7 +22,7 @@ export function withChooseCourseDependencies(
       courses,
       setCourse: setCourseState,
       newCourse,
-      hasIncompleteCourse
+      hasIncompleteCourse,
     };
 
     return (
