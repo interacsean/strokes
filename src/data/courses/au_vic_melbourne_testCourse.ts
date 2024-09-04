@@ -8,20 +8,20 @@ export const auVicMelbourneFlagstaffTest: CourseDef = {
       tees: {
         tee: {
           par: 4,
-          nominalDistance: 287,
+          nominalDistance: 0,
           pos: { lat: -37.811303, lng: 144.953803, alt: null },
         },
       },
       pins: {
-        pin: { lat: -37.809746, lng: 144.9519528, alt: null },
+        pin: { lat: -37.809928313462265, lng: 144.95328035117944, alt: null },
       },
     },
     {
       holeNum: 2,
       tees: {
         tee: {
-          par: 4,
-          nominalDistance: 416,
+          par: 3,
+          nominalDistance: 0,
           pos: { lat: -37.809306, lng: 144.953275, alt: null },
         },
       },
@@ -33,8 +33,8 @@ export const auVicMelbourneFlagstaffTest: CourseDef = {
       holeNum: 3,
       tees: {
         tee: {
-          par: 3,
-          nominalDistance: 167,
+          par: 4,
+          nominalDistance: 0,
           pos: { lat: -37.808952, lng: 144.9547, alt: null },
         },
       },
@@ -46,8 +46,8 @@ export const auVicMelbourneFlagstaffTest: CourseDef = {
       holeNum: 4,
       tees: {
         tee: {
-          par: 4,
-          nominalDistance: 378,
+          par: 3,
+          nominalDistance: 0,
           pos: { lat: -37.811433, lng: 144.955143, alt: null },
         },
       },
@@ -60,12 +60,12 @@ export const auVicMelbourneFlagstaffTest: CourseDef = {
       tees: {
         tee: {
           par: 3,
-          nominalDistance: 101,
+          nominalDistance: 0,
           pos: { lat: -37.811938, lng: 144.95429, alt: null },
         },
       },
       pins: {
-        pin: { lat: -37.810303, lng: 144.953431, alt: null },
+        pin: { lat: -37.811308284024165, lng: 144.95388236424222, alt: null },
       },
     },
   ],
