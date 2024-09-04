@@ -3,14 +3,10 @@ import { metersToLon } from "presenters/utils/metersToLongitude";
 import { useInput } from "presenters/utils/useInput/useInput";
 import { LatLng } from "model/LatLng";
 import { Dispatch, SetStateAction } from "react";
+import { useFakeGps } from "presenters/components/FakePos/FakePosContext";
 
-export function FakeGeo({
-  setPos,
-  pos,
-}: {
-  pos: LatLng;
-  setPos: Dispatch<SetStateAction<LatLng>>;
-}) {
+export function FakeGeo() {
+  const { fakePos: pos, setFakePos: setPos } = useFakeGps();
   const latInput = useInput({
     initValue: `${pos.lat}`,
     onBlur: (value) =>
