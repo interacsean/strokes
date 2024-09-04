@@ -8,5 +8,10 @@ export const selectCurrentPin = (courseState: CourseState) => {
 };
 
 export const selectCurrentPinFromHole = (
-  hole: Pick<Hole, "pinPlayed" | "pins">
-) => (hole.pinPlayed ? hole.pins[hole.pinPlayed] : Object.values(hole.pins)[0]);
+  hole: Pick<Hole, "pinPlayed" | "pins"> | null
+) =>
+  hole
+    ? hole.pinPlayed
+      ? hole.pins[hole.pinPlayed]
+      : Object.values(hole.pins)[0]
+    : null;

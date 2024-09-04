@@ -6,7 +6,7 @@ import { atom, useRecoilState } from "recoil";
 
 export type CourseStateSetters = ReturnType<typeof useCourseState>;
 
-export type CourseState = typeof defaultCourse;
+export type CourseState = typeof defaultCourse | null;
 
 export type HoleState = {
   strokes: number[]; // todo: update,
@@ -30,21 +30,25 @@ export function useCourseState() {
           | Partial<CourseState>
           | ((st: CourseState) => Partial<CourseState>)
       ) => {
-        setState((currentState) => ({
-          ...currentState,
-          ...(typeof partialStateOrUpdater === "function"
-            ? partialStateOrUpdater(currentState)
-            : partialStateOrUpdater),
-        }));
+        setState((currentState) =>
+          currentState
+            ? {
+                ...currentState,
+                ...(typeof partialStateOrUpdater === "function"
+                  ? partialStateOrUpdater(currentState)
+                  : partialStateOrUpdater),
+              }
+            : null
+        );
       },
     }),
     // eslint-disable-next-line
-    [setState, ...Object.values(state)]
+    [setState, ...Object.values(state || {})]
   );
 }
 
 const courseAtom = atom<CourseState>({
   key: "course",
-  default: defaultCourse,
+  default: null,
   effects: [localStoragePersistenceEffect("strokes_course")],
 });

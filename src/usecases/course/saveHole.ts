@@ -8,15 +8,18 @@ type NeededCourseState = {
 };
 
 export function saveHole(
-  updateCourseState: Updater<{ holes: Hole[] }, NeededCourseState>,
+  updateCourseState: Updater<
+    { holes: Hole[] } | null,
+    NeededCourseState | null
+  >,
   hole: Hole,
   holeNum?: number
 ) {
   updateCourseState((state) => {
     const newHoles = set(
-      lensPath([(holeNum ?? state.currentHoleNum) - 1]),
+      lensPath([(holeNum ?? (state?.currentHoleNum || 1)) - 1]),
       hole,
-      state.holes
+      state?.holes || []
     );
     return {
       holes: newHoles,

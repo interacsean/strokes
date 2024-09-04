@@ -50,29 +50,34 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     const currentHole = useSelector(selectCurrentHole, courseState);
     const currentPin = useSelector(selectCurrentPinFromHole, currentHole);
     const currentTee = useSelector(selectCurrentTeeFromHole, currentHole);
-    const { strokes } = currentHole;
+    const { strokes } = currentHole || {};
 
     const saveStrokeAndUpdate = useCallback(
       (strokeNum: number, partStroke: Partial<Stroke>) => {
-        const currentStroke =
-          strokes[strokeNum - 1] || newStrokeFromStrokes(strokes, currentHole);
-        const updatedStroke = mergePartStroke(currentStroke, partStroke);
-        saveStroke(updateCourseState, currentHole, strokeNum, updatedStroke);
+        if (strokes && currentHole) {
+          const currentStroke =
+            strokes[strokeNum - 1] ||
+            newStrokeFromStrokes(strokes, currentHole);
+          const updatedStroke = mergePartStroke(currentStroke, partStroke);
+          saveStroke(updateCourseState, currentHole, strokeNum, updatedStroke);
+        }
       },
       [updateCourseState, currentHole, strokes]
     );
 
     const addStroke = useCallback(() => {
-      const strokeToAdd = {
-        ...newStrokeFromStrokes(strokes, currentHole),
-        fromPos: last(strokes)?.toPos,
-      };
-      saveStroke(
-        updateCourseState,
-        currentHole,
-        strokes.length + 1,
-        strokeToAdd
-      );
+      if (strokes && currentHole) {
+        const strokeToAdd = {
+          ...newStrokeFromStrokes(strokes, currentHole),
+          fromPos: last(strokes)?.toPos,
+        };
+        saveStroke(
+          updateCourseState,
+          currentHole,
+          strokes.length + 1,
+          strokeToAdd
+        );
+      }
     }, [strokes, currentHole, updateCourseState]);
 
     const saveCurrentHole = useCallback(
@@ -82,19 +87,24 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const holeUpdateAndSave = useCallback(
       (partHole: DeepPartial<HoleModel>) =>
+        currentHole &&
         saveCurrentHole(mergePartHole(currentHole, partHole) as Hole),
       [saveCurrentHole, currentHole]
     );
 
     const nextHoleAndUpdate = useCallback(() => {
-      // todo: this double-updates the state and it could be done in one Stroke
-      saveCurrentHole(currentHole);
-      nextHole(updateCourseState);
+      if (currentHole) {
+        // todo: this double-updates the state and it could be done in one Stroke
+        saveCurrentHole(currentHole);
+        nextHole(updateCourseState);
+      }
     }, [currentHole, saveCurrentHole, updateCourseState]);
 
     const prevHoleAndUpdate = useCallback(() => {
-      saveCurrentHole(currentHole);
-      prevHole(updateCourseState);
+      if (currentHole) {
+        saveCurrentHole(currentHole);
+        prevHole(updateCourseState);
+      }
     }, [currentHole, saveCurrentHole, updateCourseState]);
 
     const setParAndUpdate = useCallback(
@@ -126,75 +136,85 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const setTeePos = useCallback(
       (teeName: string, teePos: LatLng) => {
-        holeUpdateAndSave({
-          tees: {
-            ...(currentHole.tees || {}),
-            [teeName]: {
-              ...currentHole.tees[teeName],
-              pos: teePos,
+        if (currentHole) {
+          holeUpdateAndSave({
+            tees: {
+              ...(currentHole.tees || {}),
+              [teeName]: {
+                ...currentHole.tees[teeName],
+                pos: teePos,
+              },
             },
-          },
-        } as DeepPartial<HoleModel>);
+          } as DeepPartial<HoleModel>);
+        }
       },
       [holeUpdateAndSave, currentHole]
     );
 
     const setStrokeFromLieAndUpdate = useCallback(
       (strokeNum: number, lie: Lie | string) => {
-        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
-          strokeNum,
-        ]);
-        setStrokeFromLie(
-          saveStrokeNumAndUpdate,
-          strokeNum,
-          strokes[strokeNum - 1],
-          lie
-        );
+        if (strokes) {
+          const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
+            strokeNum,
+          ]);
+          setStrokeFromLie(
+            saveStrokeNumAndUpdate,
+            strokeNum,
+            strokes[strokeNum - 1],
+            lie
+          );
+        }
       },
       [saveStrokeAndUpdate, strokes]
     );
 
     const setStrokeToLieAndUpdate = useCallback(
       (strokeNum: number, lie: Lie) => {
-        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
-          strokeNum,
-        ]);
-        setStrokeToLie(
-          saveStrokeNumAndUpdate,
-          strokeNum,
-          strokes[strokeNum - 1],
-          lie
-        );
+        if (strokes) {
+          const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
+            strokeNum,
+          ]);
+          setStrokeToLie(
+            saveStrokeNumAndUpdate,
+            strokeNum,
+            strokes[strokeNum - 1],
+            lie
+          );
+        }
       },
       [saveStrokeAndUpdate, strokes]
     );
 
     const setStrokeClubAndUpdate = useCallback(
       (strokeNum: number, club: Club) => {
-        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
-          strokeNum,
-        ]);
-        setClub(
-          saveStrokeNumAndUpdate,
-          strokeNum,
-          strokes[strokeNum - 1],
-          club
-        );
+        if (strokes) {
+          const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
+            strokeNum,
+          ]);
+          setClub(
+            saveStrokeNumAndUpdate,
+            strokeNum,
+            strokes[strokeNum - 1],
+            club
+          );
+        }
       },
       [saveStrokeAndUpdate, strokes]
     );
 
     const setStrokeTypeAndUpdate = useCallback(
       (strokeNum: number, strokeType: StrokeType) => {
-        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
-          strokeNum,
-        ]);
-        setStrokeType(
-          saveStrokeNumAndUpdate,
-          strokeNum,
-          strokes[strokeNum - 1],
-          strokeType
-        );
+        if (strokes) {
+          const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
+            strokeNum,
+          ]);
+          setStrokeType(
+            saveStrokeNumAndUpdate,
+            strokeNum,
+            strokes[strokeNum - 1],
+            strokeType
+          );
+        }
       },
       [saveStrokeAndUpdate, strokes]
     );
@@ -215,7 +235,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     );
 
     const preprocessedStrokes: StrokeWithDerivedFields[] = useMemo(() => {
-      if (shouldShowNewStroke(currentHole.strokes)) {
+      if (currentHole && shouldShowNewStroke(currentHole.strokes)) {
         const newStroke = newStrokeFromStrokes(
           currentHole.strokes,
           currentHole
@@ -225,11 +245,14 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
           newStroke,
         ]) as StrokeWithDerivedFields[];
       }
-      return calculateStrokeDistances(
-        currentHole,
-        currentHole.strokes
-      ) as StrokeWithDerivedFields[];
+      return currentHole
+        ? (calculateStrokeDistances(
+            currentHole,
+            currentHole.strokes
+          ) as StrokeWithDerivedFields[])
+        : [];
     }, [currentHole]);
+
     console.log(
       preprocessedStrokes.map(({ fromPos, toPos, strokeDistance }) => ({
         fromPos,
@@ -265,7 +288,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const caddySuggestions = useMemo(() => {
       const lastStroke = last(preprocessedStrokes);
-      return lastStroke
+      return lastStroke && currentHole
         ? calculateCaddySuggestions(currentHole, lastStroke)
         : [];
     }, [currentHole, preprocessedStrokes]);
@@ -295,6 +318,7 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
 
     const roundScore = useMemo(
       () =>
+        courseState?.holes &&
         courseState.holes.reduce((scoreAcc, hole) => {
           if (
             hole.strokes.length &&
@@ -304,14 +328,13 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
           }
           return scoreAcc;
         }, 0),
-      [currentTee, courseState.holes]
+      [currentTee, courseState?.holes]
     );
 
-    const viewProps: HoleViewProps = {
+    const viewProps: Omit<HoleViewProps, "hole" | "course"> = {
       nextHole: nextHoleAndUpdate,
       prevHole: prevHoleAndUpdate,
-      hole: currentHole,
-      holeNum: courseState.currentHoleNum,
+      holeNum: courseState?.currentHoleNum || 1,
       setPar: setParAndUpdate,
       selectStrokeFromLie: setStrokeFromLieAndUpdate,
       selectStrokeToLie: setStrokeToLieAndUpdate,
@@ -330,9 +353,8 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
       distanceToHole,
       holeAltitudeDelta,
       holeLength,
-      roundScore,
+      roundScore: roundScore || 0,
       par: currentTee?.par,
-      course: courseState,
       gpsComponent: USE_FAKE_POSITION ? (
         <FakeGeo pos={fakePos} setPos={setFakePos} />
       ) : (
@@ -341,9 +363,12 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     };
 
     return (
-      <>
-        <HoleView {...viewProps} />
-      </>
+      currentHole &&
+      courseState && (
+        <>
+          <HoleView {...viewProps} hole={currentHole} course={courseState} />
+        </>
+      )
     );
   };
 }
