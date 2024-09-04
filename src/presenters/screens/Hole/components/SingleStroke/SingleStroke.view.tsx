@@ -59,7 +59,6 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     setFromPosMethod,
     setToPosMethod,
     strokeNum,
-    prevStroke,
   } = props;
 
   const [localStrokeNum, setLocalStrokeNum] = useState(strokeNum);

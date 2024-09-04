@@ -7,5 +7,6 @@ export type CourseDef = {
 
 export type Course = Omit<CourseDef, "holes"> & {
   currentHoleNum: number;
+  timePlayed: number;
   holes: Hole[];
 };

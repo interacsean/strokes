@@ -24,7 +24,6 @@ import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
 import { Container, StrokesContainer } from "./Hole.styles";
 import { HoleOverview } from "./components/HoleOverview/HoleOverview.view";
 import { StrokeType } from "model/StrokeType";
-// import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { SingleStroke } from "./components/SingleStroke";
 import { PosOptionMethods } from "model/PosOptions";
@@ -61,6 +60,8 @@ export type HoleViewProps = {
   holeLength: number | undefined;
   course: Course;
   gpsComponent: React.ReactNode;
+  saveRound: (course: Course) => void;
+  resetCourse: () => void;
 };
 
 const DEFAULT_HOLE_TAB = 1;
@@ -71,6 +72,8 @@ function useHoleViewLogic(props: HoleViewProps) {
     currentPosition,
     setToPosition: parentSetToPosition,
     setFromPosition: parentSetFromPosition,
+    course,
+    saveRound,
   } = props;
   // const pinPlayed = selectCurrentPinFromHole(props.hole);
   const [activeStroke, setActiveStroke] = useState(1);
@@ -132,7 +135,11 @@ function useHoleViewLogic(props: HoleViewProps) {
       : activeStroke;
 
   const navigate = useNavigate();
-  const navHome = () => navigate(RoutePaths.Home);
+  const navHome = useCallback(() => navigate(RoutePaths.Home), [navigate]);
+  const saveAndNavHome = useCallback(() => {
+    saveRound(course);
+    navHome();
+  }, [navHome, saveRound, course]);
 
   const [showLeavingPrompt, setShowLeavingPrompt] = useState(false);
   const promptOnLeave = useCallback(() => setShowLeavingPrompt(true), []);
@@ -153,6 +160,7 @@ function useHoleViewLogic(props: HoleViewProps) {
     showLeavingPrompt,
     promptOnLeave,
     cancelLeave,
+    saveAndNavHome,
   };
 }
 
@@ -198,7 +206,11 @@ export function HoleView(props: HoleViewProps) {
                 >
                   Back to round
                 </Button>
-                <Button flex={1} variant="primary" onClick={viewLogic.navHome}>
+                <Button
+                  flex={1}
+                  variant="primary"
+                  onClick={viewLogic.saveAndNavHome}
+                >
                   Leave
                 </Button>
               </Flex>

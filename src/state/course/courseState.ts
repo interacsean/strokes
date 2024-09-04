@@ -1,21 +1,14 @@
 import { Course } from "model/Course";
-import { Hole } from "model/Hole";
 import { localStoragePersistenceEffect } from "persistence/localStoragePersistence";
 import { useMemo } from "react";
 import { atom, useRecoilState } from "recoil";
 
 export type CourseStateSetters = ReturnType<typeof useCourseState>;
 
-export type CourseState = typeof defaultCourse | null;
+export type CourseState = Course | null;
 
 export type HoleState = {
   strokes: number[]; // todo: update,
-};
-
-const defaultCourse: Course = {
-  courseName: "Default course",
-  currentHoleNum: 1,
-  holes: [] as Hole[],
 };
 
 export function useCourseState() {
@@ -25,6 +18,9 @@ export function useCourseState() {
     () => ({
       state,
       setState,
+      resetState: () => {
+        setState(null);
+      },
       updateState: (
         partialStateOrUpdater:
           | Partial<CourseState>

@@ -22,6 +22,7 @@ function useChooseCourseViewLogic(props: ChooseCourseViewProps) {
       const course = {
         ...courseDef,
         currentHoleNum: 1,
+        timePlayed: Date.now(),
         holes: courseDef.holes.map((holeDef) => ({
           // todo: move to Hole model
           ...holeDef,

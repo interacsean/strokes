@@ -32,6 +32,7 @@ import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { DeepPartial } from "types/DeepPartial";
 import { PosOptionMethods } from "model/PosOptions";
+import { useRoundsState } from "state/rounds/roundsState";
 
 type HolePublicProps = {};
 
@@ -43,8 +44,13 @@ function shouldShowNewStroke(strokes: Stroke[]) {
 
 export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
   return function Hole(_props: HolePublicProps) {
-    const { state: courseState, updateState: updateCourseState } =
-      useCourseState();
+    const {
+      state: courseState,
+      updateState: updateCourseState,
+      resetState: resetCourse,
+    } = useCourseState();
+
+    const { upsertRound: saveRound } = useRoundsState();
 
     // todo: validate this does something and couldn't just be selectCurrentHole(courseState)
     const currentHole = useSelector(selectCurrentHole, courseState);
@@ -332,6 +338,8 @@ export function withHoleDependencies(HoleView: FC<HoleViewProps>) {
     );
 
     const viewProps: Omit<HoleViewProps, "hole" | "course"> = {
+      saveRound,
+      resetCourse,
       nextHole: nextHoleAndUpdate,
       prevHole: prevHoleAndUpdate,
       holeNum: courseState?.currentHoleNum || 1,
