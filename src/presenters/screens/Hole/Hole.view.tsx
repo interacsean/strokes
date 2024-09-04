@@ -140,6 +140,14 @@ function useHoleViewLogic(props: HoleViewProps) {
     saveRound(course);
     navHome();
   }, [navHome, saveRound, course]);
+  const [saveRoundData, setSaveRoundData] = useState(true);
+  const handleLeaveClick = useCallback(() => {
+    if (saveRoundData) {
+      saveAndNavHome();
+    } else {
+      navHome();
+    }
+  }, [saveRoundData, saveAndNavHome, navHome]);
 
   const [showLeavingPrompt, setShowLeavingPrompt] = useState(false);
   const promptOnLeave = useCallback(() => setShowLeavingPrompt(true), []);
@@ -161,6 +169,8 @@ function useHoleViewLogic(props: HoleViewProps) {
     promptOnLeave,
     cancelLeave,
     saveAndNavHome,
+    setSaveRoundData,
+    handleLeaveClick,
   };
 }
 
@@ -196,7 +206,12 @@ export function HoleView(props: HoleViewProps) {
             <Container>
               <Text>Are you sure you want to leave?</Text>
 
-              <Checkbox defaultChecked>Save round data</Checkbox>
+              <Checkbox
+                defaultChecked
+                onChange={(e) => viewLogic.setSaveRoundData(e.target.checked)}
+              >
+                Save round data
+              </Checkbox>
 
               <Flex columnGap={2} justifyContent="stretch">
                 <Button
@@ -209,7 +224,7 @@ export function HoleView(props: HoleViewProps) {
                 <Button
                   flex={1}
                   variant="primary"
-                  onClick={viewLogic.saveAndNavHome}
+                  onClick={viewLogic.handleLeaveClick}
                 >
                   Leave
                 </Button>
