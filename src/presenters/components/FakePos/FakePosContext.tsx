@@ -10,7 +10,7 @@ import React, {
 
 interface FakeGpsContextProps {
   fakePos: LatLng;
-  setFakePos: Dispatch<SetStateAction<LatLng>>;
+  setFakePos: (newPos: Partial<LatLng>) => void;
   setFakePosFromMap: boolean;
   setSetFakePosFromMap: (value: boolean) => void;
 }
@@ -27,9 +27,18 @@ export const FakeGpsProvider: React.FC<PropsWithChildren> = ({ children }) => {
   });
   const [setFakePosFromMap, setSetFakePosFromMap] = useState(false);
 
+  const setPartialFakeGps = (newPos: Partial<LatLng>) => {
+    setFakePos((prev) => ({ ...prev, ...newPos }));
+  };
+
   return (
     <FakeGpsContext.Provider
-      value={{ fakePos, setFakePos, setFakePosFromMap, setSetFakePosFromMap }}
+      value={{
+        fakePos,
+        setFakePos: setPartialFakeGps,
+        setFakePosFromMap,
+        setSetFakePosFromMap,
+      }}
     >
       {children}
     </FakeGpsContext.Provider>

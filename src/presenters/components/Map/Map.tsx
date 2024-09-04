@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useInitialiseMap } from "./useInitialiseMap";
 import { useUpdateUserPin } from "./useUpdateUserPin";
 import { Hole } from "model/Hole";
@@ -7,6 +7,7 @@ import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 import "./mapStyles.css";
+import { useFakeGps } from "../FakePos/FakePosContext";
 
 type GoogleMap = any;
 
@@ -94,6 +95,7 @@ function useViewLogic(props: MapProps, map: GoogleMap) {
           position: teePos,
           map: map,
           title: "Tee Position",
+          clickable: true,
           icon: {
             url: iconUrl,
             // @ts-ignore
@@ -102,6 +104,10 @@ function useViewLogic(props: MapProps, map: GoogleMap) {
             anchor: new window.google.maps.Point(16, 16), // Adjust anchor point as needed
             rotation: 90,
           },
+          // @ts-ignore
+        }).addListener("click", (e: google.maps.MapMouseEvent) => {
+          // @ts-ignore
+          google.maps.event.trigger(map, "click", e);
         });
       }
     );
@@ -112,11 +118,40 @@ function useViewLogic(props: MapProps, map: GoogleMap) {
       position: pinPos,
       map: map,
       title: "Pin Position",
+      clickable: true,
       icon: {
         url: "/images/flag.png", // Custom marker for pin
       },
+      // @ts-ignore
+    }).addListener("click", (e: google.maps.MapMouseEvent) => {
+      // @ts-ignore
+      google.maps.event.trigger(map, "click", e);
     });
   }
+  const { setFakePos } = useFakeGps();
+  useEffect(() => {
+    if (map) {
+      // @ts-ignore
+      const listener = map.addListener(
+        "click",
+        (e: google.maps.MapMouseEvent) => {
+          if (e.latLng) {
+            const lat = e.latLng.lat();
+            const lng = e.latLng.lng();
+            setFakePos({ lat, lng });
+          }
+        }
+      );
+
+      // Cleanup listener on component unmount
+      return () => {
+        if (listener) {
+          // @ts-ignore
+          google.maps.event.removeListener(listener);
+        }
+      };
+    }
+  }, [map, props]);
 }
 
 function Map({ mapId = "map", ...props }: MapProps) {

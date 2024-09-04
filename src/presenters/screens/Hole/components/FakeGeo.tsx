@@ -9,24 +9,21 @@ export function FakeGeo() {
   const { fakePos: pos, setFakePos: setPos } = useFakeGps();
   const latInput = useInput({
     initValue: `${pos.lat}`,
-    onBlur: (value) =>
-      setPos((curLatLng) => ({ ...curLatLng, lat: parseFloat(value) })),
+    onBlur: (value) => setPos({ lat: parseFloat(value) }),
   });
   const lngInput = useInput({
     initValue: `${pos.lng}`,
-    onBlur: (value) =>
-      setPos((curLatLng) => ({ ...curLatLng, lng: parseFloat(value) })),
+    onBlur: (value) => setPos({ lng: parseFloat(value) }),
   });
   const altInput = useInput({
     initValue: `${pos.alt}`,
-    onBlur: (value) =>
-      setPos((curLatLng) => ({ ...curLatLng, alt: parseFloat(value) })),
+    onBlur: (value) => setPos({ alt: parseFloat(value) }),
   });
   const latShiftInput = useInput({
     initValue: `0`,
     onBlur: (value) => {
       const newPos = pos.lat + parseFloat(value) / 111320;
-      setPos((curLatLng) => ({ ...curLatLng, lat: newPos }));
+      setPos({ lat: newPos });
       latInput.setCurrentValue(`${newPos}`);
     },
   });
@@ -35,7 +32,7 @@ export function FakeGeo() {
     onBlur: (value) => {
       const shiftInLng = metersToLon(parseFloat(value), pos.lat);
       const newPos = pos.lng + shiftInLng;
-      setPos((curLatLng) => ({ ...curLatLng, lng: newPos }));
+      setPos({ lng: newPos });
       lngInput.setCurrentValue(`${newPos}`);
     },
   });
