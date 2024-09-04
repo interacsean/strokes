@@ -321,11 +321,12 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     () =>
       courseState?.holes &&
       courseState.holes.reduce((scoreAcc, hole) => {
+        const holesTee = selectCurrentTeeFromHole(hole);
         if (
           hole.strokes.length &&
           hole.strokes.find((s) => s.toPosSetMethod === PosOptionMethods.HOLE)
         ) {
-          return scoreAcc + hole.strokes.length - (currentTee?.par || 0);
+          return scoreAcc + hole.strokes.length - (holesTee?.par || 0);
         }
         return scoreAcc;
       }, 0),
