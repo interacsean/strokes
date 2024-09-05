@@ -32,6 +32,7 @@ import { RoutePaths } from "presenters/routes/RoutePaths";
 import { copyToClipboard } from "usecases/device/copyToClipboard";
 import { Course } from "model/Course";
 import Map from "presenters/components/Map/Map";
+import { ClubStats } from "model/ClubStats";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -62,6 +63,7 @@ export type HoleViewProps = {
   gpsComponent: React.ReactNode;
   saveRound: (course: Course) => void;
   resetCourse: () => void;
+  clubStats: ClubStats;
 };
 
 const DEFAULT_HOLE_TAB = 1;
@@ -321,6 +323,7 @@ export function HoleView(props: HoleViewProps) {
                     setToPosMethod={props.setToPosMethod}
                     distanceUnit={distanceUnit}
                     currentPosition={props.currentPosition}
+                    clubStats={props.clubStats}
                   />
                 </Box>
                 <Box my={4}>

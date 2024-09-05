@@ -18,7 +18,6 @@ import { mergePartHole } from "usecases/hole/mergePartHole";
 import { Club } from "model/Club";
 import { LatLng } from "model/LatLng";
 import { useGeolocated } from "react-geolocated";
-import { FakeGeo } from "./components/FakeGeo";
 import { calculateStrokeDistances } from "usecases/hole/calculateStrokeDistances";
 import { calculateCaddySuggestions } from "usecases/stroke/calculateCaddySuggestions";
 import { selectCurrentHole } from "state/course/selectors/currentHole";
@@ -37,6 +36,7 @@ import {
   FakeGpsProvider,
   useFakeGps,
 } from "presenters/components/FakePos/FakePosContext";
+import { selectClubStats } from "state/rounds/selectors/clubStats";
 
 type HolePublicProps = {};
 
@@ -53,13 +53,14 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     resetState: resetCourse,
   } = useCourseState();
 
-  const { upsertRound: saveRound } = useRoundsState();
+  const { upsertRound: saveRound, state: rounds } = useRoundsState();
 
-  // todo: validate this does something and couldn't just be selectCurrentHole(courseState)
   const currentHole = useSelector(selectCurrentHole, courseState);
   const currentPin = useSelector(selectCurrentPinFromHole, currentHole);
   const currentTee = useSelector(selectCurrentTeeFromHole, currentHole);
   const { strokes } = currentHole || {};
+
+  const clubStats = useSelector(selectClubStats, rounds);
 
   const saveStrokeAndUpdate = useCallback(
     (strokeNum: number, partStroke: Partial<Stroke>) => {
@@ -330,7 +331,7 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
         }
         return scoreAcc;
       }, 0),
-    [currentTee, courseState?.holes]
+    [courseState?.holes]
   );
 
   const viewProps: Omit<HoleViewProps, "hole" | "course"> = {
@@ -362,6 +363,7 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     gpsComponent: USE_FAKE_POSITION ? null : (
       <GeoHUD currentPosition={currentPosition} geo={geo} />
     ),
+    clubStats,
   };
 
   return (

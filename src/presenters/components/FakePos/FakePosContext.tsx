@@ -1,9 +1,7 @@
 import { LatLng } from "model/LatLng";
 import React, {
   createContext,
-  Dispatch,
   PropsWithChildren,
-  SetStateAction,
   useContext,
   useState,
 } from "react";

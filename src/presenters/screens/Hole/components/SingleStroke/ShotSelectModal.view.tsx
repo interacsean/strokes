@@ -1,4 +1,4 @@
-import { Button, Flex } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { StrokeType } from "model/StrokeType";
 import { Modal } from "presenters/components/Modal/Modal";
 

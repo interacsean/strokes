@@ -14,6 +14,7 @@ import { LatLng } from "model/LatLng";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 import { Lie } from "model/Lie";
 import Map from "presenters/components/Map/Map";
+import { ClubStats } from "model/ClubStats";
 
 export type SingleStrokeViewProps = {
   hole: Hole;
@@ -36,6 +37,7 @@ export type SingleStrokeViewProps = {
   distanceUnit: string;
   currentPosition: LatLng | undefined;
   prevStroke: StrokeWithDerivedFields | undefined;
+  clubStats: ClubStats;
 };
 
 enum Modals {
