@@ -29,6 +29,37 @@ export enum Club {
   "P" = "Putter",
 }
 
+export const shortClubNames: Record<Club, string> = {
+  [Club["D"]]: "Driver",
+  [Club["2W"]]: "2W",
+  [Club["3W"]]: "3W",
+  [Club["4W"]]: "4W",
+  [Club["5W"]]: "5W",
+  [Club["7W"]]: "7W",
+  [Club["9W"]]: "9W",
+  [Club["1H"]]: "1H",
+  [Club["2H"]]: "2H",
+  [Club["3H"]]: "3H",
+  [Club["4H"]]: "4H",
+  [Club["5H"]]: "5H",
+  [Club["6H"]]: "6H",
+  [Club["7H"]]: "7H",
+  [Club["2I"]]: "2I",
+  [Club["3I"]]: "3I",
+  [Club["4I"]]: "4I",
+  [Club["5I"]]: "5I",
+  [Club["6I"]]: "6I",
+  [Club["7I"]]: "7I",
+  [Club["8I"]]: "8I",
+  [Club["9I"]]: "9I",
+  [Club["PW"]]: "PW",
+  [Club["GW"]]: "GW",
+  [Club["SW"]]: "SW",
+  [Club["LW"]]: "LW",
+  [Club["HLW"]]: "HLW",
+  [Club["P"]]: "Putter",
+};
+
 export const ClubCategories = {
   "Woods/Hybrids": [
     Club.D,
@@ -57,3 +88,14 @@ export const ClubCategories = {
   ],
   "Short game": [Club.PW, Club.GW, Club.SW, Club.LW, Club.HLW, Club.P],
 };
+
+export const PitchableClubs = [
+  Club["7I"],
+  Club["8I"],
+  Club["9I"],
+  Club.PW,
+  Club.GW,
+  Club.SW,
+  Club.LW,
+  Club.HLW,
+];

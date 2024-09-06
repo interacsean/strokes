@@ -1,10 +1,11 @@
+import { Club } from "./Club";
 import { LatLng } from "./LatLng";
 import { Lie } from "./Lie";
-import { PosOption, PosOptionMethods } from "./PosOptions";
+import { PosOptionMethods } from "./PosOptions";
 import { StrokeType } from "./StrokeType";
 
 export type Stroke = {
-  club: string | undefined;
+  club: Club | undefined;
   fromPos: LatLng | undefined;
   fromPosSetMethod: PosOptionMethods;
   fromLie: Lie | string | undefined;

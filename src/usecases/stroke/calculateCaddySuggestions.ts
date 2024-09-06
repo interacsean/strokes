@@ -1,12 +1,14 @@
-import { Club } from "model/Club";
+import { Club, ClubCategories, PitchableClubs } from "model/Club";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 import { LatLng } from "model/LatLng";
 import { ClubStats } from "model/ClubStats";
-import { Lie, PuttableLies } from "model/Lie";
+import { Lie } from "model/Lie";
+import { StrokeType } from "model/StrokeType";
 
 export type CaddySuggestion = {
   club: Club;
   clubDistance: [number, [number, number]];
+  strokeType: StrokeType;
   deltaAvg?: number;
 };
 
@@ -16,11 +18,17 @@ export function calculateCaddySuggestions(
   fromPos: LatLng,
   targetPos: LatLng
 ): CaddySuggestion[] {
+  // todo: get this passed in
+  const preferences = {
+    noDoD: true,
+  };
+
   if (lie && [Lie.GREEN, Lie.FRINGE].includes(lie)) {
     return [
       {
         club: Club.P,
         clubDistance: [10, [0, 20]] as [number, [number, number]], // todo: get from stats I guess
+        strokeType: StrokeType.PUTT,
         deltaAvg: 0,
       },
     ];
@@ -30,6 +38,10 @@ export function calculateCaddySuggestions(
     targetPos
   );
 
+  /**
+   * if deltaHigh > 0, the club can't make the distance
+   * if deltaLow < 0, a full swing is too big
+   */
   const clubRanges = Object.entries(clubStats)
     .map((clubStats) => ({
       club: clubStats[0] as Club,
@@ -44,7 +56,29 @@ export function calculateCaddySuggestions(
         ? distanceToTarget - clubStats[1].Full.medianDistance
         : 0,
     }))
-    .filter((clubStats) => !!clubStats.clubStats.Full)
+    .filter((clubStats) => {
+      if (!clubStats.clubStats.Full) return false;
+      // todo: better way to rule out clubs based on lie / preferences
+      if (
+        lie &&
+        ![Lie.TEE_HIGH, Lie.TEE_MEDIUM, Lie.TEE_LOW].includes(lie) &&
+        clubStats.club === Club.D &&
+        preferences.noDoD
+      )
+        return false;
+      if (
+        lie &&
+        [Lie.DEEP_ROUGH, Lie.BUNKER].includes(lie) &&
+        [
+          ...ClubCategories["Woods/Hybrids"],
+          Club["2I"],
+          Club["3I"],
+          Club["4I"],
+        ].includes(clubStats.club)
+      )
+        return false;
+      return true;
+    })
     // .filter((info) => (info.deltaLow > 0 && info.deltaHigh < 0) || info.club === Club.D) // todo: always include driver as long option
     // .filter todo: take lie and club type into account
     // .map todo: account for wind (i.e. tail/head wind)
@@ -64,21 +98,40 @@ export function calculateCaddySuggestions(
       // if (deltaResult === 0) return infoB.clubStats.loft - infoA.clubStats.loft;
       return deltaResult;
     })
-    .map(({ club, clubStats, deltaAvg }) => {
+    .map(({ club, clubStats, deltaAvg, deltaLow, deltaHigh }) => {
+      const recStrokeType = !clubStats.Full
+        ? StrokeType.FULL // shouldn't happen as we've filtered out clubs without full stats
+        : deltaLow > 0
+        ? StrokeType.FULL
+        : -deltaAvg / clubStats.Full?.medianDistance < 0.3
+        ? StrokeType.THREE_QTR
+        : lie === Lie.BUNKER && [Club.SW, Club.LW, Club.HLW].includes(club)
+        ? StrokeType.FLOP
+        : !PitchableClubs.includes(club)
+        ? StrokeType.THREE_QTR
+        : distanceToTarget < 20
+        ? StrokeType.CHIP
+        : StrokeType.PITCH;
+
       if (clubStats.Full) {
         return {
           club,
+          // todo: return Pitch/Chip distances?
           clubDistance: [
-            clubStats.Full.medianDistance,
-            [clubStats.Full.sd1Distances[0], clubStats.Full.sd1Distances[1]],
-          ],
+            clubStats[recStrokeType]?.medianDistance || 0,
+            [
+              clubStats[recStrokeType]?.sd1Distances[0] || 0,
+              clubStats[recStrokeType]?.sd1Distances[1] || 0,
+            ],
+          ] as [number, [number, number]],
+          strokeType: recStrokeType,
           deltaAvg,
         };
       } else {
         return null;
       }
     })
-    .filter((info) => info !== null) as unknown as CaddySuggestion[];
+    .filter((info) => info !== null) as CaddySuggestion[];
 
   // todo: Short range
   // if distance is less than best club's lower bound, suggest THREE_QTR, PITCH, CHIP

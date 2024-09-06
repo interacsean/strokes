@@ -36,7 +36,7 @@ export function HoleOverview(props: HoleOverviewProps) {
 
   // todo: make relative to player's max strike, and lie - i.e. tee / other
   // todo: hide this if hole finished
-  // bug!: this should be based on fromPos of activeStroe to hole, not currentPosition
+  // bug!: this should be based on fromPos of activeStroke to hole, not currentPosition
   const forScoreOutcomeDescription =
     !props.par ||
     (props.distanceToHole !== undefined &&

@@ -4,7 +4,7 @@ import { StrokeWithDerivedFields } from "model/Stroke";
 import { HoleViewProps } from "../../Hole.view";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ClubSelectModal } from "./ClubSelectModal.view";
-import { Club } from "model/Club";
+import { Club, shortClubNames } from "model/Club";
 import { ShotSelectModal } from "./ShotSelectModal.view";
 import { LieSelectModal } from "./LieSelectModal.view";
 import { DropdownButton } from "presenters/components/DropdownButton/DropdownButton";
@@ -12,7 +12,7 @@ import { Hole } from "model/Hole";
 import { PosOption, PosOptionMethods } from "model/PosOptions";
 import { LatLng } from "model/LatLng";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
-import { Lie } from "model/Lie";
+import { Lie, shortLieNames } from "model/Lie";
 import Map from "presenters/components/Map/Map";
 import { ClubStats } from "model/ClubStats";
 import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
@@ -276,6 +276,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     function updateStrokeTypeFromQueue() {
       if (pendingStrokeType) {
         selectStrokeType(strokeNum, pendingStrokeType);
+        setPendingStrokeType(null);
       }
     },
     [pendingStrokeType, strokeNum]
@@ -284,7 +285,9 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const adoptCaddySuggestion = useCallback(() => {
     if (caddySuggestions?.[0]?.club) {
       selectClub(strokeNum, caddySuggestions[0].club);
-      setPendingStrokeType(StrokeType.PITCH);
+      if (caddySuggestions?.[0]?.strokeType) {
+        setPendingStrokeType(caddySuggestions?.[0]?.strokeType);
+      }
     }
   }, [strokeNum, selectClub, caddySuggestions, setPendingStrokeType]);
 
@@ -392,7 +395,11 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             </Text>
             <Box flex={1}>
               <CustomModalSelect
-                selectedText={props.stroke.club}
+                selectedText={
+                  props.stroke.club
+                    ? shortClubNames[props.stroke.club]
+                    : undefined
+                }
                 placeholder="Club"
                 onOpen={() => viewLogic.setActiveModal(Modals.Club)}
               />
@@ -411,17 +418,23 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
                 Caddie
               </Text>
               <Button variant="link" onClick={viewLogic.adoptCaddySuggestion}>
-                <Text variant="minor">
+                <Text variant="text" fontWeight="medium">
                   {/* todo: move to viewLogic */}
                   {props.caddySuggestions?.[0]?.club &&
                   props.caddySuggestions?.[0]?.clubDistance ? (
                     <>
-                      {props.caddySuggestions[0]?.club} -{" "}
-                      {props.caddySuggestions[0]?.clubDistance[0]}
-                      {props.distanceUnit} (
-                      {props.caddySuggestions[0]?.clubDistance[1][0]}-
-                      {props.caddySuggestions[0]?.clubDistance[1][1]}
-                      {props.distanceUnit})
+                      {shortClubNames[props.caddySuggestions[0]?.club]} (
+                      {props.caddySuggestions[0]?.strokeType})
+                      {props.caddySuggestions[0]?.clubDistance[0] > 0 && (
+                        <>
+                          {" - "}
+                          {props.caddySuggestions[0]?.clubDistance[0]}
+                          {props.distanceUnit} (
+                          {props.caddySuggestions[0]?.clubDistance[1][0]}-
+                          {props.caddySuggestions[0]?.clubDistance[1][1]}
+                          {props.distanceUnit})
+                        </>
+                      )}
                     </>
                   ) : !props.caddySuggestions?.[0]?.club &&
                     !props.caddySuggestions?.[0]?.clubDistance &&
@@ -453,7 +466,12 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           </Flex>
           <Box flex={1}>
             <CustomModalSelect
-              selectedText={props.stroke.fromLie}
+              selectedText={
+                props.stroke.fromLie
+                  ? shortLieNames[props.stroke.fromLie as Lie] ||
+                    props.stroke.fromLie
+                  : undefined
+              }
               placeholder="Select Lie"
               onOpen={() => viewLogic.setActiveModal(Modals.FromLie)}
             />
@@ -477,7 +495,11 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           <Box flex={1}>
             {props.stroke.toPosSetMethod !== PosOptionMethods.HOLE && (
               <CustomModalSelect
-                selectedText={props.stroke.toLie || undefined}
+                selectedText={
+                  props.stroke.toLie
+                    ? shortLieNames[props.stroke.toLie] || props.stroke.toLie
+                    : undefined
+                }
                 placeholder="Select Lie"
                 onOpen={() => viewLogic.setActiveModal(Modals.ToLie)}
               />
@@ -485,14 +507,14 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           </Box>
         </Flex>
 
-        <Button
+        {/* <Button
           variant="link"
           onClick={
             viewLogic.usingCaddie ? viewLogic.hideCaddie : viewLogic.showCaddie
           }
         >
           (for options) {viewLogic.usingCaddie ? "Hide" : "Show"} Caddie
-        </Button>
+        </Button> */}
       </Flex>
     </>
   );
