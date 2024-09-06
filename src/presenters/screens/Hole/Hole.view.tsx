@@ -191,13 +191,13 @@ export function HoleView(props: HoleViewProps) {
         display="flex"
         flexDir="column"
         alignItems="stretch"
+        maxHeight="100%"
       >
         <Flex>
           <TabList flex={1}>
             <Tab onClick={() => viewLogic.setTabIndex(0)}>Map</Tab>
             <Tab onClick={() => viewLogic.setTabIndex(1)}>Strokes</Tab>
             <Tab onClick={() => viewLogic.setTabIndex(2)}>Scorecard</Tab>
-            <Tab onClick={() => viewLogic.setTabIndex(3)}>Export</Tab>
           </TabList>
           <Button variant="ghost" onClick={viewLogic.promptOnLeave} px={0}>
             <CloseIcon boxSize={4} />
@@ -205,7 +205,7 @@ export function HoleView(props: HoleViewProps) {
         </Flex>
         {viewLogic.showLeavingPrompt ? (
           <Flex px={4} py={3}>
-            <Container>
+            <Flex flexDir="column" width="100%" rowGap={5}>
               <Text>Are you sure you want to leave?</Text>
 
               <Checkbox
@@ -231,10 +231,10 @@ export function HoleView(props: HoleViewProps) {
                   Leave
                 </Button>
               </Flex>
-            </Container>
+            </Flex>
           </Flex>
         ) : (
-          <TabPanels flex={1} overflowY="auto">
+          <TabPanels flex={1} overflowY="auto" maxHeight="100%">
             <TabPanel height="100%" p={0}>
               {/* todo: does not work if window.google.maps is undefined */}
               <Box height="100%">
@@ -282,7 +282,7 @@ export function HoleView(props: HoleViewProps) {
                 </Box>
               </Box>
             </TabPanel>
-            <TabPanel>
+            <TabPanel height="100%">
               {/* Strokes */}
               <StrokesContainer>
                 <Box
@@ -311,7 +311,7 @@ export function HoleView(props: HoleViewProps) {
                     distanceUnit={distanceUnit}
                   />
                 </Box>
-                <Box position="relative" flex={1}>
+                <Box position="relative" flex={1} zIndex={9}>
                   <SingleStroke
                     hole={props.hole}
                     strokeNum={viewLogic.activeStroke}
@@ -332,87 +332,77 @@ export function HoleView(props: HoleViewProps) {
                     clubStats={props.clubStats}
                   />
                 </Box>
-                <Box my={4}>
-                  <hr />
-                </Box>
 
                 <Flex
-                  flexDir="column"
-                  justifyContent="center"
-                  rowGap={3}
-                  mt={3}
+                  columnGap={2}
+                  mx={-4}
+                  justifyContent="stretch"
+                  alignItems="center"
+                  boxShadow="0 -2px 4px rgba(0, 0, 0, 0.1)"
                 >
-                  <Flex
-                    columnGap={2}
-                    justifyContent="stretch"
-                    alignItems="center"
-                  >
-                    <Button variant="ghost" px={2} onClick={props.prevHole}>
+                  <Button variant="ghost" px={2} onClick={props.prevHole}>
+                    <ChevronLeftIcon boxSize={6} />
+                  </Button>
+                  <Flex flex={1} justifyContent="center" alignItems="center">
+                    <Button
+                      variant="ghost"
+                      px={2}
+                      onClick={() =>
+                        viewLogic.setActiveStroke(viewLogic.activeStroke - 1)
+                      }
+                    >
                       <ChevronLeftIcon boxSize={6} />
                     </Button>
-                    <Flex flex={1} justifyContent="center" alignItems="center">
+                    <Text>Shot {viewLogic.activeStroke}</Text>
+                    {props.preprocessedStrokes[viewLogic.activeStroke - 1]
+                      .toPosSetMethod !== PosOptionMethods.HOLE && (
                       <Button
                         variant="ghost"
                         px={2}
                         onClick={() =>
-                          viewLogic.setActiveStroke(viewLogic.activeStroke - 1)
+                          viewLogic.activeStroke ===
+                          props.preprocessedStrokes.length
+                            ? props.addStroke()
+                            : viewLogic.setActiveStroke(
+                                viewLogic.activeStroke + 1
+                              )
                         }
                       >
-                        <ChevronLeftIcon boxSize={6} />
+                        {viewLogic.activeStroke ===
+                        props.preprocessedStrokes.length ? (
+                          "+"
+                        ) : (
+                          <ChevronRightIcon boxSize={6} />
+                        )}
                       </Button>
-                      <Text>Shot {viewLogic.activeStroke}</Text>
-                      {props.preprocessedStrokes[viewLogic.activeStroke - 1]
-                        .toPosSetMethod !== PosOptionMethods.HOLE && (
-                        <Button
-                          variant="ghost"
-                          px={2}
-                          onClick={() =>
-                            viewLogic.activeStroke ===
-                            props.preprocessedStrokes.length
-                              ? props.addStroke()
-                              : viewLogic.setActiveStroke(
-                                  viewLogic.activeStroke + 1
-                                )
-                          }
-                        >
-                          {viewLogic.activeStroke ===
-                          props.preprocessedStrokes.length ? (
-                            "+"
-                          ) : (
-                            <ChevronRightIcon boxSize={6} />
-                          )}
-                        </Button>
-                      )}
-                    </Flex>
-                    <Button variant="ghost" px={2} onClick={props.nextHole}>
-                      <ChevronRightIcon boxSize={6} />
-                    </Button>
+                    )}
                   </Flex>
+                  <Button variant="ghost" px={2} onClick={props.nextHole}>
+                    <ChevronRightIcon boxSize={6} />
+                  </Button>
                 </Flex>
               </StrokesContainer>
             </TabPanel>
             <TabPanel flex={1}>
               {/* Scorecard */}
-              <Container>
+              <Flex flexDir="column">
                 <ScoreCard round={props.course} />
-              </Container>
-            </TabPanel>
-            <TabPanel flex={1}>
-              {/* Strokes */}
-              <Text>
-                Copy the JSON data of your current course + round, for external
-                use and analysis.
-              </Text>
-              <Button
-                onClick={() => copyToClipboard(JSON.stringify(props.course))}
-              >
-                Copy round
-              </Button>
+                <h4>Export</h4>
+                <Text>
+                  Copy the JSON data of your current course + round, for
+                  external use and analysis.
+                </Text>
+                <Button
+                  onClick={() => copyToClipboard(JSON.stringify(props.course))}
+                >
+                  Copy round
+                </Button>
+              </Flex>
             </TabPanel>
           </TabPanels>
         )}
+        {props.gpsComponent}
       </Tabs>
-      {props.gpsComponent}
     </Container>
   );
 }

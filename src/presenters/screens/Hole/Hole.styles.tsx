@@ -4,13 +4,7 @@ import { withTheme } from "@emotion/react";
 // @ts-ignore
 export const Container = withTheme(({ theme, children }) => (
   // todo: this 100vh is finicky on mobile browsers, need some smarts at this point
-  <Flex
-    flexDir="column"
-    width="100%"
-    rowGap={2}
-    height="100vh"
-    maxHeight="100vh"
-  >
+  <Flex flexDir="column" width="100%" height="100vh" maxHeight="100vh">
     {children}
   </Flex>
 ));
@@ -22,6 +16,7 @@ export const StrokesContainer = withTheme(({ theme, children }) => (
     margin="0 auto"
     maxW={theme.breakpoints.md}
     alignItems="stretch"
+    height="100%"
   >
     {children}
   </Flex>

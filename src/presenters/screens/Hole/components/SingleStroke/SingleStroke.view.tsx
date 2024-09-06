@@ -358,8 +358,20 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
     ) : null;
 
   return (
-    <>
-      {modal}
+    <Box position="relative" height="100%">
+      {modal && (
+        <Box
+          position="absolute"
+          overflowY="auto"
+          zIndex={10}
+          top={0}
+          right={0}
+          left={0}
+          bottom={0}
+        >
+          {modal}
+        </Box>
+      )}
       <Flex
         flexDir="column"
         rowGap={5}
@@ -516,6 +528,6 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           (for options) {viewLogic.usingCaddie ? "Hide" : "Show"} Caddie
         </Button> */}
       </Flex>
-    </>
+    </Box>
   );
 }

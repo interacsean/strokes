@@ -1,4 +1,4 @@
-import { border, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { Course } from "model/Course";
 import { PosOptionMethods } from "model/PosOptions";
 import React from "react";
