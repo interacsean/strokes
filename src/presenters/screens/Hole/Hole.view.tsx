@@ -283,7 +283,13 @@ export function HoleView(props: HoleViewProps) {
             <TabPanel>
               {/* Strokes */}
               <StrokesContainer>
-                <Box mx={-4} mt={-4}>
+                <Box
+                  mx={-4}
+                  mt={-4}
+                  boxShadow="0 2px 4px rgba(0, 0, 0, 0.4)"
+                  zIndex={10}
+                  position="relative"
+                >
                   <HoleOverview
                     setPar={props.setPar}
                     nextHole={() => {

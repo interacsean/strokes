@@ -340,12 +340,6 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
         rowGap={5}
         visibility={viewLogic.activeModal ? "hidden" : "visible"}
       >
-        <Flex flexDir="row" alignItems={"center"} columnGap={3}>
-          <Text variant="inputLabel" minWidth={inputLabelWidth}>
-            Target
-          </Text>
-          <Text>—</Text>
-        </Flex>
         <Box
           bgColor="primary.200"
           color="white"
@@ -363,8 +357,14 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             />
           )}
         </Box>
+        {/* <Flex flexDir="row" alignItems={"center"} columnGap={4}>
+          <Text variant="inputLabel" minWidth={inputLabelWidth}>
+            Target
+          </Text>
+          <Text><em>todo</em></Text>
+        </Flex> */}
         <Flex flexDir="column" rowGap={3}>
-          <Flex flexDir="row" alignItems={"center"} columnGap={2}>
+          <Flex flexDir="row" alignItems={"center"} columnGap={4}>
             <Text variant="inputLabel" minWidth={inputLabelWidth}>
               Shot
             </Text>
@@ -384,7 +384,10 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             </Box>
           </Flex>
           {viewLogic.usingCaddie && (
-            <Flex ml={inputLabelWidth}>
+            <Flex columnGap={4}>
+              <Text variant="inputLabel" minWidth={inputLabelWidth}>
+                Caddie
+              </Text>
               <Text variant="minor">
                 {/* todo: move to viewLogic */}
                 {props.caddySuggestions?.[0]?.club &&
@@ -409,7 +412,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             </Flex>
           )}
         </Flex>
-        <Flex flexDir="row" alignItems={"center"} columnGap={2}>
+        <Flex flexDir="row" alignItems={"center"} columnGap={4}>
           <Text variant="inputLabel" minWidth={inputLabelWidth}>
             From
           </Text>
@@ -432,7 +435,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             />
           </Box>
         </Flex>
-        <Flex flexDir="row" alignItems={"center"} columnGap={2}>
+        <Flex flexDir="row" alignItems={"center"} columnGap={4}>
           <Text variant="inputLabel" minWidth={inputLabelWidth}>
             To
           </Text>
