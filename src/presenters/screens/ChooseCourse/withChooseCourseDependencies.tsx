@@ -12,7 +12,11 @@ export function withChooseCourseDependencies(
   HoleView: FC<ChooseCourseViewProps>
 ) {
   return function Hole(_props: ChooseCoursePublicProps) {
-    const courses = [auVicMelbourneNorthcote, auVicMelbourneFlagstaffTest, auVicMelbourneDocklandsTest];
+    const courses = [
+      auVicMelbourneNorthcote,
+      auVicMelbourneFlagstaffTest,
+      auVicMelbourneDocklandsTest,
+    ];
 
     const { setState: setCourseState, state: courseState } = useCourseState();
     const hasIncompleteCourse = useMemo(() => {

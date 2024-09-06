@@ -30,6 +30,9 @@ export function setStrokeFromLie(
         attrs.strokeType = StrokeType.PUTT;
       }
     }
+    if (stroke?.toLie === undefined) {
+      attrs.toLie = Lie.GREEN;
+    }
   } else if (validLie === Lie.BUNKER) {
     if (stroke?.club === undefined) {
       attrs.club = Club.SW;
