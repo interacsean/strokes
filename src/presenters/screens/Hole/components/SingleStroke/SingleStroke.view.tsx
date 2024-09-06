@@ -16,6 +16,7 @@ import { Lie } from "model/Lie";
 import Map from "presenters/components/Map/Map";
 import { ClubStats } from "model/ClubStats";
 import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
+import { StrokeType } from "model/StrokeType";
 
 export type SingleStrokeViewProps = {
   hole: Hole;
@@ -63,6 +64,9 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     setFromPosMethod,
     setToPosMethod,
     strokeNum,
+    caddySuggestions,
+    selectClub,
+    selectStrokeType,
   } = props;
 
   const [localStrokeNum, setLocalStrokeNum] = useState(strokeNum);
@@ -264,7 +268,25 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const [usingCaddie, setShowCaddie] = useState(true);
   const showCaddie = () => setShowCaddie(true);
   const hideCaddie = () => setShowCaddie(false);
-  const caddySuggestions = useMemo(() => {}, []);
+
+  const [pendingStrokeType, setPendingStrokeType] = useState<StrokeType | null>(
+    null
+  );
+  useEffect(
+    function updateStrokeTypeFromQueue() {
+      if (pendingStrokeType) {
+        selectStrokeType(strokeNum, pendingStrokeType);
+      }
+    },
+    [pendingStrokeType, strokeNum]
+  );
+
+  const adoptCaddySuggestion = useCallback(() => {
+    if (caddySuggestions?.[0]?.club) {
+      selectClub(strokeNum, caddySuggestions[0].club);
+      setPendingStrokeType(StrokeType.PITCH);
+    }
+  }, [strokeNum, selectClub, caddySuggestions, setPendingStrokeType]);
 
   return {
     fromPosButtonText,
@@ -282,8 +304,8 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     showCaddie,
     hideCaddie,
     usingCaddie,
-    caddySuggestions,
     pinPlayedUsed,
+    adoptCaddySuggestion,
   };
 }
 
@@ -388,27 +410,29 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               <Text variant="inputLabel" minWidth={inputLabelWidth}>
                 Caddie
               </Text>
-              <Text variant="minor">
-                {/* todo: move to viewLogic */}
-                {props.caddySuggestions?.[0]?.club &&
-                props.caddySuggestions?.[0]?.clubDistance ? (
-                  <>
-                    {props.caddySuggestions[0]?.club} -{" "}
-                    {props.caddySuggestions[0]?.clubDistance[0]}
-                    {props.distanceUnit} (
-                    {props.caddySuggestions[0]?.clubDistance[1][0]}-
-                    {props.caddySuggestions[0]?.clubDistance[1][1]}
-                    {props.distanceUnit})
-                  </>
-                ) : !props.caddySuggestions?.[0]?.club &&
-                  !props.caddySuggestions?.[0]?.clubDistance &&
-                  props.currentPosition &&
-                  !viewLogic.pinPlayedUsed ? (
-                  <em>Set a target (todo: always uses Pin)</em>
-                ) : (
-                  <em>Caddie N/A</em>
-                )}
-              </Text>
+              <Button variant="link" onClick={viewLogic.adoptCaddySuggestion}>
+                <Text variant="minor">
+                  {/* todo: move to viewLogic */}
+                  {props.caddySuggestions?.[0]?.club &&
+                  props.caddySuggestions?.[0]?.clubDistance ? (
+                    <>
+                      {props.caddySuggestions[0]?.club} -{" "}
+                      {props.caddySuggestions[0]?.clubDistance[0]}
+                      {props.distanceUnit} (
+                      {props.caddySuggestions[0]?.clubDistance[1][0]}-
+                      {props.caddySuggestions[0]?.clubDistance[1][1]}
+                      {props.distanceUnit})
+                    </>
+                  ) : !props.caddySuggestions?.[0]?.club &&
+                    !props.caddySuggestions?.[0]?.clubDistance &&
+                    props.currentPosition &&
+                    !viewLogic.pinPlayedUsed ? (
+                    <em>Set a target (todo: always uses Pin)</em>
+                  ) : (
+                    <em>Caddie N/A</em>
+                  )}
+                </Text>
+              </Button>
             </Flex>
           )}
         </Flex>

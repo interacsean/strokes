@@ -37,7 +37,7 @@ export function withSingleStrokeDependencies(
       hole: { tees, pins, pinPlayed },
       strokes,
       strokeNum,
-      stroke: { fromPos },
+      stroke: { fromPos, fromLie },
       clubStats,
     } = props;
     // todo: consider moving into selector
@@ -103,9 +103,14 @@ export function withSingleStrokeDependencies(
 
     const caddySuggestions = useMemo(() => {
       return fromPos && pinPlayedUsed && clubStats
-        ? calculateCaddySuggestions(clubStats, fromPos, pinPlayedUsed)
+        ? calculateCaddySuggestions(
+            clubStats,
+            fromLie as Lie,
+            fromPos,
+            pinPlayedUsed
+          )
         : [];
-    }, [fromPos, pinPlayedUsed, clubStats]);
+    }, [fromPos, fromLie, pinPlayedUsed, clubStats]);
 
     const viewProps: SingleStrokeViewProps = {
       ...props,

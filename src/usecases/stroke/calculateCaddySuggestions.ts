@@ -2,17 +2,29 @@ import { Club } from "model/Club";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 import { LatLng } from "model/LatLng";
 import { ClubStats } from "model/ClubStats";
+import { Lie, PuttableLies } from "model/Lie";
 
 export type CaddySuggestion = {
   club: Club;
   clubDistance: [number, [number, number]];
+  deltaAvg?: number;
 };
 
 export function calculateCaddySuggestions(
   clubStats: ClubStats,
+  lie: Lie | undefined,
   fromPos: LatLng,
   targetPos: LatLng
-) {
+): CaddySuggestion[] {
+  if (lie && [Lie.GREEN, Lie.FRINGE].includes(lie)) {
+    return [
+      {
+        club: Club.P,
+        clubDistance: [10, [0, 20]] as [number, [number, number]], // todo: get from stats I guess
+        deltaAvg: 0,
+      },
+    ];
+  }
   const distanceToTarget = calculateDistanceBetweenPositions(
     fromPos,
     targetPos
@@ -67,8 +79,6 @@ export function calculateCaddySuggestions(
       }
     })
     .filter((info) => info !== null) as unknown as CaddySuggestion[];
-  {
-  }
 
   // todo: Short range
   // if distance is less than best club's lower bound, suggest THREE_QTR, PITCH, CHIP
