@@ -303,12 +303,17 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     [currentPin, currentPosition]
   );
 
+  const usedTee = useMemo(
+    () => selectCurrentTeeFromHole(currentHole),
+    [currentHole]
+  );
   const holeLength = useMemo(() => {
+    if (usedTee?.nominalDistance) return usedTee?.nominalDistance;
     const chosenTeePos = head(preprocessedStrokes)?.fromPos;
     return chosenTeePos && currentPin
       ? calculateDistanceBetweenPositions(chosenTeePos, currentPin)
       : undefined;
-  }, [currentPin, preprocessedStrokes]);
+  }, [usedTee, currentPin, preprocessedStrokes]);
 
   const roundScore = useMemo(
     () =>
