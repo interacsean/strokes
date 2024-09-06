@@ -7,10 +7,12 @@ import { setStrokeType } from "./setStrokeType";
 import { Hole } from "model/Hole";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { PosOptionMethods } from "model/PosOptions";
+import { Club } from "model/Club";
 
 export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
   const lastStroke = last(strokes);
   const usedTee = selectCurrentTeeFromHole(hole);
+  const nominalDistance = usedTee?.nominalDistance;
   const strokeNum = strokes.length + 1;
   let stroke: Stroke = {
     fromPos:
@@ -28,7 +30,11 @@ export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
         ? PosOptionMethods.TEE
         : PosOptionMethods.GPS,
     fromLie: undefined,
-    club: undefined,
+    // todo: Make based on stats
+    club:
+      strokeNum === 1 && nominalDistance && nominalDistance > 220
+        ? Club.D
+        : undefined,
     intendedPos: undefined,
     toPos: undefined,
     toPosSetMethod: PosOptionMethods.GPS,
