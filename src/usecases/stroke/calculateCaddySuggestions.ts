@@ -27,7 +27,7 @@ export function calculateCaddySuggestions(
     return [
       {
         club: Club.P,
-        clubDistance: [10, [0, 20]] as [number, [number, number]], // todo: get from stats I guess
+        clubDistance: [0, [0, 0]] as [number, [number, number]], // todo: get from stats I guess
         strokeType: StrokeType.PUTT,
         deltaAvg: 0,
       },
