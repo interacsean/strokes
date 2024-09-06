@@ -15,6 +15,10 @@ const ButtonTheme = {
       borderColor: "primary.500",
       color: "primary.500",
     },
+    link: {
+      backgroundColor: "transparent",
+      color: "primary.500",
+    },
     ghost: {},
   },
   defaultProps: {

@@ -5,6 +5,7 @@ import { StrokeType } from "model/StrokeType";
 
 export const selectClubStats = (state: RoundsState): ClubStats => {
   // todo: read and calculate from state
+  // todo: add loft
   return {
     [Club.D]: {
       [StrokeType.FULL]: {
@@ -88,9 +89,9 @@ export const selectClubStats = (state: RoundsState): ClubStats => {
     },
     [Club["PW"]]: {
       [StrokeType.FULL]: {
-        medianDistance: 105,
-        sd1Distances: [95, 115] as [number, number],
-        sd2Distances: [90, 120] as [number, number],
+        medianDistance: 100,
+        sd1Distances: [90, 105] as [number, number],
+        sd2Distances: [85, 110] as [number, number],
         sd1Side: [3, 3] as [number, number],
         sd2Side: [4, 4] as [number, number],
         strikeQuality: {
@@ -103,8 +104,8 @@ export const selectClubStats = (state: RoundsState): ClubStats => {
       },
       [StrokeType.THREE_QTR]: {
         medianDistance: 90,
-        sd1Distances: [85, 100] as [number, number],
-        sd2Distances: [85, 105] as [number, number],
+        sd1Distances: [85, 95] as [number, number],
+        sd2Distances: [65, 97] as [number, number],
         sd1Side: [2, 2] as [number, number],
         sd2Side: [3, 3] as [number, number],
         strikeQuality: {
@@ -118,9 +119,9 @@ export const selectClubStats = (state: RoundsState): ClubStats => {
     },
     [Club["SW"]]: {
       [StrokeType.FULL]: {
-        medianDistance: 95,
-        sd1Distances: [85, 100] as [number, number],
-        sd2Distances: [80, 105] as [number, number],
+        medianDistance: 85,
+        sd1Distances: [70, 91] as [number, number],
+        sd2Distances: [75, 105] as [number, number],
         sd1Side: [3, 3] as [number, number],
         sd2Side: [4, 4] as [number, number],
         strikeQuality: {

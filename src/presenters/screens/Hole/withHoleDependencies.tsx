@@ -19,7 +19,6 @@ import { Club } from "model/Club";
 import { LatLng } from "model/LatLng";
 import { useGeolocated } from "react-geolocated";
 import { calculateStrokeDistances } from "usecases/hole/calculateStrokeDistances";
-import { calculateCaddySuggestions } from "usecases/stroke/calculateCaddySuggestions";
 import { selectCurrentHole } from "state/course/selectors/currentHole";
 import { useSelector } from "state/utils/useSelector";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
@@ -288,13 +287,6 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     [fakePos, geo.coords]
   );
 
-  const caddySuggestions = useMemo(() => {
-    const lastStroke = last(preprocessedStrokes);
-    return lastStroke && currentHole
-      ? calculateCaddySuggestions(currentHole, lastStroke)
-      : [];
-  }, [currentHole, preprocessedStrokes]);
-
   const distanceToHole = useMemo(
     () =>
       currentPosition && currentPin
@@ -351,7 +343,6 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     setToPosition,
     setFromPosition,
     currentPosition,
-    caddySuggestions,
     setHolePos,
     setTeePos,
     addStroke,

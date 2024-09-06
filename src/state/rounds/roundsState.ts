@@ -45,5 +45,5 @@ export function useRoundsState() {
 const roundsAtom = atom<RoundsState>({
   key: "rounds",
   default: [],
-  effects: [localStoragePersistenceEffect("strokes_rounds")],
+  effects: [localStoragePersistenceEffect("strokes_0.2_rounds")],
 });

@@ -3,6 +3,7 @@ import { SingleStrokeView, SingleStrokeViewProps } from "./SingleStroke.view";
 import { Club } from "model/Club";
 import { PosOptionMethods, PosOptions } from "model/PosOptions";
 import { Lie, TeeLies } from "model/Lie";
+import { calculateCaddySuggestions } from "usecases/stroke/calculateCaddySuggestions";
 
 type GeneratedPropKeys =
   | "clubs"
@@ -10,7 +11,8 @@ type GeneratedPropKeys =
   | "toPosOptions"
   | "prevStroke"
   | "fromLies"
-  | "toLies";
+  | "toLies"
+  | "caddySuggestions";
 type SingleStrokePublicProps = Omit<SingleStrokeViewProps, GeneratedPropKeys>;
 
 const toLies = [
@@ -35,7 +37,14 @@ export function withSingleStrokeDependencies(
       hole: { tees, pins, pinPlayed },
       strokes,
       strokeNum,
+      stroke: { fromPos },
+      clubStats,
     } = props;
+    // todo: consider moving into selector
+    const pinPlayedUsed = useMemo(
+      () => (pinPlayed ? pins[pinPlayed] : Object.values(pins)[0]),
+      [pins, pinPlayed]
+    );
 
     const prevStroke = useMemo(() => {
       if (strokeNum < 2) return undefined;
@@ -73,9 +82,6 @@ export function withSingleStrokeDependencies(
 
     // todo: decide if buttonText is worked out here or in xPosButtonText
     const toPosOptions = useMemo(() => {
-      const pinPlayedUsed = pinPlayed
-        ? pins[pinPlayed]
-        : Object.values(pins)[0];
       const to = [PosOptions[PosOptionMethods.GPS]];
       to.push(PosOptions[PosOptionMethods.CUSTOM]);
       if (pinPlayedUsed) {
@@ -83,7 +89,7 @@ export function withSingleStrokeDependencies(
         to.push(PosOptions[PosOptionMethods.HOLE]);
       }
       return to;
-    }, [pinPlayed, pins]);
+    }, [pinPlayedUsed]);
 
     const fromLies = useMemo(() => {
       if (strokeNum === 1) {
@@ -95,6 +101,12 @@ export function withSingleStrokeDependencies(
       }
     }, [strokeNum]);
 
+    const caddySuggestions = useMemo(() => {
+      return fromPos && pinPlayedUsed && clubStats
+        ? calculateCaddySuggestions(clubStats, fromPos, pinPlayedUsed)
+        : [];
+    }, [fromPos, pinPlayedUsed, clubStats]);
+
     const viewProps: SingleStrokeViewProps = {
       ...props,
       fromPosOptions,
@@ -102,6 +114,7 @@ export function withSingleStrokeDependencies(
       prevStroke,
       fromLies,
       toLies,
+      caddySuggestions,
       clubs: [
         Club.D,
         Club["3W"],

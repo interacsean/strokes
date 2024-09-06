@@ -46,5 +46,5 @@ export function useCourseState() {
 const courseAtom = atom<CourseState>({
   key: "course",
   default: null,
-  effects: [localStoragePersistenceEffect("strokes_course")],
+  effects: [localStoragePersistenceEffect("strokes_0.2_course")],
 });

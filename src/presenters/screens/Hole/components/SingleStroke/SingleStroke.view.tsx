@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { CustomModalSelect } from "presenters/components/CustomModalSelect/CustomModalSelect";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { HoleViewProps } from "../../Hole.view";
@@ -15,6 +15,7 @@ import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistan
 import { Lie } from "model/Lie";
 import Map from "presenters/components/Map/Map";
 import { ClubStats } from "model/ClubStats";
+import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
 
 export type SingleStrokeViewProps = {
   hole: Hole;
@@ -38,6 +39,7 @@ export type SingleStrokeViewProps = {
   currentPosition: LatLng | undefined;
   prevStroke: StrokeWithDerivedFields | undefined;
   clubStats: ClubStats;
+  caddySuggestions: CaddySuggestion[];
 };
 
 enum Modals {
@@ -98,22 +100,24 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     [fromPosSetMethod]
   );
 
+  const pinPlayedUsed = useMemo(
+    () => (pinPlayed ? pins[pinPlayed] : Object.values(pins)[0]),
+    [pins, pinPlayed]
+  );
+
   useEffect(
     function takeActionOnToMethodChange() {
       if (holeNum === localHoleNum && strokeNum === localStrokeNum) {
         // toPosSetMethod and not because of changing shots or holes
-        let pinPlayedUsed: string;
         switch (toPosSetMethod) {
           case PosOptionMethods.CUSTOM:
             // todo: open map
             break;
           case PosOptionMethods.HOLE:
-            pinPlayedUsed = pinPlayed || Object.keys(pins)[0];
-            setToPosition(strokeNum, pins[pinPlayedUsed]);
+            setToPosition(strokeNum, pinPlayedUsed);
             break;
           case PosOptionMethods.NEAR_PIN:
-            pinPlayedUsed = pinPlayed || Object.keys(pins)[0];
-            setToPosition(strokeNum, pins[pinPlayedUsed]);
+            setToPosition(strokeNum, pinPlayedUsed);
             // todo:
             // 2) queing up change as this call overwrites the previous update since it is paired with the current course
             // if (!toLie) selectToLie(strokeNum, Lie.GREEN);
@@ -121,7 +125,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
         }
       }
     },
-    [toPosSetMethod]
+    [toPosSetMethod, pinPlayedUsed]
   );
 
   const clubOptions = useMemo(
@@ -257,6 +261,11 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
 
   const closeModal = () => setActiveModal(null);
 
+  const [usingCaddie, setShowCaddie] = useState(true);
+  const showCaddie = () => setShowCaddie(true);
+  const hideCaddie = () => setShowCaddie(false);
+  const caddySuggestions = useMemo(() => {}, []);
+
   return {
     fromPosButtonText,
     setFromPosMethod: viewSetFromPosMethod,
@@ -270,6 +279,11 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     setActiveModal,
     clubOptions,
     closeModal,
+    showCaddie,
+    hideCaddie,
+    usingCaddie,
+    caddySuggestions,
+    pinPlayedUsed,
   };
 }
 
@@ -323,7 +337,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
       {modal}
       <Flex
         flexDir="column"
-        rowGap={3}
+        rowGap={5}
         visibility={viewLogic.activeModal ? "hidden" : "visible"}
       >
         <Flex flexDir="row" alignItems={"center"} columnGap={3}>
@@ -349,24 +363,51 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             />
           )}
         </Box>
-        <Flex flexDir="row" alignItems={"center"} columnGap={2}>
-          <Text variant="inputLabel" minWidth={inputLabelWidth}>
-            Shot
-          </Text>
-          <Box flex={1}>
-            <CustomModalSelect
-              selectedText={props.stroke.club}
-              placeholder="Club"
-              onOpen={() => viewLogic.setActiveModal(Modals.Club)}
-            />
-          </Box>
-          <Box flex={1}>
-            <CustomModalSelect
-              selectedText={props.stroke.strokeType}
-              placeholder="Club"
-              onOpen={() => viewLogic.setActiveModal(Modals.Shot)}
-            />
-          </Box>
+        <Flex flexDir="column" rowGap={3}>
+          <Flex flexDir="row" alignItems={"center"} columnGap={2}>
+            <Text variant="inputLabel" minWidth={inputLabelWidth}>
+              Shot
+            </Text>
+            <Box flex={1}>
+              <CustomModalSelect
+                selectedText={props.stroke.club}
+                placeholder="Club"
+                onOpen={() => viewLogic.setActiveModal(Modals.Club)}
+              />
+            </Box>
+            <Box flex={1}>
+              <CustomModalSelect
+                selectedText={props.stroke.strokeType}
+                placeholder="Club"
+                onOpen={() => viewLogic.setActiveModal(Modals.Shot)}
+              />
+            </Box>
+          </Flex>
+          {viewLogic.usingCaddie && (
+            <Flex ml={inputLabelWidth}>
+              <Text variant="minor">
+                {/* todo: move to viewLogic */}
+                {props.caddySuggestions?.[0]?.club &&
+                props.caddySuggestions?.[0]?.clubDistance ? (
+                  <>
+                    {props.caddySuggestions[0]?.club} -{" "}
+                    {props.caddySuggestions[0]?.clubDistance[0]}
+                    {props.distanceUnit} (
+                    {props.caddySuggestions[0]?.clubDistance[1][0]}-
+                    {props.caddySuggestions[0]?.clubDistance[1][1]}
+                    {props.distanceUnit})
+                  </>
+                ) : !props.caddySuggestions?.[0]?.club &&
+                  !props.caddySuggestions?.[0]?.clubDistance &&
+                  props.currentPosition &&
+                  !viewLogic.pinPlayedUsed ? (
+                  <em>Set a target (todo: always uses Pin)</em>
+                ) : (
+                  <em>Caddie N/A</em>
+                )}
+              </Text>
+            </Flex>
+          )}
         </Flex>
         <Flex flexDir="row" alignItems={"center"} columnGap={2}>
           <Text variant="inputLabel" minWidth={inputLabelWidth}>
@@ -416,6 +457,15 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             )}
           </Box>
         </Flex>
+
+        <Button
+          variant="link"
+          onClick={
+            viewLogic.usingCaddie ? viewLogic.hideCaddie : viewLogic.showCaddie
+          }
+        >
+          (for options) {viewLogic.usingCaddie ? "Hide" : "Show"} Caddie
+        </Button>
       </Flex>
     </>
   );

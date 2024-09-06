@@ -20,7 +20,6 @@ import { useInput } from "presenters/utils/useInput/useInput";
 import { Club } from "model/Club";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { LatLng } from "model/LatLng";
-import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
 import { Container, StrokesContainer } from "./Hole.styles";
 import { HoleOverview } from "./components/HoleOverview/HoleOverview.view";
 import { StrokeType } from "model/StrokeType";
@@ -51,7 +50,6 @@ export type HoleViewProps = {
   preprocessedStrokes: StrokeWithDerivedFields[];
   setFromPosition: (stroke: number, pos: LatLng) => void;
   setToPosition: (stroke: number, pos: LatLng) => void;
-  caddySuggestions: CaddySuggestion[];
   setHolePos: (pos: LatLng) => void;
   setTeePos: (teeName: string, pos: LatLng) => void;
   addStroke: () => void;
