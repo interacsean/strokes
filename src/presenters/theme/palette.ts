@@ -16,6 +16,7 @@ const colorPalette = {
   },
   neutral: {
     100: "#F4F4F4",
+    300: "#DFDFDF",
     500: "#CDCBCB",
     800: "#686868",
   },

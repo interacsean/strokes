@@ -32,6 +32,7 @@ import { copyToClipboard } from "usecases/device/copyToClipboard";
 import { Course } from "model/Course";
 import Map from "presenters/components/Map/Map";
 import { ClubStats } from "model/ClubStats";
+import { ScoreCard } from "./components/Scorecard/ScoreCard.view";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -195,7 +196,8 @@ export function HoleView(props: HoleViewProps) {
           <TabList flex={1}>
             <Tab onClick={() => viewLogic.setTabIndex(0)}>Map</Tab>
             <Tab onClick={() => viewLogic.setTabIndex(1)}>Strokes</Tab>
-            <Tab onClick={() => viewLogic.setTabIndex(2)}>Export</Tab>
+            <Tab onClick={() => viewLogic.setTabIndex(2)}>Scorecard</Tab>
+            <Tab onClick={() => viewLogic.setTabIndex(3)}>Export</Tab>
           </TabList>
           <Button variant="ghost" onClick={viewLogic.promptOnLeave} px={0}>
             <CloseIcon boxSize={4} />
@@ -388,6 +390,12 @@ export function HoleView(props: HoleViewProps) {
                   </Flex>
                 </Flex>
               </StrokesContainer>
+            </TabPanel>
+            <TabPanel flex={1}>
+              {/* Scorecard */}
+              <Container>
+                <ScoreCard round={props.course} />
+              </Container>
             </TabPanel>
             <TabPanel flex={1}>
               {/* Strokes */}
