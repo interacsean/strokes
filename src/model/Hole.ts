@@ -13,6 +13,11 @@ export type HoleDef = {
     | undefined
   >;
   pins: Record<string, LatLng | undefined>;
+  green?: {
+    front: LatLng;
+    back: LatLng;
+  };
+  waypoints?: Partial<LatLng>[];
 };
 
 export type Hole = HoleDef & {
