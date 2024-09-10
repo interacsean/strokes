@@ -4,6 +4,7 @@ import { Club } from "model/Club";
 import { PosOptionMethods, PosOptions } from "model/PosOptions";
 import { Lie, TeeLies } from "model/Lie";
 import { calculateCaddySuggestions } from "usecases/stroke/calculateCaddySuggestions";
+import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 
 type GeneratedPropKeys =
   | "clubs"
@@ -12,7 +13,8 @@ type GeneratedPropKeys =
   | "prevStroke"
   | "fromLies"
   | "toLies"
-  | "caddySuggestions";
+  | "caddySuggestions"
+  | "distToTarget";
 type SingleStrokePublicProps = Omit<SingleStrokeViewProps, GeneratedPropKeys>;
 
 const toLies = [
@@ -112,6 +114,11 @@ export function withSingleStrokeDependencies(
         : [];
     }, [fromPos, fromLie, pinPlayedUsed, clubStats]);
 
+    const distToTarget =
+      fromPos && pinPlayedUsed
+        ? calculateDistanceBetweenPositions(fromPos, pinPlayedUsed)
+        : null;
+
     const viewProps: SingleStrokeViewProps = {
       ...props,
       fromPosOptions,
@@ -120,6 +127,7 @@ export function withSingleStrokeDependencies(
       fromLies,
       toLies,
       caddySuggestions,
+      distToTarget,
       clubs: [
         Club.D,
         Club["3W"],

@@ -41,6 +41,7 @@ export type SingleStrokeViewProps = {
   prevStroke: StrokeWithDerivedFields | undefined;
   clubStats: ClubStats;
   caddySuggestions: CaddySuggestion[];
+  distToTarget: number | null;
 };
 
 enum Modals {
@@ -326,6 +327,9 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           viewLogic.setActiveModal(null);
         }}
         cancel={viewLogic.closeModal}
+        distanceUnit={props.distanceUnit}
+        clubStats={props.clubStats}
+        distToTarget={props.distToTarget}
       />
     ) : viewLogic.activeModal === Modals.FromLie ? (
       // todo: pass in valid from lies based on shot (i.e. tees)
