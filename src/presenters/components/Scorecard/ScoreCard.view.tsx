@@ -11,28 +11,28 @@ type ScoreCardProps = {
 function getHoleScoreStyle(par: number, score: number) {
   if (score - par >= 2) {
     return {
-      borderWidth: "4px",
+      borderWidth: "7px",
       borderStyle: "double",
-      borderColor: "red",
+      borderColor: "#cc0000",
     };
   } else if (score - par === 1) {
     return {
-      borderWidth: "2px",
+      borderWidth: "2.5px",
       borderStyle: "solid",
-      borderColor: "red",
+      borderColor: "#cc0000",
     };
   } else if (score - par === -1) {
     return {
-      borderWidth: "2px",
+      borderWidth: "2.5px",
       borderStyle: "solid",
-      borderColor: "green",
+      borderColor: "#007700",
       borderRadius: "1em",
     };
-  } else if (score - par < -2) {
+  } else if (score - par <= -2) {
     return {
-      borderWidth: "4px",
+      borderWidth: "7px",
       borderStyle: "double",
-      borderColor: "green",
+      borderColor: "#007700",
       borderRadius: "1em",
     };
   }
@@ -96,7 +96,7 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ round }) => {
                 width="2em"
                 height="2em"
                 lineHeight={
-                  holeScoreStyle.borderStyle === "double" ? "1.6em" : "1.8em"
+                  holeScoreStyle.borderStyle === "double" ? "1.2em" : "1.7em"
                 }
                 align="center"
                 boxSizing="border-box"

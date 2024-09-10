@@ -36,6 +36,8 @@ import {
   useFakeGps,
 } from "presenters/components/FakePos/FakePosContext";
 import { selectClubStats } from "state/rounds/selectors/clubStats";
+import { useNavigate } from "react-router-dom";
+import { RoutePaths } from "presenters/routes/RoutePaths";
 
 type HolePublicProps = {};
 
@@ -331,6 +333,11 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     [courseState?.holes]
   );
 
+  const navigate = useNavigate();
+  const finishRound = useCallback(() => {
+    navigate(RoutePaths.PostRound);
+  }, [navigate]);
+
   const viewProps: Omit<HoleViewProps, "hole" | "course"> = {
     saveRound,
     resetCourse,
@@ -360,6 +367,7 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
       <GeoHUD currentPosition={currentPosition} geo={geo} />
     ),
     clubStats,
+    finishRound,
   };
 
   return (

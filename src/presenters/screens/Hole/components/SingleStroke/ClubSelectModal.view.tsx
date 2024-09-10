@@ -35,7 +35,7 @@ export function ClubSelectModal(props: ClubSelectModalProps) {
       }
     });
     return closestClub;
-  }, [props.clubStats, distToTarget]);
+  }, [props.clubStats, distToTarget, props.clubs]);
 
   return (
     <Modal onClose={props.cancel}>

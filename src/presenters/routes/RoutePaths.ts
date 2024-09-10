@@ -1,5 +1,6 @@
 export enum RoutePaths {
   Home = "/",
-  ChooseCourse = "/ChooseCourse",
-  Hole = "/Hole",
+  ChooseCourse = "/choose-course",
+  Hole = "/hole",
+  PostRound = "/post-round",
 }

@@ -32,7 +32,7 @@ import { copyToClipboard } from "usecases/device/copyToClipboard";
 import { Course } from "model/Course";
 import Map from "presenters/components/Map/Map";
 import { ClubStats } from "model/ClubStats";
-import { ScoreCard } from "./components/Scorecard/ScoreCard.view";
+import { ScoreCard } from "../../components/Scorecard/ScoreCard.view";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -63,6 +63,7 @@ export type HoleViewProps = {
   saveRound: (course: Course) => void;
   resetCourse: () => void;
   clubStats: ClubStats;
+  finishRound: () => void;
 };
 
 const DEFAULT_HOLE_TAB = 1;
@@ -182,6 +183,13 @@ export function HoleView(props: HoleViewProps) {
   const viewLogic = useHoleViewLogic(props);
   if (DEBUG) console.log({ props, viewLogic });
 
+  console.log(
+    "$#",
+    props.course.currentHoleNum === props.course.holes.length,
+    props.course.currentHoleNum,
+    props.course.holes.length
+  );
+
   return (
     <Container>
       <Tabs
@@ -294,10 +302,11 @@ export function HoleView(props: HoleViewProps) {
                 >
                   <HoleOverview
                     setPar={props.setPar}
-                    nextHole={() => {
-                      console.log("nexthoel");
-                      props.nextHole();
-                    }}
+                    nextHole={
+                      props.course.currentHoleNum === props.course.holes.length
+                        ? null
+                        : props.nextHole
+                    }
                     prevHole={props.prevHole}
                     holeNum={props.holeNum}
                     currentStrokeNum={props.preprocessedStrokes.length}
@@ -377,9 +386,15 @@ export function HoleView(props: HoleViewProps) {
                       </Button>
                     )}
                   </Flex>
-                  <Button variant="ghost" px={2} onClick={props.nextHole}>
-                    <ChevronRightIcon boxSize={6} />
-                  </Button>
+                  {props.course.currentHoleNum === props.course.holes.length ? (
+                    <Button variant="ghost" px={2} onClick={props.finishRound}>
+                      Finish
+                    </Button>
+                  ) : (
+                    <Button variant="ghost" px={2} onClick={props.nextHole}>
+                      <ChevronRightIcon boxSize={6} />
+                    </Button>
+                  )}
                 </Flex>
               </StrokesContainer>
             </TabPanel>

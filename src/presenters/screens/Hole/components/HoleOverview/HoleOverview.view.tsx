@@ -18,8 +18,8 @@ type HoleOverviewProps = {
   activeStroke: number;
   setActiveStroke: (stroke: number) => void;
   distanceUnit: string;
-  nextHole: () => void;
-  prevHole: () => void;
+  nextHole: (() => void) | null;
+  prevHole: (() => void) | null;
   setPar: (par: number) => void;
 };
 
@@ -70,9 +70,13 @@ export function HoleOverview(props: HoleOverviewProps) {
           justifyContent={"center"}
           flexGrow={1}
         >
-          <Button variant="ghost" onClick={props.prevHole}>
-            <ChevronLeftIcon boxSize={6} />
-          </Button>
+          {props.prevHole ? (
+            <Button variant="ghost" onClick={props.prevHole}>
+              <ChevronLeftIcon boxSize={6} />
+            </Button>
+          ) : (
+            <Box width="3rem"></Box>
+          )}
           <Text variant="heading" color="black" pr={2}>
             {props.holeNum}
           </Text>
@@ -109,15 +113,13 @@ export function HoleOverview(props: HoleOverviewProps) {
               </Text>
             )}
           </Flex>
-          <Button
-            variant="ghost"
-            onClick={() => {
-              console.log("nh");
-              props.nextHole();
-            }}
-          >
-            <ChevronRightIcon boxSize={6} />
-          </Button>
+          {props.nextHole ? (
+            <Button variant="ghost" onClick={props.nextHole}>
+              <ChevronRightIcon boxSize={6} />
+            </Button>
+          ) : (
+            <Box width="3rem"></Box>
+          )}
         </Flex>
         {props.roundScore !== undefined && (
           <Flex
