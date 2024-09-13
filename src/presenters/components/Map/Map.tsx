@@ -1,6 +1,6 @@
 /// <reference types="@types/google.maps" />
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useInitialiseMap } from "./useInitialiseMap";
 import { useUpdateUserPin } from "./useUpdateUserPin";
 import { Hole } from "model/Hole";
@@ -48,15 +48,31 @@ const createRotatedIcon = (
 };
 
 function useViewLogic(props: MapProps, map: google.maps.Map | null) {
-  const { holeOrientation = "vertical" } = props;
+  const {
+    holeOrientation = "vertical",
+    hole: { strokes },
+  } = props;
   // todo: optimisation
   const teePos = selectCurrentTeeFromHole(props.hole)?.pos;
   const pinPos = selectCurrentPinFromHole(props.hole);
+  const ballPos = useMemo(() => {
+    return strokes.reduce((lastPos: null | LatLng, stroke) => {
+      if (stroke.toPos) {
+        return stroke.toPos;
+      } else if (stroke.fromPos) {
+        return stroke.fromPos;
+      }
+      return lastPos;
+    }, null);
+  }, [strokes]);
 
   const pinMarkerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(
     null
   );
   const teeMarkerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(
+    null
+  );
+  const ballMarkerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(
     null
   );
 
@@ -91,6 +107,33 @@ function useViewLogic(props: MapProps, map: google.maps.Map | null) {
     map.setHeading(bearingDeg);
     map.setTilt(props.tilt || 0);
   }
+
+  useEffect(() => {
+    if (map && ballPos) {
+      if (ballMarkerRef.current) {
+        ballMarkerRef.current.position = ballPos;
+      } else {
+        ballMarkerRef.current = new google.maps.marker.AdvancedMarkerElement({
+          position: ballPos,
+          map: map,
+          title: "Ball Position",
+          content: document.createElement("div"),
+        });
+      }
+
+      const ballContent = ballMarkerRef.current?.content as HTMLDivElement;
+      if (ballContent?.style) {
+        ballContent.style.backgroundImage = "url('/images/ball.png')";
+        ballContent.style.backgroundSize = "cover";
+        ballContent.style.width = "16px";
+        ballContent.style.height = "16px";
+        // ballContent.style.left = "-8px";
+        ballContent.style.bottom = "-8px";
+        ballContent.style.position = "relative";
+      }
+    }
+  }, [ballPos, map]);
+  console.log({ ballPos });
 
   useEffect(() => {
     if (map && teePos) {
