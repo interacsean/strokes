@@ -3,6 +3,8 @@ import { AppRoutes } from "presenters/routes/AppRoutes";
 import { RecoilRoot } from "recoil";
 import { BrowserRouter } from "react-router-dom";
 
+export const BASE_PATH = "/strokes";
+
 function App() {
   return (
     <RecoilRoot>

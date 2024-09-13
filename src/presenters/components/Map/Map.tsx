@@ -10,6 +10,7 @@ import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 import "./mapStyles.css";
 import { useFakeGps } from "../FakePos/FakePosContext";
+import { BASE_PATH } from "App";
 
 type GoogleMap = any;
 
@@ -124,7 +125,7 @@ function useViewLogic(props: MapProps, map: google.maps.Map | null) {
 
       const ballContent = ballMarkerRef.current?.content as HTMLDivElement;
       if (ballContent?.style) {
-        ballContent.style.backgroundImage = "url('/images/ball.png')";
+        ballContent.style.backgroundImage = `url('${BASE_PATH}/images/ball.png')`;
         ballContent.style.backgroundSize = "cover";
         ballContent.style.width = "16px";
         ballContent.style.height = "16px";
@@ -177,7 +178,7 @@ function useViewLogic(props: MapProps, map: google.maps.Map | null) {
 
         const pinContent = pinMarkerRef.current?.content as HTMLDivElement;
         if (pinContent?.style) {
-          pinContent.style.backgroundImage = "url('/images/flag.png')";
+          pinContent.style.backgroundImage = `url('${BASE_PATH}/images/flag.png')`;
           pinContent.style.backgroundSize = "cover";
           pinContent.style.width = "10px";
           pinContent.style.height = "15.5px";
