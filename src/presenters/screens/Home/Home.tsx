@@ -11,7 +11,7 @@ export function Home(props: Props) {
         bgColor="primary.500"
         height="40vh"
         px={4}
-        py={2}
+        py={3}
         justifyContent="flex-end"
         alignItems="flex-end"
       >
