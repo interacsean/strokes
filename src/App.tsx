@@ -7,7 +7,7 @@ function App() {
   return (
     <RecoilRoot>
       <ThemedChakraProvider>
-        <BrowserRouter>
+        <BrowserRouter basename="/strokes">
           <AppRoutes />
         </BrowserRouter>
       </ThemedChakraProvider>
