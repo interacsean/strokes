@@ -60,7 +60,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     fromPosOptions,
     toPosOptions,
     stroke: { fromPosSetMethod, fromPos, toPosSetMethod, toPos },
-    hole: { pinPlayed, pins, holeNum },
+    hole: { pinPlayed, pins, holeNum, tees, teePlayed },
     currentPosition,
     setFromPosMethod,
     setToPosMethod,
@@ -69,6 +69,11 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     selectClub,
     selectStrokeType,
   } = props;
+
+  const teePlayedUsed = useMemo(
+    () => (teePlayed ? tees[teePlayed] : Object.values(tees)[0]),
+    [tees, teePlayed]
+  );
 
   const [localStrokeNum, setLocalStrokeNum] = useState(strokeNum);
   useEffect(
@@ -90,6 +95,12 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
       if (holeNum === localHoleNum && strokeNum === localStrokeNum) {
         // fromPosSetMethod and not because of changing shots or holes
         switch (fromPosSetMethod) {
+          case PosOptionMethods.TEE:
+            // todo: determine the correct fromTee
+            if (teePlayedUsed?.pos) {
+              setFromPosition(strokeNum, teePlayedUsed?.pos);
+            }
+            break;
           case PosOptionMethods.CUSTOM:
             // todo: open map
             break;
