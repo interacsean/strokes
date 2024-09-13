@@ -183,13 +183,6 @@ export function HoleView(props: HoleViewProps) {
   const viewLogic = useHoleViewLogic(props);
   if (DEBUG) console.log({ props, viewLogic });
 
-  console.log(
-    "$#",
-    props.course.currentHoleNum === props.course.holes.length,
-    props.course.currentHoleNum,
-    props.course.holes.length
-  );
-
   return (
     <Container>
       <Tabs
