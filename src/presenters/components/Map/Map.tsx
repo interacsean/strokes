@@ -149,7 +149,7 @@ function useViewLogic(props: MapProps, map: google.maps.Map | null) {
         });
 
         createRotatedIcon(
-          "/images/white-tees.png",
+          `${BASE_PATH}/images/white-tees.png`,
           holeOrientation === "horizontal" ? 90 : 0,
           (iconUrl: string) => {
             const teeContent = teeMarkerRef.current?.content as HTMLDivElement;

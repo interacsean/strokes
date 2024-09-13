@@ -1,7 +1,7 @@
 {
   "name": "strokes",
   "homepage": "https://interacsean.github.io/strokes",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "private": true,
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
