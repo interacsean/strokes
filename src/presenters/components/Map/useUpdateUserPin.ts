@@ -1,3 +1,4 @@
+import { BASE_PATH } from "App";
 import { useEffect, useState } from "react";
 
 export function useUpdateUserPin(userLocation: any, map: any, mapRef: any) {
@@ -17,7 +18,7 @@ export function useUpdateUserPin(userLocation: any, map: any, mapRef: any) {
           });
           const pinContent = _userMarker?.content as HTMLDivElement;
           if (pinContent?.style) {
-            pinContent.style.backgroundImage = "url('/images/ball-pin.png')";
+            pinContent.style.backgroundImage = `url('${BASE_PATH}/images/ball-pin.png')`;
             pinContent.style.backgroundSize = "cover";
             pinContent.style.width = "10px";
             pinContent.style.height = "19px";
