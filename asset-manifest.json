@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/strokess/static/css/main.4d53edab.css",
+    "main.js": "/strokess/static/js/main.ab69a7fd.js",
+    "static/js/787.365c5bb3.chunk.js": "/strokess/static/js/787.365c5bb3.chunk.js",
+    "index.html": "/strokess/index.html",
+    "main.4d53edab.css.map": "/strokess/static/css/main.4d53edab.css.map",
+    "main.ab69a7fd.js.map": "/strokess/static/js/main.ab69a7fd.js.map",
+    "787.365c5bb3.chunk.js.map": "/strokess/static/js/787.365c5bb3.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4d53edab.css",
+    "static/js/main.ab69a7fd.js"
+  ]
+}
