@@ -20,6 +20,7 @@ type MapProps = {
   holeOrientation?: "horizontal" | "vertical";
   zoomFactor?: number;
   tilt?: number;
+  onMapClick?: (pos: LatLng) => void;
 };
 
 const createRotatedIcon = (
@@ -133,7 +134,6 @@ function useViewLogic(props: MapProps, map: google.maps.Map | null) {
       }
     }
   }, [ballPos, map]);
-  console.log({ ballPos });
 
   useEffect(() => {
     if (map && teePos) {
@@ -198,7 +198,11 @@ function useViewLogic(props: MapProps, map: google.maps.Map | null) {
           if (e.latLng) {
             const lat = e.latLng.lat();
             const lng = e.latLng.lng();
-            setFakePos({ lat, lng });
+            if (props.onMapClick) {
+              props.onMapClick?.({ lat, lng, alt: null });
+            } else {
+              setFakePos({ lat, lng });
+            }
           }
         }
       );

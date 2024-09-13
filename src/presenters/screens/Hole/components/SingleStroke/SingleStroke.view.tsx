@@ -90,6 +90,10 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     [holeNum]
   );
 
+  const [mapClickAction, setMapClickAction] = useState<null | "from" | "to">(
+    null
+  );
+
   useEffect(
     function takeActionOnFromMethodChange() {
       if (holeNum === localHoleNum && strokeNum === localStrokeNum) {
@@ -102,7 +106,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
             }
             break;
           case PosOptionMethods.CUSTOM:
-            // todo: open map
+            setMapClickAction("from");
             break;
           case PosOptionMethods.DROP:
             // todo: show drop stuff?
@@ -127,7 +131,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
         // toPosSetMethod and not because of changing shots or holes
         switch (toPosSetMethod) {
           case PosOptionMethods.CUSTOM:
-            // todo: open map
+            setMapClickAction("to");
             break;
           case PosOptionMethods.HOLE:
             setToPosition(strokeNum, pinPlayedUsed);
@@ -180,9 +184,10 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
       case PosOptionMethods.TEE:
         return "buttonReadOnly";
       case PosOptionMethods.DROP:
-      case PosOptionMethods.CUSTOM:
       case PosOptionMethods.GPS:
         return !fromPos ? "buttonUnsatisfied" : "buttonPrimary";
+      case PosOptionMethods.CUSTOM:
+        return "buttonUnsatisfied";
       case PosOptionMethods.LAST_SHOT:
         return "buttonPrimary";
     }
@@ -218,7 +223,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const toPosButtonColor = useMemo(() => {
     switch (toPosSetMethod) {
       case PosOptionMethods.CUSTOM:
-        return !toPos ? "buttonUnsatisfied" : "buttonPrimary";
+        return "buttonUnsatisfied";
       case PosOptionMethods.GPS:
         return !toPos ? "buttonUnsatisfied" : "buttonPrimary";
       case PosOptionMethods.HOLE:
@@ -257,7 +262,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
         setFromPosition(strokeNum);
         break;
       case PosOptionMethods.CUSTOM:
-        // todo: open map
+        setMapClickAction("from");
         break;
       case PosOptionMethods.TEE:
       // skip
@@ -270,10 +275,39 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
         setToPosition(strokeNum);
         break;
       case PosOptionMethods.CUSTOM:
-        // todo: open map
+        setMapClickAction("to");
         break;
     }
   }, [toPosSetMethod, setToPosition, strokeNum]);
+
+  const [pendingPosMethod, setPendingPosMethod] = useState<
+    ["from" | "to", PosOptionMethods] | null
+  >(null);
+  useEffect(
+    function updatePosMethodFromQueue() {
+      if (pendingPosMethod?.[0] === "from") {
+        setFromPosMethod(strokeNum, pendingPosMethod[1]);
+        setPendingPosMethod(null);
+      } else if (pendingPosMethod?.[0] === "to") {
+        setToPosMethod(strokeNum, pendingPosMethod[1]);
+        setPendingPosMethod(null);
+      }
+    },
+    [pendingPosMethod?.[0], pendingPosMethod?.[1]]
+  );
+  const onMapClick = useCallback(
+    (pos: LatLng) => {
+      if (mapClickAction === "from") {
+        setFromPosition(strokeNum, pos);
+        setPendingPosMethod(["from", PosOptionMethods.GPS]);
+      } else if (mapClickAction === "to") {
+        setToPosition(strokeNum, pos);
+        setPendingPosMethod(["to", PosOptionMethods.GPS]);
+      }
+      setMapClickAction(null);
+    },
+    [mapClickAction, strokeNum, setToPosition, setFromPosition]
+  );
 
   const closeModal = () => setActiveModal(null);
 
@@ -321,6 +355,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     usingCaddie,
     pinPlayedUsed,
     adoptCaddySuggestion,
+    onMapClick: mapClickAction ? onMapClick : undefined,
   };
 }
 
@@ -406,6 +441,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               currentPosition={props.currentPosition}
               hole={props.hole}
               zoomFactor={0.8}
+              onMapClick={viewLogic.onMapClick}
             />
           )}
         </Box>
