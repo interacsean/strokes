@@ -1,5 +1,6 @@
 {
   "name": "strokes",
+  "homepage": "https://interacsean.github.io/strokes",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -35,10 +36,12 @@
     "eject": "react-scripts eject",
     "format": "prettier --write .",
     "lint:fix": "eslint --fix 'src/**'",
-    "deploy": "npm run build && mv build/index.html build/200.html && surge build strokes.surge.sh",
-    "deploy:test": "npm run build && mv build/index.html build/200.html && surge build strokes-test.surge.sh",
-    "deploy-only": "mv build/index.html build/200.html & surge build strokes.surge.sh",
-    "deploy-only:test": "mv build/index.html build/200.html & surge build strokes-test.surge.sh"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "xdeploy": "npm run build && mv build/index.html build/200.html && surge build strokes.surge.sh",
+    "xdeploy:test": "npm run build && mv build/index.html build/200.html && surge build strokes-test.surge.sh",
+    "xdeploy-only": "mv build/index.html build/200.html & surge build strokes.surge.sh",
+    "xdeploy-only:test": "mv build/index.html build/200.html & surge build strokes-test.surge.sh"
   },
   "eslintConfig": {
     "extends": [
@@ -61,6 +64,7 @@
   "devDependencies": {
     "@types/google.maps": "^3.57.0",
     "@types/ramda": "0.28.23",
+    "gh-pages": "^6.1.1",
     "prettier": "2.8.4",
     "surge": "0.23.1"
   }
