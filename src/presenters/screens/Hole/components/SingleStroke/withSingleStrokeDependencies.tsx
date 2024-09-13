@@ -97,9 +97,11 @@ export function withSingleStrokeDependencies(
       if (strokeNum === 1) {
         return TeeLies;
       } else {
-        return Object.values(Lie).filter(
-          (lie) => !TeeLies.includes(lie) && lie !== Lie.WATER
-        );
+        return Object.values(Lie).filter((lie) => {
+          if (lie === Lie.WATER) return false;
+          // todo: only allow tees if previous shot was OOB
+          return true;
+        });
       }
     }, [strokeNum]);
 

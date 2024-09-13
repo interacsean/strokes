@@ -1,9 +1,4 @@
 export enum Lie {
-  TEE_HIGH = "Tee (High)",
-  TEE_MEDIUM = "Tee (Medium)",
-  TEE_LOW = "Tee (Low)",
-  TEE_GRASS = "Tee (Grass)",
-  TEE_ARTIFICIAL_GRASS = "Tee (Artificial Grass)",
   FAIRWAY = "Fairway",
   WRONG_FAIRWAY = "Wrong Fairway",
   LIGHT_ROUGH = "Light rough",
@@ -13,6 +8,11 @@ export enum Lie {
   FRINGE = "Fringe",
   WATER = "Water hazard",
   HAZARD = "Hazard / Out of bounds",
+  TEE_HIGH = "Tee (High)",
+  TEE_MEDIUM = "Tee (Medium)",
+  TEE_LOW = "Tee (Low)",
+  TEE_GRASS = "Tee (Grass)",
+  TEE_ARTIFICIAL_GRASS = "Tee (Artificial Grass)",
 }
 
 export const shortLieNames: Record<Lie, string> = {
