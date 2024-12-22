@@ -39,6 +39,7 @@ export type SingleStrokeViewProps = {
   distanceUnit: string;
   currentPosition: LatLng | undefined;
   prevStroke: StrokeWithDerivedFields | undefined;
+  nextStroke: StrokeWithDerivedFields | undefined;
   clubStats: ClubStats;
   caddySuggestions: CaddySuggestion[];
   distToTarget: number | null;
@@ -68,6 +69,8 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     caddySuggestions,
     selectClub,
     selectStrokeType,
+    prevStroke,
+    nextStroke,
   } = props;
 
   const teePlayedUsed = useMemo(
@@ -189,7 +192,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
       case PosOptionMethods.CUSTOM:
         return "buttonUnsatisfied";
       case PosOptionMethods.LAST_SHOT:
-        return "buttonPrimary";
+        return prevStroke?.toPos ? "buttonPrimary" : "buttonUnsatisfied";
     }
   }, [fromPosSetMethod, fromPos]);
 
@@ -269,17 +272,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     }
   }, [strokeNum, fromPosSetMethod, setFromPosition]);
 
-  const setToPosOnClick = useCallback(() => {
-    switch (toPosSetMethod) {
-      case PosOptionMethods.GPS:
-        setToPosition(strokeNum);
-        break;
-      case PosOptionMethods.CUSTOM:
-        setMapClickAction("to");
-        break;
-    }
-  }, [toPosSetMethod, setToPosition, strokeNum]);
-
+  // Work-around for not being able to update two attributes at once
   const [pendingPosMethod, setPendingPosMethod] = useState<
     ["from" | "to", PosOptionMethods] | null
   >(null);
@@ -295,6 +288,50 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     },
     [pendingPosMethod?.[0], pendingPosMethod?.[1]]
   );
+
+  const [pendingStrokeType, setPendingStrokeType] = useState<StrokeType | null>(
+    null
+  );
+  useEffect(
+    function updateStrokeTypeFromQueue() {
+      if (pendingStrokeType) {
+        selectStrokeType(strokeNum, pendingStrokeType);
+        setPendingStrokeType(null);
+      }
+    },
+    [pendingStrokeType, strokeNum]
+  );
+
+  const [pendingPos, setPendingPos] = useState<
+    ["from" | "to", LatLng, number | undefined] | null
+  >(null);
+  useEffect(
+    function updatePosFromQueue() {
+      if (pendingPos?.[0] === "from") {
+        setFromPosition(pendingPos?.[2] || strokeNum, pendingPos[1]);
+        setPendingPos(null);
+      } else if (pendingPos?.[0] === "to") {
+        setToPosition(pendingPos?.[2] || strokeNum, pendingPos[1]);
+        setPendingPos(null);
+      }
+    },
+    [pendingPos?.[0], pendingPos?.[1], pendingPos?.[2]]
+  );
+
+  const setToPosOnClick = useCallback(() => {
+    switch (toPosSetMethod) {
+      case PosOptionMethods.GPS:
+        setToPosition(strokeNum);
+        break;
+      case PosOptionMethods.CUSTOM:
+        setMapClickAction("to");
+        break;
+    }
+    if (nextStroke && nextStroke.fromPosSetMethod === PosOptionMethods.LAST_SHOT && currentPosition) {
+      setPendingPos(["from", currentPosition, strokeNum + 1])
+    }
+  }, [toPosSetMethod, setToPosition, strokeNum, nextStroke, currentPosition, setPendingPos]);
+
   const onMapClick = useCallback(
     (pos: LatLng) => {
       if (mapClickAction === "from") {
@@ -314,19 +351,6 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const [usingCaddie, setShowCaddie] = useState(true);
   const showCaddie = () => setShowCaddie(true);
   const hideCaddie = () => setShowCaddie(false);
-
-  const [pendingStrokeType, setPendingStrokeType] = useState<StrokeType | null>(
-    null
-  );
-  useEffect(
-    function updateStrokeTypeFromQueue() {
-      if (pendingStrokeType) {
-        selectStrokeType(strokeNum, pendingStrokeType);
-        setPendingStrokeType(null);
-      }
-    },
-    [pendingStrokeType, strokeNum]
-  );
 
   const adoptCaddySuggestion = useCallback(() => {
     if (caddySuggestions?.[0]?.club) {

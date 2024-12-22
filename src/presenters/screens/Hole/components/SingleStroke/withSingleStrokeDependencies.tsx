@@ -11,6 +11,7 @@ type GeneratedPropKeys =
   | "fromPosOptions"
   | "toPosOptions"
   | "prevStroke"
+  | "nextStroke"
   | "fromLies"
   | "toLies"
   | "caddySuggestions"
@@ -51,6 +52,10 @@ export function withSingleStrokeDependencies(
     const prevStroke = useMemo(() => {
       if (strokeNum < 2) return undefined;
       return strokes[strokeNum - 2];
+    }, [strokeNum, strokes]);
+
+    const nextStroke = useMemo(() => {
+      return strokes[strokeNum];
     }, [strokeNum, strokes]);
 
     const fromPosOptions = useMemo(() => {
@@ -126,6 +131,7 @@ export function withSingleStrokeDependencies(
       fromPosOptions,
       toPosOptions,
       prevStroke,
+      nextStroke,
       fromLies,
       toLies,
       caddySuggestions,
