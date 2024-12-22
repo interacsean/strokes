@@ -1,10 +1,13 @@
 import { FC, useMemo } from "react";
 import { ChooseCourseView, ChooseCourseViewProps } from "./ChooseCourse.View";
-import { auVicMelbourneNorthcote } from "data/courses/au_vic_melbourne_northcote";
-import { auVicMelbourneFlagstaffTest } from "data/courses/au_vic_melbourne_testCourseFlagstaff";
 import { auVicMelbourneDocklandsTest } from "data/courses/au_vic_melbourne_testCourseDocklands";
-import { auVicMelbourneWestgate } from "data/courses/au_vic_melbourne_westgate";
+import { auVicMelbourneFlagstaffTest } from "data/courses/au_vic_melbourne_testCourseFlagstaff";
+import { auVicMelbourneBurnley } from "data/courses/au_vic_melbourne_burnleyPublic";
+import { auVicMelbourneNorthcote } from "data/courses/au_vic_melbourne_northcote";
+import { auVicMelbourneOakleigh } from "data/courses/au_vic_melbourne_oakleigh";
+import { auVicMelbourneRiverside } from "data/courses/au_vic_melbourne_riverside";
 import { auVicMelbourneRoyalPark } from "data/courses/au_vic_melbourne_royalPark";
+import { auVicMelbourneWestgate } from "data/courses/au_vic_melbourne_westgate";
 import { useCourseState } from "state/course/courseState";
 import newCourse from "usecases/course/newCourse";
 
@@ -15,7 +18,10 @@ export function withChooseCourseDependencies(
 ) {
   return function Hole(_props: ChooseCoursePublicProps) {
     const courses = [
+      auVicMelbourneBurnley,
       auVicMelbourneNorthcote,
+      auVicMelbourneOakleigh,
+      auVicMelbourneRiverside,
       auVicMelbourneRoyalPark,
       auVicMelbourneWestgate,
       auVicMelbourneFlagstaffTest,
