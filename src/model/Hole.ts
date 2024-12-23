@@ -1,17 +1,15 @@
 import { Stroke } from "./Stroke";
 import { LatLng } from "model/LatLng";
 
+export type Tee = {
+  par: number | undefined;
+  nominalDistance: number;
+  pos: LatLng;
+};
+
 export type HoleDef = {
   holeNum: number;
-  tees: Record<
-    string,
-    | {
-        par: number | undefined;
-        nominalDistance: number;
-        pos: LatLng;
-      }
-    | undefined
-  >;
+  tees: Record<string, Tee | undefined>;
   pins: Record<string, LatLng | undefined>;
   green?: {
     front: LatLng;

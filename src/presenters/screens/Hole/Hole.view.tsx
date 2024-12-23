@@ -242,6 +242,7 @@ export function HoleView(props: HoleViewProps) {
                 {props.currentPosition ? (
                   <Map
                     tilt={52}
+                    ballPos={null}
                     zoomFactor={2}
                     hole={props.hole}
                     currentPosition={props.currentPosition}

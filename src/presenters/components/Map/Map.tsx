@@ -16,6 +16,7 @@ type GoogleMap = any;
 
 type MapProps = {
   hole: Hole;
+  ballPos: LatLng | null;
   currentPosition: LatLng;
   mapId?: string;
   holeOrientation?: "horizontal" | "vertical";
@@ -57,16 +58,6 @@ function useViewLogic(props: MapProps, map: google.maps.Map | null) {
   // todo: optimisation
   const teePos = selectCurrentTeeFromHole(props.hole)?.pos;
   const pinPos = selectCurrentPinFromHole(props.hole);
-  const ballPos = useMemo(() => {
-    return strokes.reduce((lastPos: null | LatLng, stroke) => {
-      if (stroke.toPos) {
-        return stroke.toPos;
-      } else if (stroke.fromPos) {
-        return stroke.fromPos;
-      }
-      return lastPos;
-    }, null);
-  }, [strokes]);
 
   const pinMarkerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(
     null
@@ -111,12 +102,12 @@ function useViewLogic(props: MapProps, map: google.maps.Map | null) {
   }
 
   useEffect(() => {
-    if (map && ballPos) {
+    if (map && props.ballPos) {
       if (ballMarkerRef.current) {
-        ballMarkerRef.current.position = ballPos;
+        ballMarkerRef.current.position = props.ballPos;
       } else {
         ballMarkerRef.current = new google.maps.marker.AdvancedMarkerElement({
-          position: ballPos,
+          position: props.ballPos,
           map: map,
           title: "Ball Position",
           content: document.createElement("div"),
@@ -134,7 +125,7 @@ function useViewLogic(props: MapProps, map: google.maps.Map | null) {
         ballContent.style.position = "relative";
       }
     }
-  }, [ballPos, map]);
+  }, [props.ballPos, map]);
 
   useEffect(() => {
     if (map && teePos) {
