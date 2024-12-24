@@ -45,7 +45,7 @@ export type SingleStrokeViewProps = {
   distToTarget: number | null;
   distSinceFromPos: number | null;
   onFromPosClick: () => void;
-  onToPosOnClick: () => void;
+  onToPosClick: () => void;
   mapClickAction: "from" | "to" | null;
   onMapClick: undefined | ((latLng: LatLng) => void);
   acceptCaddySuggestion: () => void;
@@ -74,7 +74,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   } = props;
 
   const ballMapPos = useMemo(() => {
-    return strokes[strokeNum - 1].toPos || strokes[strokeNum - 1].fromPos || null;
+    return strokes[strokeNum - 1]?.toPos || strokes[strokeNum - 1]?.fromPos || null;
   }, [strokes, strokeNum]);
 
   const clubOptions = useMemo(
@@ -111,7 +111,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
       case PosOptionMethods.LAST_SHOT:
         return prevStroke?.toPos ? "buttonPrimary" : "buttonUnsatisfied";
     }
-  }, [fromPosSetMethod, fromPos]);
+  }, [fromPosSetMethod, fromPos, prevStroke?.toPos]);
 
   const toPosButtonText = useMemo(() => {
     if (props.stroke.toPosSetMethod === PosOptionMethods.GPS) {
@@ -385,7 +385,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               selectedValue={props.stroke.toPosSetMethod}
               options={props.toPosOptions}
               onSelectChange={viewLogic.setToPosMethod}
-              onClick={props.onToPosOnClick}
+              onClick={props.onToPosClick}
               buttonColor={viewLogic.toPosButtonColor}
             />
           </Box>

@@ -1,6 +1,6 @@
 /// <reference types="@types/google.maps" />
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useInitialiseMap } from "./useInitialiseMap";
 import { useUpdateUserPin } from "./useUpdateUserPin";
 import { Hole } from "model/Hole";
@@ -51,10 +51,7 @@ const createRotatedIcon = (
 };
 
 function useViewLogic(props: MapProps, map: google.maps.Map | null) {
-  const {
-    holeOrientation = "vertical",
-    hole: { strokes },
-  } = props;
+  const { holeOrientation = "vertical" } = props;
   // todo: optimisation
   const teePos = selectCurrentTeeFromHole(props.hole)?.pos;
   const pinPos = selectCurrentPinFromHole(props.hole);

@@ -23,7 +23,7 @@ type GeneratedPropKeys =
   | "distSinceFromPos" 
   | "onFromPosClick"
   | "mapClickAction"
-  | "onToPosOnClick"
+  | "onToPosClick"
   | "onMapClick"
   | "acceptCaddySuggestion";
 
@@ -137,7 +137,7 @@ export function withSingleStrokeDependencies(
           }
         }
       },
-      [toPosSetMethod, pinPlayedPin]
+      [toPosSetMethod],
     );
 
     const prevStroke = useMemo(() => {
@@ -182,9 +182,8 @@ export function withSingleStrokeDependencies(
       switch (fromPosSetMethod) {
         case PosOptionMethods.LAST_SHOT:
           setFromPosition(strokeNum);
-          if (strokeNum >= 2) {
-            // Bug: at the time of calling, `setToPosition` updates the state based on the unupdated from position
-            // setToPosition(strokeNum - 1);
+          if (strokeNum >= 2 && prevStroke && currentPosition) {
+            setPendingPos(["to", currentPosition, strokeNum - 1]);
           }
           break;
         case PosOptionMethods.GPS:
@@ -197,7 +196,7 @@ export function withSingleStrokeDependencies(
         case PosOptionMethods.TEE:
         // skip
       }
-    }, [strokeNum, fromPosSetMethod, setFromPosition]);
+    }, [strokeNum, fromPosSetMethod, setFromPosition, prevStroke, currentPosition]);
   
 
     // todo: decide if buttonText is worked out here or in xPosButtonText
@@ -276,7 +275,7 @@ export function withSingleStrokeDependencies(
           setPendingPosMethod(null);
         }
       },
-      [pendingPosMethod?.[0], pendingPosMethod?.[1]]
+      [pendingPosMethod?.[0], pendingPosMethod?.[1]],
     );
   
     const [pendingStrokeType, setPendingStrokeType] = useState<StrokeType | null>(
@@ -308,7 +307,7 @@ export function withSingleStrokeDependencies(
       [pendingPos?.[0], pendingPos?.[1], pendingPos?.[2]]
     );
     
-    const onToPosOnClick = useCallback(() => {
+    const onToPosClick = useCallback(() => {
       switch (toPosSetMethod) {
         case PosOptionMethods.GPS:
           setToPosition(strokeNum);
@@ -347,7 +346,7 @@ export function withSingleStrokeDependencies(
       mapClickAction,
       pinPlayedPin,
       teePlayedTee,
-      onToPosOnClick,
+      onToPosClick,
       onMapClick: mapClickAction ? onMapClick : undefined,
       acceptCaddySuggestion,
       clubs: [
