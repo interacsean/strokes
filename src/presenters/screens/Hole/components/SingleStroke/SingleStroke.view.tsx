@@ -18,8 +18,8 @@ import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
 
 export type SingleStrokeViewProps = {
   hole: Hole;
-  pinPlayedPin: LatLng | undefined;
-  teePlayedTee: Tee | undefined
+  pinPlayedPos: LatLng | undefined;
+  teePlayedPos: Tee | undefined
   strokeNum: number;
   stroke: StrokeWithDerivedFields;
   strokes: StrokeWithDerivedFields[];
@@ -336,7 +336,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
                   ) : !props.caddySuggestions?.[0]?.club &&
                     !props.caddySuggestions?.[0]?.clubDistance &&
                     props.currentPosition &&
-                    !props.pinPlayedPin ? (
+                    !props.pinPlayedPos ? (
                     <em>Set a target (todo: always uses Pin)</em>
                   ) : (
                     <em>Caddie N/A</em>

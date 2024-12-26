@@ -18,8 +18,8 @@ type GeneratedPropKeys =
   | "toLies"
   | "caddySuggestions"
   | "distToTarget"
-  | "pinPlayedPin"
-  | "teePlayedTee" 
+  | "pinPlayedPos"
+  | "teePlayedPos" 
   | "distSinceFromPos" 
   | "onFromPosClick"
   | "mapClickAction"
@@ -81,12 +81,12 @@ export function withSingleStrokeDependencies(
     );
 
     // todo: consider moving into selector
-    const pinPlayedPin = useMemo(
+    const pinPlayedPos = useMemo(
       () => (pinPlayed ? pins[pinPlayed] : Object.values(pins)[0]),
       [pins, pinPlayed]
     );
 
-    const teePlayedTee = useMemo(
+    const teePlayedPos = useMemo(
       () => (teePlayed ? tees[teePlayed] : Object.values(tees)[0]),
       [tees, teePlayed]
     );
@@ -98,8 +98,8 @@ export function withSingleStrokeDependencies(
           switch (fromPosSetMethod) {
             case PosOptionMethods.TEE:
               // todo: determine the correct fromTee
-              if (teePlayedTee?.pos) {
-                setFromPosition(strokeNum, teePlayedTee?.pos);
+              if (teePlayedPos?.pos) {
+                setFromPosition(strokeNum, teePlayedPos?.pos);
               }
               break;
             case PosOptionMethods.CUSTOM:
@@ -126,10 +126,10 @@ export function withSingleStrokeDependencies(
               setMapClickAction("to");
               break;
             case PosOptionMethods.HOLE:
-              setToPosition(strokeNum, pinPlayedPin);
+              setToPosition(strokeNum, pinPlayedPos);
               break;
             case PosOptionMethods.NEAR_PIN:
-              setToPosition(strokeNum, pinPlayedPin);
+              setToPosition(strokeNum, pinPlayedPos);
               // todo:
               // 2) queing up change as this call overwrites the previous update since it is paired with the current course
               // if (!toLie) selectToLie(strokeNum, Lie.GREEN);
@@ -204,12 +204,12 @@ export function withSingleStrokeDependencies(
     const toPosOptions = useMemo(() => {
       const to = [PosOptions[PosOptionMethods.GPS]];
       to.push(PosOptions[PosOptionMethods.CUSTOM]);
-      if (pinPlayedPin) {
+      if (pinPlayedPos) {
         to.push(PosOptions[PosOptionMethods.NEAR_PIN]);
         to.push(PosOptions[PosOptionMethods.HOLE]);
       }
       return to;
-    }, [pinPlayedPin]);
+    }, [pinPlayedPos]);
 
     const fromLies = useMemo(() => {
       if (strokeNum === 1) {
@@ -224,19 +224,19 @@ export function withSingleStrokeDependencies(
     }, [strokeNum]);
 
     const caddySuggestions = useMemo(() => {
-      return fromPos && pinPlayedPin && clubStats
+      return fromPos && pinPlayedPos && clubStats
         ? calculateCaddySuggestions(
             clubStats,
             fromLie as Lie,
             fromPos,
-            pinPlayedPin
+            pinPlayedPos
           )
         : [];
-    }, [fromPos, fromLie, pinPlayedPin, clubStats]);
+    }, [fromPos, fromLie, pinPlayedPos, clubStats]);
 
     const distToTarget =
-      fromPos && pinPlayedPin
-        ? calculateDistanceBetweenPositions(fromPos, pinPlayedPin)
+      fromPos && pinPlayedPos
+        ? calculateDistanceBetweenPositions(fromPos, pinPlayedPos)
         : null;
 
     const distSinceFromPos = useMemo(() => {
@@ -345,8 +345,8 @@ export function withSingleStrokeDependencies(
       distSinceFromPos,
       onFromPosClick,
       mapClickAction,
-      pinPlayedPin,
-      teePlayedTee,
+      pinPlayedPos,
+      teePlayedPos,
       onToPosClick,
       onMapClick: mapClickAction ? onMapClick : undefined,
       acceptCaddySuggestion,
