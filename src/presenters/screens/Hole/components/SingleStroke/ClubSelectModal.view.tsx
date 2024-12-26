@@ -2,7 +2,6 @@ import { Button, Flex } from "@chakra-ui/react";
 import { Club } from "model/Club";
 import { ClubStats } from "model/ClubStats";
 import { Modal } from "presenters/components/Modal/Modal";
-import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { useMemo } from "react";
 
 type ClubSelectModalProps = {
@@ -44,7 +43,7 @@ export function ClubSelectModal(props: ClubSelectModalProps) {
           const distMin = props.clubStats[club.club]?.Full?.sd1Distances[0];
           const distMax = props.clubStats[club.club]?.Full?.sd1Distances[1];
           const distMed = props.clubStats[club.club]?.Full?.medianDistance;
-          const slx = club.club === closestClub ? <ArrowForwardIcon /> : "";
+          const slx = club.club === closestClub ? `✨` : "";
           return (
             <Button
               key={club.club}
@@ -56,11 +55,11 @@ export function ClubSelectModal(props: ClubSelectModalProps) {
               {club.club}
               {distMed && (
                 <>
-                  {" "}
-                  - {distMin ? `${distMin}-[` : ""}
+                  {" - "}
                   {distMed}
                   {props.distanceUnit}
-                  {distMax ? `]-${distMax}` : ""}
+                  {" "}
+                  {(distMin && distMax) && `(${distMin}-${distMax}${props.distanceUnit})`}
                 </>
               )}
             </Button>
