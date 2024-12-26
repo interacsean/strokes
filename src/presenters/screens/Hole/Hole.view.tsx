@@ -185,11 +185,16 @@ export function HoleView(props: HoleViewProps) {
   if (DEBUG) console.log({ props, viewLogic });
 
   const currentStroke = props.preprocessedStrokes[viewLogic.activeStroke - 1];
-  const nextStrokeIsToAdd = viewLogic.activeStroke === props.preprocessedStrokes.length;
-  const canMoveNextStroke = currentStroke.toPosSetMethod !== PosOptionMethods.HOLE && currentStroke.toPos;
+  const nextStrokeIsToAdd =
+    viewLogic.activeStroke === props.preprocessedStrokes.length;
+  const canMoveNextStroke =
+    currentStroke.toPosSetMethod !== PosOptionMethods.HOLE &&
+    currentStroke.toPos;
   const canMovePrevStroke = viewLogic.activeStroke > 1;
-  const canFinish = props.hole.holeNum === props.course.holes.length &&
-    props.preprocessedStrokes[props.preprocessedStrokes.length - 1].toPosSetMethod === PosOptionMethods.HOLE;
+  const canFinish =
+    props.hole.holeNum === props.course.holes.length &&
+    props.preprocessedStrokes[props.preprocessedStrokes.length - 1]
+      .toPosSetMethod === PosOptionMethods.HOLE;
 
   return (
     <Container>
@@ -326,9 +331,7 @@ export function HoleView(props: HoleViewProps) {
                   <SingleStroke
                     hole={props.hole}
                     strokeNum={viewLogic.activeStroke}
-                    stroke={
-                      currentStroke
-                    }
+                    stroke={currentStroke}
                     strokes={props.preprocessedStrokes}
                     selectFromLie={props.selectStrokeFromLie}
                     selectToLie={props.selectStrokeToLie}
@@ -352,32 +355,50 @@ export function HoleView(props: HoleViewProps) {
                   boxShadow="0 -2px 4px rgba(0, 0, 0, 0.1)"
                 >
                   <Flex flex={1} justifyContent={"space-between"} columnGap={2}>
-                    <Button variant={props.hole.holeNum > 1 ? "ghost" : "disabledGhost"} px={2.5} onClick={props.prevHole}>
+                    <Button
+                      variant={
+                        props.hole.holeNum > 1 ? "ghost" : "disabledGhost"
+                      }
+                      px={2.5}
+                      onClick={props.prevHole}
+                    >
                       <ChevronLeftIcon boxSize={6} />
-                        {props.hole.holeNum > 1 && (
-                          <>
-                            {props.hole.holeNum - 1}{ordinalIndicator(props.hole.holeNum - 1)}
-                          </>
-                        )}
+                      {props.hole.holeNum > 1 && (
+                        <>
+                          {props.hole.holeNum - 1}
+                          {ordinalIndicator(props.hole.holeNum - 1)}
+                        </>
+                      )}
                     </Button>
                     <Button
                       variant={!canMovePrevStroke ? "disabledGhost" : "ghost"}
                       disabled={!canMovePrevStroke}
                       px={2}
-                      onClick={() => canMovePrevStroke && 
+                      onClick={() =>
+                        canMovePrevStroke &&
                         viewLogic.setActiveStroke(viewLogic.activeStroke - 1)
                       }
                     >
                       <ChevronLeftIcon boxSize={6} />
                     </Button>
                   </Flex>
-                  <Flex flex={0} justifyContent={"flex-center"} style={{ whiteSpace: 'nowrap'}}>
+                  <Flex
+                    flex={0}
+                    justifyContent={"flex-center"}
+                    style={{ whiteSpace: "nowrap" }}
+                  >
                     <Text mx={2}>Shot {viewLogic.activeStroke}</Text>
                   </Flex>
                   <Flex flex={1} justifyContent={"space-between"}>
                     <Button
                       disabled={!canMoveNextStroke}
-                      variant={!canMoveNextStroke ? 'disabledGhost' : (nextStrokeIsToAdd ? "primary" : "ghost")}
+                      variant={
+                        !canMoveNextStroke
+                          ? "disabledGhost"
+                          : nextStrokeIsToAdd
+                          ? "primary"
+                          : "ghost"
+                      }
                       px={2}
                       onClick={() => {
                         if (canMoveNextStroke) {
@@ -386,7 +407,7 @@ export function HoleView(props: HoleViewProps) {
                             ? props.addStroke()
                             : viewLogic.setActiveStroke(
                                 viewLogic.activeStroke + 1
-                              )
+                              );
                         }
                       }}
                     >
@@ -407,7 +428,9 @@ export function HoleView(props: HoleViewProps) {
                       </Button>
                     ) : (
                       <Button variant="ghost" px={2.5} onClick={props.nextHole}>
-                        {props.hole.holeNum + 1}{ordinalIndicator(props.hole.holeNum + 1)}<ChevronRightIcon boxSize={6} />
+                        {props.hole.holeNum + 1}
+                        {ordinalIndicator(props.hole.holeNum + 1)}
+                        <ChevronRightIcon boxSize={6} />
                       </Button>
                     )}
                   </Flex>
