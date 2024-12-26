@@ -288,6 +288,66 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
         <Flex flexDir="column" rowGap={3}>
           <Flex flexDir="row" alignItems={"center"} columnGap={4}>
             <Text variant="inputLabel" minWidth={inputLabelWidth}>
+              From
+            </Text>
+            {props.stroke.fromPosSetMethod === PosOptionMethods.LAST_SHOT ? (
+              <Flex flex={1} flexDir={"row"} justifyContent={"center"} alignItems={"baseline"}>
+                <Text variant="text" fontWeight="medium">As it lies</Text>&nbsp;
+                <Button variant="link" position="relative">
+                  <select
+                    onChange={(e) => {
+                      viewLogic.setFromPosMethod(e.target.value);
+                    }}
+                    value={props.stroke.fromPosSetMethod}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      opacity: 0,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {props.fromPosOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <Text variant="text" fontWeight="medium">Drop/Move</Text>
+                </Button>
+              </Flex>
+            ) : (
+              <>
+                <Flex flex={1} flexDir={"row"}>
+                  <DropdownButton
+                    buttonText={viewLogic.fromPosButtonText[0]}
+                    buttonTextSmall={viewLogic.fromPosButtonText[1]}
+                    selectedValue={props.stroke.fromPosSetMethod}
+                    options={props.fromPosOptions}
+                    onSelectChange={viewLogic.setFromPosMethod}
+                    onClick={props.onFromPosClick}
+                    buttonColor={viewLogic.fromPosButtonColor}
+                  />
+                </Flex>
+                <Box flex={1}>
+                  <CustomModalSelect
+                    selectedText={
+                      props.stroke.fromLie
+                        ? shortLieNames[props.stroke.fromLie as Lie] ||
+                          props.stroke.fromLie
+                        : undefined
+                    }
+                    placeholder="Select Lie"
+                    onOpen={() => viewLogic.setActiveModal(Modals.FromLie)}
+                  />
+                </Box>
+              </>
+            )}
+          </Flex>
+          <Flex flexDir="row" alignItems={"center"} columnGap={4}>
+            <Text variant="inputLabel" minWidth={inputLabelWidth}>
               Shot
             </Text>
             <Box flex={1}>
@@ -345,34 +405,6 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               </Button>
             </Flex>
           )}
-        </Flex>
-        <Flex flexDir="row" alignItems={"center"} columnGap={4}>
-          <Text variant="inputLabel" minWidth={inputLabelWidth}>
-            From
-          </Text>
-          <Flex flex={1} flexDir={"row"}>
-            <DropdownButton
-              buttonText={viewLogic.fromPosButtonText[0]}
-              buttonTextSmall={viewLogic.fromPosButtonText[1]}
-              selectedValue={props.stroke.fromPosSetMethod}
-              options={props.fromPosOptions}
-              onSelectChange={viewLogic.setFromPosMethod}
-              onClick={props.onFromPosClick}
-              buttonColor={viewLogic.fromPosButtonColor}
-            />
-          </Flex>
-          <Box flex={1}>
-            <CustomModalSelect
-              selectedText={
-                props.stroke.fromLie
-                  ? shortLieNames[props.stroke.fromLie as Lie] ||
-                    props.stroke.fromLie
-                  : undefined
-              }
-              placeholder="Select Lie"
-              onOpen={() => viewLogic.setActiveModal(Modals.FromLie)}
-            />
-          </Box>
         </Flex>
         <Flex flexDir="row" alignItems={"center"} columnGap={4}>
           <Text variant="inputLabel" minWidth={inputLabelWidth}>

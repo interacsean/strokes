@@ -109,7 +109,7 @@ export function withSingleStrokeDependencies(
               // todo: show drop stuff?
               break;
             case PosOptionMethods.LAST_SHOT:
-              setFromPosition(strokeNum);
+              setFromPosition(strokeNum, prevStroke?.toPos);
               break;
           }
         }
@@ -169,10 +169,12 @@ export function withSingleStrokeDependencies(
           );
         }
       }
+      if (strokeNum > 1) {
+        fo.push(PosOptions[PosOptionMethods.LAST_SHOT]);
+      }
       fo.push(PosOptions[PosOptionMethods.GPS]);
       // todo: exclude if last stroke's toLie was hazard/water
       if (strokeNum > 1) {
-        fo.push(PosOptions[PosOptionMethods.LAST_SHOT]);
         fo.push(PosOptions[PosOptionMethods.DROP]);
       }
       fo.push(PosOptions[PosOptionMethods.CUSTOM]);
