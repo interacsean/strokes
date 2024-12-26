@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { SingleStrokeView, SingleStrokeViewProps } from "./SingleStroke.view";
 import { Club } from "model/Club";
-import { PosOptionMethods, PosOptions } from "model/PosOptions";
+import { PosOption, PosOptionMethods, PosOptions } from "model/PosOptions";
 import { Lie, TeeLies } from "model/Lie";
 import { calculateCaddySuggestions } from "usecases/stroke/calculateCaddySuggestions";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
@@ -150,7 +150,7 @@ export function withSingleStrokeDependencies(
     }, [strokeNum, strokes]);
 
     const fromPosOptions = useMemo(() => {
-      const fo = [PosOptions[PosOptionMethods.GPS]];
+      const fo: PosOption[] = [];
       if (strokeNum === 1) {
         const teeNames = Object.keys(tees);
         if (teeNames.length === 1) {
@@ -169,12 +169,13 @@ export function withSingleStrokeDependencies(
           );
         }
       }
+      fo.push(PosOptions[PosOptionMethods.GPS]);
       // todo: exclude if last stroke's toLie was hazard/water
       if (strokeNum > 1) {
         fo.push(PosOptions[PosOptionMethods.LAST_SHOT]);
+        fo.push(PosOptions[PosOptionMethods.DROP]);
       }
       fo.push(PosOptions[PosOptionMethods.CUSTOM]);
-      fo.push(PosOptions[PosOptionMethods.DROP]);
       return fo;
     }, [tees, strokeNum]);
 
