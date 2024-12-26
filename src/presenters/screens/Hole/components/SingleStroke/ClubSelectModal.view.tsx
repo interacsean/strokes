@@ -1,6 +1,7 @@
 import { Button, Flex } from "@chakra-ui/react";
 import { Club } from "model/Club";
 import { ClubStats } from "model/ClubStats";
+import { StrokeType } from "model/StrokeType";
 import { Modal } from "presenters/components/Modal/Modal";
 import { useMemo } from "react";
 
@@ -23,8 +24,8 @@ export function ClubSelectModal(props: ClubSelectModalProps) {
     let closestClub = Club.D;
     let closestDist = 9999;
     props.clubs.forEach((club) => {
-      const distMax = props.clubStats[club.club]?.Full?.sd1Distances[1];
-      const distMed = props.clubStats[club.club]?.Full?.medianDistance;
+      const distMax = props.clubStats[club.club]?.[StrokeType.FULL]?.sd1Distances[1];
+      const distMed = props.clubStats[club.club]?.[StrokeType.FULL]?.medianDistance;
       if ((distMax || distMed || 0) < distToTarget) return;
       const dist = distMed || 0;
       const diff = Math.abs(dist - distToTarget);
@@ -40,9 +41,9 @@ export function ClubSelectModal(props: ClubSelectModalProps) {
     <Modal onClose={props.cancel}>
       <Flex justifyContent="flex-start" mb={4} flexDir="column">
         {props.clubs.map((club) => {
-          const distMin = props.clubStats[club.club]?.Full?.sd1Distances[0];
-          const distMax = props.clubStats[club.club]?.Full?.sd1Distances[1];
-          const distMed = props.clubStats[club.club]?.Full?.medianDistance;
+          const distMin = props.clubStats[club.club]?.[StrokeType.FULL]?.sd1Distances[0];
+          const distMax = props.clubStats[club.club]?.[StrokeType.FULL]?.sd1Distances[1];
+          const distMed = props.clubStats[club.club]?.[StrokeType.FULL]?.medianDistance;
           const slx = club.club === closestClub ? `✨` : "";
           return (
             <Button

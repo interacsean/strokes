@@ -15,6 +15,7 @@ import { Lie, shortLieNames } from "model/Lie";
 import Map from "presenters/components/Map/Map";
 import { ClubStats } from "model/ClubStats";
 import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
+import { StrokeTypeLabels } from "model/StrokeType";
 
 export type SingleStrokeViewProps = {
   hole: Hole;
@@ -363,7 +364,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             </Box>
             <Box flex={1}>
               <CustomModalSelect
-                selectedText={props.stroke.strokeType}
+                selectedText={props.stroke.strokeType ? StrokeTypeLabels[props.stroke.strokeType] : undefined}
                 placeholder="Club"
                 onOpen={() => viewLogic.setActiveModal(Modals.Shot)}
               />

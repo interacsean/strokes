@@ -46,18 +46,18 @@ export function calculateCaddySuggestions(
     .map((clubStats) => ({
       club: clubStats[0] as Club,
       clubStats: clubStats[1],
-      deltaLow: clubStats[1].Full
-        ? distanceToTarget - clubStats[1].Full.sd1Distances[0]
+      deltaLow: clubStats[1][StrokeType.FULL]
+        ? distanceToTarget - clubStats[1][StrokeType.FULL].sd1Distances[0]
         : 0,
-      deltaHigh: clubStats[1].Full
-        ? distanceToTarget - clubStats[1].Full.sd1Distances[1]
+      deltaHigh: clubStats[1][StrokeType.FULL]
+        ? distanceToTarget - clubStats[1][StrokeType.FULL].sd1Distances[1]
         : 0,
-      deltaAvg: clubStats[1].Full
-        ? distanceToTarget - clubStats[1].Full.medianDistance
+      deltaAvg: clubStats[1][StrokeType.FULL]
+        ? distanceToTarget - clubStats[1][StrokeType.FULL].medianDistance
         : 0,
     }))
     .filter((clubStats) => {
-      if (!clubStats.clubStats.Full) return false;
+      if (!clubStats.clubStats[StrokeType.FULL]) return false;
       // todo: better way to rule out clubs based on lie / preferences
       if (
         lie &&
@@ -99,11 +99,11 @@ export function calculateCaddySuggestions(
       return deltaResult;
     })
     .map(({ club, clubStats, deltaAvg, deltaLow, deltaHigh }) => {
-      const recStrokeType = !clubStats.Full
+      const recStrokeType = !clubStats[StrokeType.FULL]
         ? StrokeType.FULL // shouldn't happen as we've filtered out clubs without full stats
         : deltaLow > 0
         ? StrokeType.FULL
-        : -deltaAvg / clubStats.Full?.medianDistance < 0.3
+        : -deltaAvg / clubStats[StrokeType.FULL]?.medianDistance < 0.3
         ? StrokeType.THREE_QTR
         : lie === Lie.BUNKER && [Club.SW, Club.LW, Club.HLW].includes(club)
         ? StrokeType.FLOP
@@ -113,7 +113,7 @@ export function calculateCaddySuggestions(
         ? StrokeType.CHIP
         : StrokeType.PITCH;
 
-      if (clubStats.Full) {
+      if (clubStats[StrokeType.FULL]) {
         return {
           club,
           // todo: return Pitch/Chip distances?
