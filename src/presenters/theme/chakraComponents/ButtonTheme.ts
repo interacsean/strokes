@@ -19,6 +19,10 @@ const ButtonTheme = {
       backgroundColor: "transparent",
       color: "primary.500",
     },
+    disabledGhost: {
+      backgroundColor: "transparent",
+      color: "gray.300",
+    },
     ghost: {},
   },
   defaultProps: {

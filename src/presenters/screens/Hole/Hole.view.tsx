@@ -33,6 +33,7 @@ import { Course } from "model/Course";
 import Map from "presenters/components/Map/Map";
 import { ClubStats } from "model/ClubStats";
 import { ScoreCard } from "../../components/Scorecard/ScoreCard.view";
+import { ordinalIndicator } from "presenters/utils/ordinalIndicator";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -183,6 +184,13 @@ export function HoleView(props: HoleViewProps) {
   const viewLogic = useHoleViewLogic(props);
   if (DEBUG) console.log({ props, viewLogic });
 
+  const currentStroke = props.preprocessedStrokes[viewLogic.activeStroke - 1];
+  const nextStrokeIsToAdd = viewLogic.activeStroke === props.preprocessedStrokes.length;
+  const canMoveNextStroke = currentStroke.toPosSetMethod !== PosOptionMethods.HOLE && currentStroke.toPos;
+  const canMovePrevStroke = viewLogic.activeStroke > 1;
+  const canFinish = props.hole.holeNum === props.course.holes.length &&
+    props.preprocessedStrokes[props.preprocessedStrokes.length - 1].toPosSetMethod === PosOptionMethods.HOLE;
+
   return (
     <Container>
       <Tabs
@@ -319,7 +327,7 @@ export function HoleView(props: HoleViewProps) {
                     hole={props.hole}
                     strokeNum={viewLogic.activeStroke}
                     stroke={
-                      props.preprocessedStrokes[viewLogic.activeStroke - 1]
+                      currentStroke
                     }
                     strokes={props.preprocessedStrokes}
                     selectFromLie={props.selectStrokeFromLie}
@@ -343,26 +351,36 @@ export function HoleView(props: HoleViewProps) {
                   alignItems="center"
                   boxShadow="0 -2px 4px rgba(0, 0, 0, 0.1)"
                 >
-                  <Button variant="ghost" px={2} onClick={props.prevHole}>
-                    <ChevronLeftIcon boxSize={6} />
-                  </Button>
-                  <Flex flex={1} justifyContent="center" alignItems="center">
+                  <Flex flex={1} justifyContent={"space-between"} columnGap={2}>
+                    <Button variant={props.hole.holeNum > 1 ? "ghost" : "disabledGhost"} px={2.5} onClick={props.prevHole}>
+                      <ChevronLeftIcon boxSize={6} />
+                        {props.hole.holeNum > 1 && (
+                          <>
+                            {props.hole.holeNum - 1}{ordinalIndicator(props.hole.holeNum - 1)}
+                          </>
+                        )}
+                    </Button>
                     <Button
-                      variant="ghost"
+                      variant={!canMovePrevStroke ? "disabledGhost" : "ghost"}
+                      disabled={!canMovePrevStroke}
                       px={2}
-                      onClick={() =>
+                      onClick={() => canMovePrevStroke && 
                         viewLogic.setActiveStroke(viewLogic.activeStroke - 1)
                       }
                     >
                       <ChevronLeftIcon boxSize={6} />
                     </Button>
-                    <Text>Shot {viewLogic.activeStroke}</Text>
-                    {props.preprocessedStrokes[viewLogic.activeStroke - 1]
-                      .toPosSetMethod !== PosOptionMethods.HOLE && (
-                      <Button
-                        variant="ghost"
-                        px={2}
-                        onClick={() =>
+                  </Flex>
+                  <Flex flex={0} justifyContent={"flex-center"} style={{ whiteSpace: 'nowrap'}}>
+                    <Text mx={2}>Shot {viewLogic.activeStroke}</Text>
+                  </Flex>
+                  <Flex flex={1} justifyContent={"space-between"}>
+                    <Button
+                      disabled={!canMoveNextStroke}
+                      variant={!canMoveNextStroke ? 'disabledGhost' : (nextStrokeIsToAdd ? "primary" : "ghost")}
+                      px={2}
+                      onClick={() => {
+                        if (canMoveNextStroke) {
                           viewLogic.activeStroke ===
                           props.preprocessedStrokes.length
                             ? props.addStroke()
@@ -370,25 +388,29 @@ export function HoleView(props: HoleViewProps) {
                                 viewLogic.activeStroke + 1
                               )
                         }
+                      }}
+                    >
+                      {nextStrokeIsToAdd && canMoveNextStroke ? (
+                        "Next"
+                      ) : (
+                        <ChevronRightIcon boxSize={6} />
+                      )}
+                    </Button>
+                    {props.hole.holeNum === props.course.holes.length ? (
+                      <Button
+                        variant={canFinish ? "primary" : "disabledGhost"}
+                        px={3}
+                        mr={2}
+                        onClick={canFinish ? props.finishRound : undefined}
                       >
-                        {viewLogic.activeStroke ===
-                        props.preprocessedStrokes.length ? (
-                          "+"
-                        ) : (
-                          <ChevronRightIcon boxSize={6} />
-                        )}
+                        Finish
+                      </Button>
+                    ) : (
+                      <Button variant="ghost" px={2.5} onClick={props.nextHole}>
+                        {props.hole.holeNum + 1}{ordinalIndicator(props.hole.holeNum + 1)}<ChevronRightIcon boxSize={6} />
                       </Button>
                     )}
                   </Flex>
-                  {props.course.currentHoleNum === props.course.holes.length ? (
-                    <Button variant="ghost" px={2} onClick={props.finishRound}>
-                      Finish
-                    </Button>
-                  ) : (
-                    <Button variant="ghost" px={2} onClick={props.nextHole}>
-                      <ChevronRightIcon boxSize={6} />
-                    </Button>
-                  )}
                 </Flex>
               </StrokesContainer>
             </TabPanel>
