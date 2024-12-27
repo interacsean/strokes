@@ -59,6 +59,7 @@ export function withSingleStrokeDependencies(
       setToPosMethod,
       selectStrokeType,
       selectClub,
+      selectToLie,
       currentPosition,
     } = props;
 
@@ -129,10 +130,8 @@ export function withSingleStrokeDependencies(
               setToPosition(strokeNum, pinPlayedPos);
               break;
             case PosOptionMethods.NEAR_PIN:
-              setToPosition(strokeNum, pinPlayedPos);
-              // todo:
-              // 2) queing up change as this call overwrites the previous update since it is paired with the current course
-              // if (!toLie) selectToLie(strokeNum, Lie.GREEN);
+              setPendingPos(["to", pinPlayedPos, strokeNum] as ["to", LatLng, number]);
+              selectToLie(strokeNum, Lie.GREEN);
               break;
           }
         }
