@@ -8,6 +8,7 @@ import { auVicMelbourneOakleigh } from "data/courses/au_vic_melbourne_oakleigh";
 import { auVicMelbourneRiverside } from "data/courses/au_vic_melbourne_riverside";
 import { auVicMelbourneRoyalPark } from "data/courses/au_vic_melbourne_royalPark";
 import { auVicMelbourneWestgate } from "data/courses/au_vic_melbourne_westgate";
+import { auVicGippslandMorwellGolfClub } from "data/courses/au_vic_gippsland_morwellGolfClub";
 import { useCourseState } from "state/course/courseState";
 import newCourse from "usecases/course/newCourse";
 
@@ -26,6 +27,7 @@ export function withChooseCourseDependencies(
       auVicMelbourneWestgate,
       auVicMelbourneFlagstaffTest,
       auVicMelbourneDocklandsTest,
+      auVicGippslandMorwellGolfClub,
     ];
 
     const { setState: setCourseState, state: courseState } = useCourseState();
