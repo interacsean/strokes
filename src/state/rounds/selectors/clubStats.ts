@@ -89,8 +89,8 @@ export const selectClubStats = (state: RoundsState): ClubStats => {
     },
     [Club["6I"]]: {
       [StrokeType.FULL]: {
-        medianDistance: 127,
-        sd1Distances: [122, 132] as [number, number],
+        medianDistance: 132,
+        sd1Distances: [122, 142] as [number, number],
         sd2Distances: [110, 145] as [number, number],
         sd1Side: [5, 5] as [number, number],
         sd2Side: [7, 7] as [number, number],
@@ -105,8 +105,8 @@ export const selectClubStats = (state: RoundsState): ClubStats => {
     },
     [Club["7I"]]: {
       [StrokeType.FULL]: {
-        medianDistance: 118,
-        sd1Distances: [114, 124] as [number, number],
+        medianDistance: 123,
+        sd1Distances: [116, 130] as [number, number],
         sd2Distances: [100, 135] as [number, number],
         sd1Side: [5, 5] as [number, number],
         sd2Side: [7, 7] as [number, number],
@@ -121,9 +121,9 @@ export const selectClubStats = (state: RoundsState): ClubStats => {
     },
     [Club["8I"]]: {
       [StrokeType.FULL]: {
-        medianDistance: 106,
-        sd1Distances: [101, 111] as [number, number],
-        sd2Distances: [90, 125] as [number, number],
+        medianDistance: 118,
+        sd1Distances: [107, 124] as [number, number],
+        sd2Distances: [90, 130] as [number, number],
         sd1Side: [4, 4] as [number, number],
         sd2Side: [5, 5] as [number, number],
         strikeQuality: {
@@ -137,9 +137,9 @@ export const selectClubStats = (state: RoundsState): ClubStats => {
     },
     [Club["9I"]]: {
       [StrokeType.FULL]: {
-        medianDistance: 101,
-        sd1Distances: [96, 106] as [number, number],
-        sd2Distances: [96, 106] as [number, number],
+        medianDistance: 110,
+        sd1Distances: [96, 115] as [number, number],
+        sd2Distances: [96, 118] as [number, number],
         sd1Side: [4, 4] as [number, number],
         sd2Side: [5, 5] as [number, number],
         strikeQuality: {},
@@ -147,9 +147,9 @@ export const selectClubStats = (state: RoundsState): ClubStats => {
     },
     [Club["PW"]]: {
       [StrokeType.FULL]: {
-        medianDistance: 90,
-        sd1Distances: [85, 95] as [number, number],
-        sd2Distances: [80, 110] as [number, number],
+        medianDistance: 100,
+        sd1Distances: [90, 110] as [number, number],
+        sd2Distances: [85, 115] as [number, number],
         sd1Side: [3, 3] as [number, number],
         sd2Side: [4, 4] as [number, number],
         strikeQuality: {
