@@ -196,7 +196,7 @@ export function HoleView(props: HoleViewProps) {
       .toPosSetMethod === PosOptionMethods.HOLE;
   const canFinish = timeForNextHole &&
     props.hole.holeNum === props.course.holes.length;
-
+    
   return (
     <Container>
       <Tabs
@@ -230,22 +230,27 @@ export function HoleView(props: HoleViewProps) {
                 Save round data
               </Checkbox>
 
-              <Flex columnGap={2} justifyContent="stretch">
-                <Button
-                  flex={1}
-                  variant="outline"
-                  onClick={viewLogic.cancelLeave}
-                >
-                  Back to round
-                </Button>
+              <Box>
                 <Button
                   flex={1}
                   variant="primary"
                   onClick={viewLogic.handleLeaveClick}
+                  width="100%"
                 >
                   Leave
                 </Button>
-              </Flex>
+              </Box>
+              <hr />
+              <Box>
+                <Button
+                  flex={1}
+                  variant="outline"
+                  onClick={viewLogic.cancelLeave}
+                  width="100%"
+                >
+                  Back to round
+                </Button>
+              </Box>
             </Flex>
           </Flex>
         ) : (
