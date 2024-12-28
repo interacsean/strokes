@@ -1,7 +1,9 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Button, Flex, Text } from "@chakra-ui/react";
+import { CSSProperties } from "react";
 
 type DropdownButtonProps = {
+  buttonStyle?: CSSProperties;
   buttonText: string | undefined;
   buttonTextSmall: string | undefined;
   buttonColor?: string | undefined;
@@ -40,6 +42,7 @@ export function DropdownButton(props: DropdownButtonProps) {
         borderColor={borderColor}
         disabled={disabled}
         borderRight="none"
+        style={props.buttonStyle}
       >
         <Flex flexDir="column">
           <Text variant="button">{props.buttonText}</Text>

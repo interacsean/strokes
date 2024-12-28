@@ -188,13 +188,14 @@ export function HoleView(props: HoleViewProps) {
   const nextStrokeIsToAdd =
     viewLogic.activeStroke === props.preprocessedStrokes.length;
   const canMoveNextStroke =
-    currentStroke.toPosSetMethod !== PosOptionMethods.HOLE &&
-    currentStroke.toPos;
+    currentStroke.toPos &&
+    currentStroke.toLie &&
+    currentStroke.toPosSetMethod !== PosOptionMethods.HOLE;
   const canMovePrevStroke = viewLogic.activeStroke > 1;
-  const canFinish =
-    props.hole.holeNum === props.course.holes.length &&
-    props.preprocessedStrokes[props.preprocessedStrokes.length - 1]
+  const timeForNextHole = props.preprocessedStrokes[props.preprocessedStrokes.length - 1]
       .toPosSetMethod === PosOptionMethods.HOLE;
+  const canFinish = timeForNextHole &&
+    props.hole.holeNum === props.course.holes.length;
 
   return (
     <Container>
@@ -427,7 +428,13 @@ export function HoleView(props: HoleViewProps) {
                         Finish
                       </Button>
                     ) : (
-                      <Button variant="ghost" px={2.5} onClick={props.nextHole}>
+                      <Button
+                        variant={timeForNextHole ? "primary" : "ghost"}
+                        pl={2.5}
+                        pr={1.5}
+                        mr={2.5}
+                        onClick={props.nextHole}
+                      >
                         {props.hole.holeNum + 1}
                         {ordinalIndicator(props.hole.holeNum + 1)}
                         <ChevronRightIcon boxSize={6} />

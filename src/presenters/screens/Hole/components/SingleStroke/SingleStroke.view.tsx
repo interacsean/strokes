@@ -32,6 +32,7 @@ export type SingleStrokeViewProps = {
   selectStrokeType: HoleViewProps["selectStrokeType"];
   setToPosition: (strokeNum: number, optPos?: LatLng) => void;
   setFromPosition: (strokeNum: number, optPos?: LatLng) => void;
+  setPendingPos: (params: ["to" | "from", LatLng, number | undefined]) => void;
   fromPosOptions: PosOption[];
   fromLies: Lie[];
   toPosOptions: PosOption[];
@@ -65,13 +66,15 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const {
     fromPosOptions,
     toPosOptions,
-    stroke: { fromPosSetMethod, fromPos, toPosSetMethod, toPos },
+    stroke: { fromPosSetMethod, fromPos, toPosSetMethod, toPos, fromLie, toLie },
     hole: { strokes },
     setFromPosMethod,
     setToPosMethod,
+    setPendingPos,
     strokeNum,
     prevStroke,
     distSinceFromPos,
+    currentPosition,
   } = props;
 
   const ballMapPos = useMemo(() => {
@@ -114,29 +117,30 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     }
   }, [fromPosSetMethod, fromPos, prevStroke?.toPos]);
 
+  const setGpsText = useMemo(() => {
+    const roundedShotDist = Math.round(props.stroke.strokeDistance || 0);
+    return [
+      roundedShotDist ? `${roundedShotDist}${props.distanceUnit}` : "Set GPS",
+      ...(distSinceFromPos
+        ? [
+            roundedShotDist === distSinceFromPos
+              ? undefined
+              : `update:${distSinceFromPos}${props.distanceUnit}`,
+          ]
+        : []),
+    ];
+  }, [props.stroke.strokeDistance, props.distanceUnit, distSinceFromPos]);
+
   const toPosButtonText = useMemo(() => {
     if (props.stroke.toPosSetMethod === PosOptionMethods.GPS) {
-      const roundedShotDist = Math.round(props.stroke.strokeDistance || 0);
-
-      return [
-        roundedShotDist ? `${roundedShotDist}${props.distanceUnit}` : "Set GPS",
-        ...(distSinceFromPos
-          ? [
-              roundedShotDist === distSinceFromPos
-                ? undefined
-                : `update:${distSinceFromPos}${props.distanceUnit}`,
-            ]
-          : []),
-      ];
+      return setGpsText;
     }
     const matchingTPO = toPosOptions.find(
       (toPosOp) => toPosOp.value === props.stroke.toPosSetMethod
     );
     return [matchingTPO?.buttonText, matchingTPO?.buttonTextSmall];
   }, [
-    props.stroke.strokeDistance,
-    props.distanceUnit,
-    distSinceFromPos,
+    setGpsText,
     toPosOptions,
     props.stroke.toPosSetMethod,
   ]);
@@ -166,8 +170,19 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     (value: string) => {
       setToPosMethod(strokeNum, value as PosOptionMethods);
     },
-    [strokeNum, setToPosMethod]
+    [strokeNum, setToPosMethod],
   );
+
+  const greenViewGpsButtonColor = useMemo(() => {
+    return !toPos ? "buttonUnsatisfied" : "buttonPrimary";
+  }, [toPos]);
+  
+  const greenViewSetToPosFromGps = useCallback(() => {
+    if (currentPosition) {
+      viewSetToPosMethod(PosOptionMethods.GPS);
+      setPendingPos(['to', currentPosition, undefined]);
+    }
+  }, [setPendingPos, currentPosition, viewSetToPosMethod]);
 
   const closeModal = () => setActiveModal(null);
 
@@ -175,8 +190,14 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const showCaddie = () => setShowCaddie(true);
   const hideCaddie = () => setShowCaddie(false);
 
+  const showGreenView = useMemo(() => {
+    return toLie && ([Lie.FRINGE, Lie.GREEN] as string[]).includes(toLie)
+  }, [toLie]);
+
   return {
     fromPosButtonText,
+    setGpsText,
+    greenViewGpsButtonColor,
     setFromPosMethod: viewSetFromPosMethod,
     fromPosButtonColor,
     toPosButtonText,
@@ -190,10 +211,12 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     hideCaddie,
     usingCaddie,
     ballMapPos,
+    showGreenView,
+    greenViewSetToPosFromGps,
   };
 }
 
-const inputLabelWidth = "4.5em";
+const inputLabelWidth = "4em";
 
 export function SingleStrokeView(props: SingleStrokeViewProps) {
   const viewLogic = useSingleStrokeViewLogic(props);
@@ -286,13 +309,13 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           </Text>
           <Text><em>todo</em></Text>
         </Flex> */}
-        <Flex flexDir="column" rowGap={3}>
+        <Flex flexDir="column" rowGap={4}>
           <Flex flexDir="row" alignItems={"center"} columnGap={4}>
             <Text variant="inputLabel" minWidth={inputLabelWidth}>
               From
             </Text>
             {props.stroke.fromPosSetMethod === PosOptionMethods.LAST_SHOT ? (
-              <Flex flex={1} flexDir={"row"} justifyContent={"center"} alignItems={"baseline"}>
+              <Flex flex={1} flexDir={"row"} justifyContent={"center"} alignItems={"baseline"} mb={"2px"}>
                 <Text variant="text" fontWeight="medium">As it lies</Text>&nbsp;
                 <Button variant="link" position="relative">
                   <select
@@ -382,7 +405,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
                   props.caddySuggestions?.[0]?.clubDistance ? (
                     <>
                       {shortClubNames[props.caddySuggestions[0]?.club]} (
-                      {props.caddySuggestions[0]?.strokeType})
+                      {StrokeTypeLabels[props.caddySuggestions[0]?.strokeType]})
                       {props.caddySuggestions[0]?.clubDistance[0] > 0 && (
                         <>
                           {" - "}
@@ -407,34 +430,78 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             </Flex>
           )}
         </Flex>
-        <Flex flexDir="row" alignItems={"center"} columnGap={4}>
-          <Text variant="inputLabel" minWidth={inputLabelWidth}>
-            To
-          </Text>
-          <Box flex={1}>
-            <DropdownButton
-              buttonText={viewLogic.toPosButtonText[0]}
-              buttonTextSmall={viewLogic.toPosButtonText[1]}
-              selectedValue={props.stroke.toPosSetMethod}
-              options={props.toPosOptions}
-              onSelectChange={viewLogic.setToPosMethod}
-              onClick={props.onToPosClick}
-              buttonColor={viewLogic.toPosButtonColor}
-            />
-          </Box>
-          <Box flex={1}>
-            {props.stroke.toPosSetMethod !== PosOptionMethods.HOLE && (
-              <CustomModalSelect
-                selectedText={
-                  props.stroke.toLie
-                    ? shortLieNames[props.stroke.toLie] || props.stroke.toLie
-                    : undefined
-                }
-                placeholder="Select Lie"
-                onOpen={() => viewLogic.setActiveModal(Modals.ToLie)}
-              />
+        <Flex flexDir="column" rowGap={2}>
+          <Flex flexDir="row" alignItems={"center"} columnGap={4}>
+            <Text variant="inputLabel" minWidth={inputLabelWidth}>
+              To
+            </Text>
+            {viewLogic.showGreenView ? (
+              <Flex flex={1} flexDir={"row"} justifyContent={"center"} alignItems={"center"}>
+                <Button
+                  variant="primary"
+                  onClick={() => viewLogic.setToPosMethod(PosOptionMethods.HOLE)}
+                  width="33%" 
+                  borderRightRadius={0}
+                  mr="3px">
+                  Holed
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => viewLogic.setToPosMethod(PosOptionMethods.NEAR_PIN)}
+                  width="33%" 
+                  borderRightRadius={0}
+                  borderLeftRadius={0}
+                  mr="3px"
+                >
+                  Near<br/>Pin
+                </Button>
+                <Box width="calc(33% + 32px)" >
+                  <DropdownButton
+                    buttonStyle={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                    buttonText={viewLogic.setGpsText[0]}
+                    buttonTextSmall={viewLogic.setGpsText[1]}
+                    selectedValue={props.stroke.toPosSetMethod}
+                    options={props.toPosOptions}
+                    onSelectChange={viewLogic.setToPosMethod}
+                    onClick={viewLogic.greenViewSetToPosFromGps}
+                    buttonColor={viewLogic.greenViewGpsButtonColor}
+                  />
+                </Box>
+              </Flex>
+            ) : (
+              <>
+                <Box flex={1}>
+                  <DropdownButton
+                    buttonText={viewLogic.toPosButtonText[0]}
+                    buttonTextSmall={viewLogic.toPosButtonText[1]}
+                    selectedValue={props.stroke.toPosSetMethod}
+                    options={props.toPosOptions}
+                    onSelectChange={viewLogic.setToPosMethod}
+                    onClick={props.onToPosClick}
+                    buttonColor={viewLogic.toPosButtonColor}
+                  />
+                </Box>
+                <Box flex={1}>
+                  {props.stroke.toPosSetMethod !== PosOptionMethods.HOLE && (
+                    <CustomModalSelect
+                      selectedText={
+                        props.stroke.toLie
+                          ? shortLieNames[props.stroke.toLie] || props.stroke.toLie
+                          : undefined
+                      }
+                      placeholder="Select Lie"
+                      onOpen={() => viewLogic.setActiveModal(Modals.ToLie)}
+                    />
+                  )}
+                </Box>
+              </>
             )}
-          </Box>
+          </Flex>
+          {viewLogic.showGreenView && (
+            <Box textAlign={"right"}>
+              <Button variant="link" onClick={() => viewLogic.setActiveModal(Modals.ToLie)}>Off Green</Button>
+            </Box>
+          )}
         </Flex>
 
         {/* <Button

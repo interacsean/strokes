@@ -25,7 +25,8 @@ type GeneratedPropKeys =
   | "mapClickAction"
   | "onToPosClick"
   | "onMapClick"
-  | "acceptCaddySuggestion";
+  | "acceptCaddySuggestion"
+  | "setPendingPos";
 
 type SingleStrokePublicProps = Omit<SingleStrokeViewProps, GeneratedPropKeys>;
 
@@ -98,7 +99,6 @@ export function withSingleStrokeDependencies(
           // fromPosSetMethod and not because of changing shots or holes
           switch (fromPosSetMethod) {
             case PosOptionMethods.TEE:
-              // todo: determine the correct fromTee
               if (teePlayedPos?.pos) {
                 setFromPosition(strokeNum, teePlayedPos?.pos);
               }
@@ -345,6 +345,7 @@ export function withSingleStrokeDependencies(
       distToTarget,
       distSinceFromPos,
       onFromPosClick,
+      setPendingPos,
       mapClickAction,
       pinPlayedPos,
       teePlayedPos,
