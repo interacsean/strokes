@@ -44,23 +44,25 @@ export function ClubSelectModal(props: ClubSelectModalProps) {
           const distMin = props.clubStats[club.club]?.[StrokeType.FULL]?.sd1Distances[0];
           const distMax = props.clubStats[club.club]?.[StrokeType.FULL]?.sd1Distances[1];
           const distMed = props.clubStats[club.club]?.[StrokeType.FULL]?.medianDistance;
-          const slx = club.club === closestClub ? `✨` : "";
+          const slx = club.club === closestClub ? `⏵ ` : "";
+          const slx2 = club.club === closestClub ? ` ⏴` : "";
           return (
             <Button
               key={club.club}
               variant="ghost"
-              fontWeight={club.club === closestClub ? "bold" : "normal"}
+              fontWeight={"normal"}
               onClick={() => props.selectClub(club.club)}
             >
-              {slx}
               {club.club}
               {distMed && (
                 <>
                   {" - "}
+                  {slx}
                   {distMed}
                   {props.distanceUnit}
                   {" "}
                   {(distMin && distMax) && `(${distMin}-${distMax}${props.distanceUnit})`}
+                  {slx2}
                 </>
               )}
             </Button>
