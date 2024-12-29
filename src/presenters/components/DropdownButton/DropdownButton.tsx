@@ -20,11 +20,13 @@ export function DropdownButton(props: DropdownButtonProps) {
     buttonPrimary: "buttonPrimaryText",
     buttonUnsatisfied: "buttonUnsatisfiedText",
     buttonReadOnly: "buttonReadOnlyText",
+    buttonPrimaryOutline: "buttonPrimary",
   }[props.buttonColor || "buttonPrimary"];
   const borderColor = {
     buttonPrimary: undefined,
     buttonUnsatisfied: "buttonUnsatisfiedBorder",
     buttonReadOnly: "buttonReadOnlyBorder",
+    buttonPrimaryOutline: "primary",
   }[props.buttonColor || "buttonPrimary"];
 
   const disabled = props.buttonColor === "buttonReadOnly";
@@ -41,7 +43,6 @@ export function DropdownButton(props: DropdownButtonProps) {
         border={borderColor ? "1px solid" : undefined}
         borderColor={borderColor}
         disabled={disabled}
-        borderRight="none"
         style={props.buttonStyle}
       >
         <Flex flexDir="column">

@@ -120,12 +120,12 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const setGpsText = useMemo(() => {
     const roundedShotDist = Math.round(props.stroke.strokeDistance || 0);
     return [
-      roundedShotDist ? `${roundedShotDist}${props.distanceUnit}` : "Set GPS",
+      "Set GPS",
       ...(distSinceFromPos
         ? [
             roundedShotDist === distSinceFromPos
               ? undefined
-              : `update:${distSinceFromPos}${props.distanceUnit}`,
+              : `⏵ ${distSinceFromPos}${props.distanceUnit} ⏴`,
           ]
         : []),
     ];
@@ -174,8 +174,20 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   );
 
   const greenViewGpsButtonColor = useMemo(() => {
-    return !toPos ? "buttonUnsatisfied" : "buttonPrimary";
-  }, [toPos]);
+    return !toPos ? "buttonUnsatisfied"
+      : toPosSetMethod === PosOptionMethods.GPS ? "buttonPrimary"
+      : "buttonPrimaryOutline";
+  }, [toPos, toPosSetMethod]);
+  const greenViewHoledButtonColor = useMemo(() => {
+    return !toPos ? "unsatisfied"
+      : toPosSetMethod === PosOptionMethods.HOLE ? "primary"
+      : "primaryOutline";
+  }, [toPos, toPosSetMethod]);
+  const greenViewNearButtonColor = useMemo(() => {
+    return !toPos ? "unsatisfied"
+      : toPosSetMethod === PosOptionMethods.NEAR_PIN ? "primary"
+      : "primaryOutline";
+  }, [toPos, toPosSetMethod]);
   
   const greenViewSetToPosFromGps = useCallback(() => {
     if (currentPosition) {
@@ -191,13 +203,15 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const hideCaddie = () => setShowCaddie(false);
 
   const showGreenView = useMemo(() => {
-    return toLie && ([Lie.FRINGE, Lie.GREEN] as string[]).includes(toLie)
+    return toLie && ([Lie.GREEN] as string[]).includes(toLie)
   }, [toLie]);
 
   return {
     fromPosButtonText,
     setGpsText,
     greenViewGpsButtonColor,
+    greenViewHoledButtonColor,
+    greenViewNearButtonColor,
     setFromPosMethod: viewSetFromPosMethod,
     fromPosButtonColor,
     toPosButtonText,
@@ -216,7 +230,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   };
 }
 
-const inputLabelWidth = "4em";
+const inputLabelWidth = "3.5rem";
 
 export function SingleStrokeView(props: SingleStrokeViewProps) {
   const viewLogic = useSingleStrokeViewLogic(props);
@@ -430,7 +444,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             </Flex>
           )}
         </Flex>
-        <Flex flexDir="column" rowGap={2}>
+        <Flex flexDir="column" rowGap={1}>
           <Flex flexDir="row" alignItems={"center"} columnGap={4}>
             <Text variant="inputLabel" minWidth={inputLabelWidth}>
               To
@@ -438,7 +452,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             {viewLogic.showGreenView ? (
               <Flex flex={1} flexDir={"row"} justifyContent={"center"} alignItems={"center"}>
                 <Button
-                  variant="primary"
+                  variant={viewLogic.greenViewHoledButtonColor}
                   onClick={() => viewLogic.setToPosMethod(PosOptionMethods.HOLE)}
                   width="33%" 
                   borderRightRadius={0}
@@ -446,7 +460,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
                   Holed
                 </Button>
                 <Button
-                  variant="primary"
+                  variant={viewLogic.greenViewNearButtonColor}
                   onClick={() => viewLogic.setToPosMethod(PosOptionMethods.NEAR_PIN)}
                   width="33%" 
                   borderRightRadius={0}
@@ -458,7 +472,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
                 <Box width="calc(33% + 32px)" >
                   <DropdownButton
                     buttonStyle={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                    buttonText={viewLogic.setGpsText[0]}
+                    buttonText={"Set"}
                     buttonTextSmall={viewLogic.setGpsText[1]}
                     selectedValue={props.stroke.toPosSetMethod}
                     options={props.toPosOptions}
@@ -470,17 +484,6 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               </Flex>
             ) : (
               <>
-                <Box flex={1}>
-                  <DropdownButton
-                    buttonText={viewLogic.toPosButtonText[0]}
-                    buttonTextSmall={viewLogic.toPosButtonText[1]}
-                    selectedValue={props.stroke.toPosSetMethod}
-                    options={props.toPosOptions}
-                    onSelectChange={viewLogic.setToPosMethod}
-                    onClick={props.onToPosClick}
-                    buttonColor={viewLogic.toPosButtonColor}
-                  />
-                </Box>
                 <Box flex={1}>
                   {props.stroke.toPosSetMethod !== PosOptionMethods.HOLE && (
                     <CustomModalSelect
@@ -494,14 +497,30 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
                     />
                   )}
                 </Box>
+                <Box flex={1}>
+                  <DropdownButton
+                    buttonText={viewLogic.toPosButtonText[0]}
+                    buttonTextSmall={viewLogic.toPosButtonText[1]}
+                    selectedValue={props.stroke.toPosSetMethod}
+                    options={props.toPosOptions}
+                    onSelectChange={viewLogic.setToPosMethod}
+                    onClick={props.onToPosClick}
+                    buttonColor={viewLogic.toPosButtonColor}
+                  />
+                </Box>
               </>
             )}
           </Flex>
-          {viewLogic.showGreenView && (
-            <Box textAlign={"right"}>
-              <Button variant="link" onClick={() => viewLogic.setActiveModal(Modals.ToLie)}>Off Green</Button>
+          <Flex justifyContent="space-between">
+            <Box ml={inputLabelWidth} pl={4}>
+              {props.stroke.strokeDistance && (
+                <Text variant="assertive">Total: {Math.round(props.stroke.strokeDistance)}{props.distanceUnit}</Text>
+              )}
             </Box>
-          )}
+            {viewLogic.showGreenView && (
+              <Button variant="link" onClick={() => viewLogic.setActiveModal(Modals.ToLie)}>Leave Green View</Button>
+            )}
+          </Flex>
         </Flex>
 
         {/* <Button

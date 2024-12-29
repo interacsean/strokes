@@ -49,6 +49,12 @@ const TextTheme = {
       fontWeight: fontWeights.black,
       color: palette.heading[100],
     },
+    assertive: {
+      fontFamily: fontFamilies.content,
+      fontWeight: fontWeights.bold,
+      fontSize: `${14 / 16}rem`,
+      color: palette.neutral[800]
+    },
     solidLabel: {
       fontFamily: fontFamilies.content,
       fontWeight: fontWeights.bold,
