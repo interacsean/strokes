@@ -1,7 +1,6 @@
 const fontFamilies = {
-  newHeading: '"Raleway"',
-  heading: "verdana,arial,san-serif",
-  content: "Manrope,verdana,arial,san-serif",
+  heading: "'DM Sans',verdana,arial,san-serif",
+  content: "'DM Sans',verdana,arial,san-serif",
 };
 
 export default fontFamilies;
