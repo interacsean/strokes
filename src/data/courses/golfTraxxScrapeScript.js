@@ -24,7 +24,7 @@
             .querySelector(
               "body > div > div > div.container-fluid.mid-container.pt-4.pb-4 > div:nth-child(2) > div > font:nth-child(2) > font"
             )
-            .innerText.match(/YDG (\d*)/i)[1],
+            .innerText.match(/YDG (\d*)/i)[1] * 0.9144,
           10
         ),
         par: parseInt(

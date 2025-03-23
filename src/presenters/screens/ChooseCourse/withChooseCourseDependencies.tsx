@@ -1,7 +1,6 @@
 import { FC, useMemo } from "react";
 import { ChooseCourseView, ChooseCourseViewProps } from "./ChooseCourse.View";
-import { auVicMelbourneDocklandsTest } from "data/courses/au_vic_melbourne_testCourseDocklands";
-import { auVicMelbourneFlagstaffTest } from "data/courses/au_vic_melbourne_testCourseFlagstaff";
+import { auVicMelbourneAltonaLakesGolfCourse } from "data/courses/au_vic_melbourne_altonaLakesPublic";
 import { auVicMelbourneBurnley } from "data/courses/au_vic_melbourne_burnleyPublic";
 import { auVicMelbourneNorthcote } from "data/courses/au_vic_melbourne_northcote";
 import { auVicMelbourneOakleigh } from "data/courses/au_vic_melbourne_oakleigh";
@@ -10,6 +9,7 @@ import { auVicMelbourneRoyalPark } from "data/courses/au_vic_melbourne_royalPark
 import { auVicMelbourneWestgate } from "data/courses/au_vic_melbourne_westgate";
 import { auVicGippslandMorwellGolfClub } from "data/courses/au_vic_gippsland_morwellGolfClub";
 import { auVicGippslandYarramGolfClub } from "data/courses/au_vic_gippsland_yarramGolfClub";
+import { auVicGeelongElchoParkGolfCourse } from "data/courses/au_vic_geelong_laraElchoParkGolfCourse";
 import { useCourseState } from "state/course/courseState";
 import newCourse from "usecases/course/newCourse";
 
@@ -20,14 +20,14 @@ export function withChooseCourseDependencies(
 ) {
   return function Hole(_props: ChooseCoursePublicProps) {
     const courses = [
+      auVicMelbourneAltonaLakesGolfCourse,
       auVicMelbourneBurnley,
       auVicMelbourneNorthcote,
       auVicMelbourneOakleigh,
       auVicMelbourneRiverside,
       auVicMelbourneRoyalPark,
       auVicMelbourneWestgate,
-      auVicMelbourneFlagstaffTest,
-      auVicMelbourneDocklandsTest,
+      auVicGeelongElchoParkGolfCourse,
       auVicGippslandMorwellGolfClub,
       auVicGippslandYarramGolfClub,
     ];
