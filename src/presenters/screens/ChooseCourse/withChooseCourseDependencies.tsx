@@ -6,6 +6,7 @@ import { auVicMelbourneNorthcote } from "data/courses/au_vic_melbourne_northcote
 import { auVicMelbourneOakleigh } from "data/courses/au_vic_melbourne_oakleigh";
 import { auVicMelbourneRiverside } from "data/courses/au_vic_melbourne_riverside";
 import { auVicMelbourneRoyalPark } from "data/courses/au_vic_melbourne_royalPark";
+import { auVicMelbourneYarraBendPublic } from "data/courses/au_vic_melbourne_yarraBendPublic";
 import { auVicMelbourneWestgate } from "data/courses/au_vic_melbourne_westgate";
 import { auVicGippslandMorwellGolfClub } from "data/courses/au_vic_gippsland_morwellGolfClub";
 import { auVicGippslandYarramGolfClub } from "data/courses/au_vic_gippsland_yarramGolfClub";
@@ -26,6 +27,7 @@ export function withChooseCourseDependencies(
       auVicMelbourneOakleigh,
       auVicMelbourneRiverside,
       auVicMelbourneRoyalPark,
+      auVicMelbourneYarraBendPublic,
       auVicMelbourneWestgate,
       auVicGeelongElchoParkGolfCourse,
       auVicGippslandMorwellGolfClub,
