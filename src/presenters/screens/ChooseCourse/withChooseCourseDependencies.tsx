@@ -1,5 +1,5 @@
 import { FC, useMemo } from "react";
-import { ChooseCourseView, ChooseCourseViewProps } from "./ChooseCourse.View";
+import { ChooseCourseViewProps } from "./ChooseCourse.View";
 import { auVicMelbourneAltonaLakesGolfCourse } from "data/courses/au_vic_melbourne_altonaLakesPublic";
 import { auVicMelbourneBurnley } from "data/courses/au_vic_melbourne_burnleyPublic";
 import { auVicMelbourneNorthcote } from "data/courses/au_vic_melbourne_northcote";
@@ -13,6 +13,7 @@ import { auVicGippslandYarramGolfClub } from "data/courses/au_vic_gippsland_yarr
 import { auVicGeelongElchoParkGolfCourse } from "data/courses/au_vic_geelong_laraElchoParkGolfCourse";
 import { useCourseState } from "state/course/courseState";
 import newCourse from "usecases/course/newCourse";
+import { auVicMelbourneIvanhoePublic } from "data/courses/au_vic_melbourne-ivanhoePublic";
 
 type ChooseCoursePublicProps = {};
 
@@ -23,6 +24,7 @@ export function withChooseCourseDependencies(
     const courses = [
       auVicMelbourneAltonaLakesGolfCourse,
       auVicMelbourneBurnley,
+      auVicMelbourneIvanhoePublic,
       auVicMelbourneNorthcote,
       auVicMelbourneOakleigh,
       auVicMelbourneRiverside,
@@ -48,7 +50,7 @@ export function withChooseCourseDependencies(
 
     return (
       <>
-        <ChooseCourseView {...viewProps} />
+        <HoleView {...viewProps} />
       </>
     );
   };
