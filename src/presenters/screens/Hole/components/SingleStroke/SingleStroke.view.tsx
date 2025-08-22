@@ -521,6 +521,9 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               <Button variant="link" onClick={() => viewLogic.setActiveModal(Modals.ToLie)}>Leave Green View</Button>
             )}
           </Flex>
+          <Flex>
+            {/* Strike quality here */}
+          </Flex>
         </Flex>
 
         {/* <Button

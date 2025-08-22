@@ -9,6 +9,7 @@ export type ClubStats = Partial<
         StrokeType,
         {
           medianDistance: number;
+          roll: number;
           sd1Distances: [number, number];
           sd2Distances: [number, number];
           sd1Side: [number, number];
