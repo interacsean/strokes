@@ -1,4 +1,5 @@
 import { Lie } from "model/Lie";
+import { Strike } from "model/Strike";
 import { Stroke } from "model/Stroke";
 import { StrokeType } from "model/StrokeType";
 import { last } from "ramda";
@@ -43,6 +44,7 @@ export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
         ? Lie.GREEN
         : undefined,
     strokeType: StrokeType.FULL,
+    strike: Strike.Clean,
   };
   setStrokeFromLie(
     ({ fromLie, club, strokeType }) => {

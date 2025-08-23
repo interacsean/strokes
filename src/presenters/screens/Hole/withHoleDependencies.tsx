@@ -22,6 +22,7 @@ import { calculateStrokeDistances } from "usecases/hole/calculateStrokeDistances
 import { selectCurrentHole } from "state/course/selectors/currentHole";
 import { useSelector } from "state/utils/useSelector";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
+import { Strike } from "model/Strike";
 import { StrokeType } from "model/StrokeType";
 import { setStrokeType } from "usecases/stroke/setStrokeType";
 import { setClub } from "usecases/stroke/setClub";
@@ -229,6 +230,13 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     [saveStrokeAndUpdate, strokes]
   );
 
+  const selectStrike = useCallback(
+    (strokeNum: number, strike: Strike) => {
+      saveStrokeAndUpdate(strokeNum, { strike });
+    },
+    [saveStrokeAndUpdate]
+  );
+
   const setToPosition = useCallback(
     (strokeNum: number, pos: LatLng) => {
       saveStrokeAndUpdate(strokeNum, { toPos: pos });
@@ -349,6 +357,7 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     selectStrokeToLie: setStrokeToLieAndUpdate,
     selectStrokeClub: setStrokeClubAndUpdate,
     selectStrokeType: setStrokeTypeAndUpdate,
+    selectStrike,
     setFromPosMethod,
     setToPosMethod,
     preprocessedStrokes,

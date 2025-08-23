@@ -6,6 +6,7 @@ import { useCallback, useMemo, useState } from "react";
 import { ClubSelectModal } from "./ClubSelectModal.view";
 import { Club, shortClubNames } from "model/Club";
 import { ShotSelectModal } from "./ShotSelectModal.view";
+import { StrikeSelectModal } from "./StrikeSelectModal.view";
 import { LieSelectModal } from "./LieSelectModal.view";
 import { DropdownButton } from "presenters/components/DropdownButton/DropdownButton";
 import { Hole, Tee } from "model/Hole";
@@ -15,6 +16,7 @@ import { Lie, shortLieNames } from "model/Lie";
 import Map from "presenters/components/Map/Map";
 import { ClubStats } from "model/ClubStats";
 import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
+import { Strike, StrikeLabels } from "model/Strike";
 import { StrokeTypeLabels } from "model/StrokeType";
 
 export type SingleStrokeViewProps = {
@@ -30,6 +32,7 @@ export type SingleStrokeViewProps = {
   setToPosMethod: HoleViewProps["setToPosMethod"];
   selectClub: HoleViewProps["selectStrokeClub"];
   selectStrokeType: HoleViewProps["selectStrokeType"];
+  selectStrike: (strokeNum: number, strike: Strike) => void;
   setToPosition: (strokeNum: number, optPos?: LatLng) => void;
   setFromPosition: (strokeNum: number, optPos?: LatLng) => void;
   setPendingPos: (params: ["to" | "from", LatLng, number | undefined]) => void;
@@ -58,6 +61,7 @@ enum Modals {
   Shot = "Shot",
   FromLie = "FromLie",
   ToLie = "ToLie",
+  Strike = "Strike",
 }
 
 function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
@@ -275,6 +279,14 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
         }}
         cancel={viewLogic.closeModal}
         lies={props.toLies}
+      />
+    ) : viewLogic.activeModal === Modals.Strike ? (
+      <StrikeSelectModal
+        selectStrike={(strike) => {
+          props.selectStrike(props.strokeNum, strike);
+          viewLogic.setActiveModal(null);
+        }}
+        cancel={viewLogic.closeModal}
       />
     ) : null;
 
@@ -521,8 +533,17 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               <Button variant="link" onClick={() => viewLogic.setActiveModal(Modals.ToLie)}>Leave Green View</Button>
             )}
           </Flex>
-          <Flex>
-            {/* Strike quality here */}
+          <Flex flexDir="row" alignItems={"center"} columnGap={4}>
+            <Text variant="inputLabel" minWidth={inputLabelWidth}>
+              Strike
+            </Text>
+            <Box flex={1}>
+              <CustomModalSelect
+                selectedText={props.stroke.strike ? StrikeLabels[props.stroke.strike] : undefined}
+                placeholder="Strike quality"
+                onOpen={() => viewLogic.setActiveModal(Modals.Strike)}
+              />
+            </Box>
           </Flex>
         </Flex>
 

@@ -2,6 +2,7 @@ import { Club } from "./Club";
 import { LatLng } from "./LatLng";
 import { Lie } from "./Lie";
 import { PosOptionMethods } from "./PosOptions";
+import { Strike } from "./Strike";
 import { StrokeType } from "./StrokeType";
 
 export type Stroke = {
@@ -13,6 +14,7 @@ export type Stroke = {
   toPosSetMethod: PosOptionMethods;
   toLie: Lie | undefined | null;
   strokeType: StrokeType | undefined;
+  strike: Strike | undefined;
   intendedPos: LatLng | undefined;
 };
 
