@@ -23,7 +23,7 @@ export function Home(props: Props) {
         <Button variant="link" as={Link} to={RoutePaths.ChooseCourse} py={3}>
           New Round
         </Button>
-        <Button variant="link" as={Link} to={RoutePaths.Home} py={3}>
+        <Button variant="link" as={Link} to={RoutePaths.Stats} py={3}>
           Stats
         </Button>
         <Button variant="link" as={Link} to={RoutePaths.Home} py={3}>
