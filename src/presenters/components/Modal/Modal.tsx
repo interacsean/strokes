@@ -1,5 +1,5 @@
 import { CloseIcon } from "@chakra-ui/icons";
-import { Flex, IconButton } from "@chakra-ui/react";
+import { Box, Flex, IconButton } from "@chakra-ui/react";
 import { ReactNode } from "react";
 
 type ModalProps = {
@@ -28,3 +28,19 @@ export function Modal({ children, onClose, closeButtonPos }: ModalProps) {
     </Flex>
   );
 }
+
+export const ModalContainer = ({ children }: { children: ReactNode }) => (
+  <Box
+    position="absolute"
+    overflowY="auto"
+    zIndex={10}
+    top={0}
+    right={0}
+    left={0}
+    bottom={0}
+    px={4}
+    py={3}
+  >
+    { children }
+  </Box>
+)

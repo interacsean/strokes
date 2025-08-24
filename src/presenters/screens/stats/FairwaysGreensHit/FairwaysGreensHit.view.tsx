@@ -1,4 +1,4 @@
-import { Button, Container, Flex, Text, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import { Button, Container, Flex, Text, Table, Thead, Tbody, Tr, Th, Td, Box } from "@chakra-ui/react";
 import { Club } from "model/Club";
 import { Lie } from "model/Lie";
 import { Course } from "model/Course";
@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { RoundSelectionModal } from "../components/RoundSelectionModal";
 import { useRoundSelection } from "../components/RoundSelectionProvider";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
+import { ModalContainer } from "presenters/components/Modal/Modal";
 
 export type FairwaysGreensHitViewProps = {
   availableRounds: Course[];
@@ -79,48 +80,59 @@ export function FairwaysGreensHitView(props: FairwaysGreensHitViewProps) {
   };
 
   return (
-    <Container>
-      <Flex justifyContent="space-between" alignItems="center" mb={4}>
-        <Text variant="heading">Fairways/Greens Hit by Club</Text>
-        <Button variant="outline" onClick={logic.openModal}>
-          Select Rounds ({selectedRounds.length})
-        </Button>
-      </Flex>
-
-      {selectedRounds.length === 0 ? (
-        <Text>Select rounds to view statistics</Text>
-      ) : Object.keys(logic.stats).length === 0 ? (
-        <Text>No data available for selected rounds</Text>
-      ) : (
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>Club</Th>
-              <Th>Fw Hit</Th>
-              <Th>Gr Hit</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {Object.entries(logic.stats).map(([club, data]) => {
-              const clubData = data as { fairwayHits: number; fairwayAttempts: number; greenHits: number; greenAttempts: number };
-              return (
-                <Tr key={club}>
-                  <Td>{club}</Td>
-                  <Td>{formatPercentage(clubData.fairwayHits, clubData.fairwayAttempts)}</Td>
-                  <Td>{formatPercentage(clubData.greenHits, clubData.greenAttempts)}</Td>
-                </Tr>
-              );
-            })}
-          </Tbody>
-        </Table>
-      )}
-
+    <Box
+      position="relative"
+      height="100vh"
+      px={4}
+      py={3}
+  >
       {logic.isModalOpen && (
-        <RoundSelectionModal
-          rounds={props.availableRounds}
-          onClose={logic.closeModal}
-        />
+          <ModalContainer>
+            <RoundSelectionModal
+              rounds={props.availableRounds}
+              onClose={logic.closeModal}
+            />
+          </ModalContainer>
       )}
-    </Container>
+      <Flex 
+        flexDir="column"
+        visibility={logic.isModalOpen ? "hidden" : "visible"}
+      >
+        <Flex justifyContent="space-between" alignItems="center" mb={4}>
+          <Text variant="heading">Fairways/Greens Hit by Club</Text>
+          <Button variant="outline" onClick={logic.openModal}>
+            Select Rounds ({selectedRounds.length})
+          </Button>
+        </Flex>
+
+        {selectedRounds.length === 0 ? (
+          <Text>Select rounds to view statistics</Text>
+        ) : Object.keys(logic.stats).length === 0 ? (
+          <Text>No data available for selected rounds</Text>
+        ) : (
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>Club</Th>
+                <Th>Fw Hit</Th>
+                <Th>Gr Hit</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {Object.entries(logic.stats).map(([club, data]) => {
+                const clubData = data as { fairwayHits: number; fairwayAttempts: number; greenHits: number; greenAttempts: number };
+                return (
+                  <Tr key={club}>
+                    <Td>{club}</Td>
+                    <Td>{formatPercentage(clubData.fairwayHits, clubData.fairwayAttempts)}</Td>
+                    <Td>{formatPercentage(clubData.greenHits, clubData.greenAttempts)}</Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        )}
+      </Flex>
+    </Box>
   );
 }
