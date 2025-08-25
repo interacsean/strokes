@@ -124,8 +124,16 @@ export function FairwaysGreensHitView(props: FairwaysGreensHitViewProps) {
                 return (
                   <Tr key={club}>
                     <Td>{club}</Td>
-                    <Td>{formatPercentage(clubData.fairwayHits, clubData.fairwayAttempts)}</Td>
-                    <Td>{formatPercentage(clubData.greenHits, clubData.greenAttempts)}</Td>
+                    <Td>
+                      {clubData.fairwayAttempts > 0 
+                        ? `${clubData.fairwayHits}/${clubData.fairwayAttempts} (${formatPercentage(clubData.fairwayHits, clubData.fairwayAttempts)})`
+                        : "N/A"}
+                    </Td>
+                    <Td>
+                      {clubData.greenAttempts > 0
+                        ? `${clubData.greenHits}/${clubData.greenAttempts} (${formatPercentage(clubData.greenHits, clubData.greenAttempts)})`
+                        : "N/A"}
+                    </Td>
                   </Tr>
                 );
               })}

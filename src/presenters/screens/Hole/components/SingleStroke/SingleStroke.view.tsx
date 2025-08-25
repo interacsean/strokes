@@ -291,7 +291,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
     ) : null;
 
   return (
-    <Box position="relative" height="100vh">
+    <Box position="relative" height="100%">
       {modal && (
         <Box
           position="absolute"

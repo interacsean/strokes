@@ -1,6 +1,6 @@
 import { 
   Button, 
-  Container, 
+  Container,
   Flex, 
   Text, 
   Table, 
@@ -23,7 +23,6 @@ import { useMemo, useState } from "react";
 import { RoundSelectionModal } from "../components/RoundSelectionModal";
 import { useRoundSelection } from "../components/RoundSelectionProvider";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
-import { ModalContainer } from "presenters/components/Modal/Modal";
 
 export type ClubDistancesViewProps = {
   availableRounds: Course[];
@@ -176,24 +175,7 @@ export function ClubDistancesView(props: ClubDistancesViewProps) {
   const { selectedRounds } = useRoundSelection();
 
   return (
-    <Box
-      position="relative"
-      height="100vh"
-      px={4}
-      py={3}
-    >
-      {logic.isModalOpen && (
-        <ModalContainer>
-          <RoundSelectionModal
-            rounds={props.availableRounds}
-            onClose={logic.closeModal}
-            />
-        </ModalContainer>
-      )}
-      <Flex 
-        flexDir="column"
-        visibility={logic.isModalOpen ? "hidden" : "visible"}
-      >
+    <Container>
         <Flex justifyContent="space-between" alignItems="center" mb={4}>
           <Text variant="heading">Club Distances</Text>
           <Button variant="outline" onClick={logic.openModal}>
@@ -281,7 +263,13 @@ export function ClubDistancesView(props: ClubDistancesViewProps) {
             )}
           </>
         )}
-      </Flex>
-    </Box>
+
+      {logic.isModalOpen && (
+        <RoundSelectionModal
+          rounds={props.availableRounds}
+          onClose={logic.closeModal}
+        />
+      )}
+    </Container>
   );
 }
