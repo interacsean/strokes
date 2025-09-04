@@ -14,6 +14,7 @@ import { auVicGeelongElchoParkGolfCourse } from "data/courses/au_vic_geelong_lar
 import { useCourseState } from "state/course/courseState";
 import newCourse from "usecases/course/newCourse";
 import { auVicMelbourneIvanhoePublic } from "data/courses/au_vic_melbourne-ivanhoePublic";
+import { auNswSydneyBeveryleyPark } from "data/courses/au_nsw_sydney_beverleyPark";
 
 type ChooseCoursePublicProps = {};
 
@@ -34,6 +35,7 @@ export function withChooseCourseDependencies(
       auVicGeelongElchoParkGolfCourse,
       auVicGippslandMorwellGolfClub,
       auVicGippslandYarramGolfClub,
+      auNswSydneyBeveryleyPark,
     ];
 
     const { setState: setCourseState, state: courseState } = useCourseState();
