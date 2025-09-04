@@ -6,6 +6,8 @@ export enum Strike {
   Slice = "Slice",
   Hook = "Hook",
   Skyball = "Skyball",
+  Push = "Push",
+  Pull = "Pull",
 }
 
 export const StrikeLabels: Record<Strike, string> = {
@@ -16,4 +18,6 @@ export const StrikeLabels: Record<Strike, string> = {
   [Strike.Slice]: "Slice",
   [Strike.Hook]: "Hook",
   [Strike.Skyball]: "Skyball",
+  [Strike.Push]: "Push",
+  [Strike.Pull]: "Pull",
 };
