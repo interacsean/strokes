@@ -8,357 +8,6 @@ export const auNswSydneyBeveryleyPark: CourseDef = {
     "tees": {
         "tee": {
             "pos": {
-                "lat": -33.97575177322064,
-                "lng": 151.13091135960576,
-                "alt": null
-            },
-            "nominalDistance": 279,
-            "par": 4
-        }
-    },
-    "pins": {
-        "pin": {
-            "lat": -33.9783752788,
-            "lng": 151.13056267243,
-            "alt": null
-        }
-    },
-    "green": {
-        "back": {
-            "lat": -33.97850317124,
-            "lng": 151.13056535464,
-            "alt": null
-        },
-        "front": {
-            "lat": -33.97825850728,
-            "lng": 151.13055462581,
-            "alt": null
-        }
-    },
-    "waypoints": [
-        {
-            "lat": -33.97761570497168,
-            "lng": 151.13051036935803
-        }
-    ]
-},
-{
-    "holeNum": 2,
-    "tees": {
-        "tee": {
-            "pos": {
-                "lat": -33.97867732895,
-                "lng": 151.13012703457,
-                "alt": null
-            },
-            "nominalDistance": 129,
-            "par": 3
-        }
-    },
-    "pins": {
-        "pin": {
-            "lat": -33.97730275603,
-            "lng": 151.13010021249,
-            "alt": null
-        }
-    },
-    "green": {
-        "back": {
-            "lat": -33.97715150715,
-            "lng": 151.13009216585,
-            "alt": null
-        },
-        "front": {
-            "lat": -33.97745622886,
-            "lng": 151.13010825911,
-            "alt": null
-        }
-    },
-    "waypoints": [
-        {
-            "lat": -33.97867732895,
-            "lng": 151.13012703457
-        }
-    ]
-},
-{
-    "holeNum": 3,
-    "tees": {
-        "tee": {
-            "pos": {
-                "lat": -33.98178297053,
-                "lng": 151.13049777809,
-                "alt": null
-            },
-            "nominalDistance": 471,
-            "par": 5
-        }
-    },
-    "pins": {
-        "pin": {
-            "lat": -33.98175106727,
-            "lng": 151.13036720799,
-            "alt": null
-        }
-    },
-    "green": {
-        "back": {
-            "lat": -33.9818111188,
-            "lng": 151.130387325,
-            "alt": null
-        },
-        "front": {
-            "lat": -33.9816854554,
-            "lng": 151.130348433,
-            "alt": null
-        }
-    },
-    "waypoints": [
-        {
-            "lat": -33.979515787533984,
-            "lng": 151.12967922099998
-        }
-    ]
-},
-{
-    "holeNum": 4,
-    "tees": {
-        "tee": {
-            "pos": {
-                "lat": -33.9808094169,
-                "lng": 151.12958136959,
-                "alt": null
-            },
-            "nominalDistance": 111,
-            "par": 3
-        }
-    },
-    "pins": {
-        "pin": {
-            "lat": -33.98193038328,
-            "lng": 151.12967927022,
-            "alt": null
-        }
-    },
-    "green": {
-        "back": {
-            "lat": -33.98201489998,
-            "lng": 151.12968195243,
-            "alt": null
-        },
-        "front": {
-            "lat": -33.98184586649,
-            "lng": 151.1296725647,
-            "alt": null
-        }
-    },
-    "waypoints": [
-        {
-            "lat": -33.9808094169,
-            "lng": 151.12958136959
-        }
-    ]
-},
-{
-    "holeNum": 5,
-    "tees": {
-        "tee": {
-            "pos": {
-                "lat": -33.98232248567809,
-                "lng": 151.1294501216042,
-                "alt": null
-            },
-            "nominalDistance": 309,
-            "par": 4
-        }
-    },
-    "pins": {
-        "pin": {
-            "lat": -33.98328218575,
-            "lng": 151.13273985096,
-            "alt": null
-        }
-    },
-    "green": {
-        "back": {
-            "lat": -33.983313323,
-            "lng": 151.13282299944,
-            "alt": null
-        },
-        "front": {
-            "lat": -33.98325549667,
-            "lng": 151.13265402028,
-            "alt": null
-        }
-    },
-    "waypoints": [
-        {
-            "lat": -33.98294968371002,
-            "lng": 151.13181314774633
-        }
-    ]
-},
-{
-    "holeNum": 6,
-    "tees": {
-        "tee": {
-            "pos": {
-                "lat": -33.982216119012705,
-                "lng": 151.1339866287676,
-                "alt": null
-            },
-            "nominalDistance": 313,
-            "par": 4
-        }
-    },
-    "pins": {
-        "pin": {
-            "lat": -33.9794114606,
-            "lng": 151.13275549483,
-            "alt": null
-        }
-    },
-    "green": {
-        "back": {
-            "lat": -33.97932026871,
-            "lng": 151.13272867274,
-            "alt": null
-        },
-        "front": {
-            "lat": -33.9795148854,
-            "lng": 151.13280243349,
-            "alt": null
-        }
-    },
-    "waypoints": [
-        {
-            "lat": -33.98027889060879,
-            "lng": 151.13316319060002
-        }
-    ]
-},
-{
-    "holeNum": 7,
-    "tees": {
-        "tee": {
-            "pos": {
-                "lat": -33.979415730746034,
-                "lng": 151.13300050923982,
-                "alt": null
-            },
-            "nominalDistance": 344,
-            "par": 4
-        }
-    },
-    "pins": {
-        "pin": {
-            "lat": -33.97627066685,
-            "lng": 151.1325981779,
-            "alt": null
-        }
-    },
-    "green": {
-        "back": {
-            "lat": -33.97618058374,
-            "lng": 151.13258342574,
-            "alt": null
-        },
-        "front": {
-            "lat": -33.97635963771,
-            "lng": 151.13260622452,
-            "alt": null
-        }
-    },
-    "waypoints": [
-        {
-            "lat": -33.97737612335574,
-            "lng": 151.1327081484572
-        }
-    ]
-},
-{
-    "holeNum": 8,
-    "tees": {
-        "tee": {
-            "pos": {
-                "lat": -33.975997824285294,
-                "lng": 151.13222956852587,
-                "alt": null
-            },
-            "nominalDistance": 356,
-            "par": 4
-        }
-    },
-    "pins": {
-        "pin": {
-            "lat": -33.97937421455,
-            "lng": 151.13227918939,
-            "alt": null
-        }
-    },
-    "green": {
-        "back": {
-            "lat": -33.97950321758,
-            "lng": 151.13228455381,
-            "alt": null
-        },
-        "front": {
-            "lat": -33.97923965084,
-            "lng": 151.13227650718,
-            "alt": null
-        }
-    },
-    "waypoints": [
-        {
-            "lat": -33.97805748278111,
-            "lng": 151.13223761515292
-        }
-    ]
-},
-{
-    "holeNum": 9,
-    "tees": {
-        "tee": {
-            "pos": {
-                "lat": -33.97949076869195,
-                "lng": 151.13162759213122,
-                "alt": null
-            },
-            "nominalDistance": 350,
-            "par": 4
-        }
-    },
-    "pins": {
-        "pin": {
-            "lat": -33.9761933449,
-            "lng": 151.13182741621,
-            "alt": null
-        }
-    },
-    "green": {
-        "back": {
-            "lat": -33.9761010374,
-            "lng": 151.131835463,
-            "alt": null
-        },
-        "front": {
-            "lat": -33.9762845401,
-            "lng": 151.131823393,
-            "alt": null
-        }
-    },
-    "waypoints": [
-        {
-            "lat": -33.97744004189045,
-            "lng": 151.13179388909015
-        }
-    ]
-},
-{
-    "holeNum": 10,
-    "tees": {
-        "tee": {
-            "pos": {
                 "lat": -33.97584103346944,
                 "lng": 151.13146199120777,
                 "alt": null
@@ -394,7 +43,7 @@ export const auNswSydneyBeveryleyPark: CourseDef = {
     ]
 },
 {
-    "holeNum": 11,
+    "holeNum": 2,
     "tees": {
         "tee": {
             "pos": {
@@ -433,7 +82,7 @@ export const auNswSydneyBeveryleyPark: CourseDef = {
     ]
 },
 {
-    "holeNum": 12,
+    "holeNum": 3,
     "tees": {
         "tee": {
             "pos": {
@@ -472,7 +121,7 @@ export const auNswSydneyBeveryleyPark: CourseDef = {
     ]
 },
 {
-    "holeNum": 13,
+    "holeNum": 4,
     "tees": {
         "tee": {
             "pos": {
@@ -511,7 +160,7 @@ export const auNswSydneyBeveryleyPark: CourseDef = {
     ]
 },
 {
-    "holeNum": 14,
+    "holeNum": 5,
     "tees": {
         "tee": {
             "pos": {
@@ -550,7 +199,7 @@ export const auNswSydneyBeveryleyPark: CourseDef = {
     ]
 },
 {
-    "holeNum": 15,
+    "holeNum": 6,
     "tees": {
         "tee": {
             "pos": {
@@ -589,7 +238,7 @@ export const auNswSydneyBeveryleyPark: CourseDef = {
     ]
 },
 {
-    "holeNum": 16,
+    "holeNum": 7,
     "tees": {
         "tee": {
             "pos": {
@@ -628,7 +277,7 @@ export const auNswSydneyBeveryleyPark: CourseDef = {
     ]
 },
 {
-    "holeNum": 17,
+    "holeNum": 8,
     "tees": {
         "tee": {
             "pos": {
@@ -667,7 +316,7 @@ export const auNswSydneyBeveryleyPark: CourseDef = {
     ]
 },
 {
-    "holeNum": 18,
+    "holeNum": 9,
     "tees": {
         "tee": {
             "pos": {
@@ -702,6 +351,357 @@ export const auNswSydneyBeveryleyPark: CourseDef = {
         {
             "lat": -33.97631266208764,
             "lng": 151.13109318804507
+        }
+    ]
+},
+{
+    "holeNum": 10,
+    "tees": {
+        "tee": {
+            "pos": {
+                "lat": -33.97575177322064,
+                "lng": 151.13091135960576,
+                "alt": null
+            },
+            "nominalDistance": 279,
+            "par": 4
+        }
+    },
+    "pins": {
+        "pin": {
+            "lat": -33.9783752788,
+            "lng": 151.13056267243,
+            "alt": null
+        }
+    },
+    "green": {
+        "back": {
+            "lat": -33.97850317124,
+            "lng": 151.13056535464,
+            "alt": null
+        },
+        "front": {
+            "lat": -33.97825850728,
+            "lng": 151.13055462581,
+            "alt": null
+        }
+    },
+    "waypoints": [
+        {
+            "lat": -33.97761570497168,
+            "lng": 151.13051036935803
+        }
+    ]
+},
+{
+    "holeNum": 11,
+    "tees": {
+        "tee": {
+            "pos": {
+                "lat": -33.97867732895,
+                "lng": 151.13012703457,
+                "alt": null
+            },
+            "nominalDistance": 129,
+            "par": 3
+        }
+    },
+    "pins": {
+        "pin": {
+            "lat": -33.97730275603,
+            "lng": 151.13010021249,
+            "alt": null
+        }
+    },
+    "green": {
+        "back": {
+            "lat": -33.97715150715,
+            "lng": 151.13009216585,
+            "alt": null
+        },
+        "front": {
+            "lat": -33.97745622886,
+            "lng": 151.13010825911,
+            "alt": null
+        }
+    },
+    "waypoints": [
+        {
+            "lat": -33.97867732895,
+            "lng": 151.13012703457
+        }
+    ]
+},
+{
+    "holeNum": 12,
+    "tees": {
+        "tee": {
+            "pos": {
+                "lat": -33.98178297053,
+                "lng": 151.13049777809,
+                "alt": null
+            },
+            "nominalDistance": 471,
+            "par": 5
+        }
+    },
+    "pins": {
+        "pin": {
+            "lat": -33.98175106727,
+            "lng": 151.13036720799,
+            "alt": null
+        }
+    },
+    "green": {
+        "back": {
+            "lat": -33.9818111188,
+            "lng": 151.130387325,
+            "alt": null
+        },
+        "front": {
+            "lat": -33.9816854554,
+            "lng": 151.130348433,
+            "alt": null
+        }
+    },
+    "waypoints": [
+        {
+            "lat": -33.979515787533984,
+            "lng": 151.12967922099998
+        }
+    ]
+},
+{
+    "holeNum": 13,
+    "tees": {
+        "tee": {
+            "pos": {
+                "lat": -33.9808094169,
+                "lng": 151.12958136959,
+                "alt": null
+            },
+            "nominalDistance": 111,
+            "par": 3
+        }
+    },
+    "pins": {
+        "pin": {
+            "lat": -33.98193038328,
+            "lng": 151.12967927022,
+            "alt": null
+        }
+    },
+    "green": {
+        "back": {
+            "lat": -33.98201489998,
+            "lng": 151.12968195243,
+            "alt": null
+        },
+        "front": {
+            "lat": -33.98184586649,
+            "lng": 151.1296725647,
+            "alt": null
+        }
+    },
+    "waypoints": [
+        {
+            "lat": -33.9808094169,
+            "lng": 151.12958136959
+        }
+    ]
+},
+{
+    "holeNum": 14,
+    "tees": {
+        "tee": {
+            "pos": {
+                "lat": -33.98232248567809,
+                "lng": 151.1294501216042,
+                "alt": null
+            },
+            "nominalDistance": 309,
+            "par": 4
+        }
+    },
+    "pins": {
+        "pin": {
+            "lat": -33.98328218575,
+            "lng": 151.13273985096,
+            "alt": null
+        }
+    },
+    "green": {
+        "back": {
+            "lat": -33.983313323,
+            "lng": 151.13282299944,
+            "alt": null
+        },
+        "front": {
+            "lat": -33.98325549667,
+            "lng": 151.13265402028,
+            "alt": null
+        }
+    },
+    "waypoints": [
+        {
+            "lat": -33.98294968371002,
+            "lng": 151.13181314774633
+        }
+    ]
+},
+{
+    "holeNum": 15,
+    "tees": {
+        "tee": {
+            "pos": {
+                "lat": -33.982216119012705,
+                "lng": 151.1339866287676,
+                "alt": null
+            },
+            "nominalDistance": 313,
+            "par": 4
+        }
+    },
+    "pins": {
+        "pin": {
+            "lat": -33.9794114606,
+            "lng": 151.13275549483,
+            "alt": null
+        }
+    },
+    "green": {
+        "back": {
+            "lat": -33.97932026871,
+            "lng": 151.13272867274,
+            "alt": null
+        },
+        "front": {
+            "lat": -33.9795148854,
+            "lng": 151.13280243349,
+            "alt": null
+        }
+    },
+    "waypoints": [
+        {
+            "lat": -33.98027889060879,
+            "lng": 151.13316319060002
+        }
+    ]
+},
+{
+    "holeNum": 16,
+    "tees": {
+        "tee": {
+            "pos": {
+                "lat": -33.979415730746034,
+                "lng": 151.13300050923982,
+                "alt": null
+            },
+            "nominalDistance": 344,
+            "par": 4
+        }
+    },
+    "pins": {
+        "pin": {
+            "lat": -33.97627066685,
+            "lng": 151.1325981779,
+            "alt": null
+        }
+    },
+    "green": {
+        "back": {
+            "lat": -33.97618058374,
+            "lng": 151.13258342574,
+            "alt": null
+        },
+        "front": {
+            "lat": -33.97635963771,
+            "lng": 151.13260622452,
+            "alt": null
+        }
+    },
+    "waypoints": [
+        {
+            "lat": -33.97737612335574,
+            "lng": 151.1327081484572
+        }
+    ]
+},
+{
+    "holeNum": 17,
+    "tees": {
+        "tee": {
+            "pos": {
+                "lat": -33.975997824285294,
+                "lng": 151.13222956852587,
+                "alt": null
+            },
+            "nominalDistance": 356,
+            "par": 4
+        }
+    },
+    "pins": {
+        "pin": {
+            "lat": -33.97937421455,
+            "lng": 151.13227918939,
+            "alt": null
+        }
+    },
+    "green": {
+        "back": {
+            "lat": -33.97950321758,
+            "lng": 151.13228455381,
+            "alt": null
+        },
+        "front": {
+            "lat": -33.97923965084,
+            "lng": 151.13227650718,
+            "alt": null
+        }
+    },
+    "waypoints": [
+        {
+            "lat": -33.97805748278111,
+            "lng": 151.13223761515292
+        }
+    ]
+},
+{
+    "holeNum": 18,
+    "tees": {
+        "tee": {
+            "pos": {
+                "lat": -33.97949076869195,
+                "lng": 151.13162759213122,
+                "alt": null
+            },
+            "nominalDistance": 350,
+            "par": 4
+        }
+    },
+    "pins": {
+        "pin": {
+            "lat": -33.9761933449,
+            "lng": 151.13182741621,
+            "alt": null
+        }
+    },
+    "green": {
+        "back": {
+            "lat": -33.9761010374,
+            "lng": 151.131835463,
+            "alt": null
+        },
+        "front": {
+            "lat": -33.9762845401,
+            "lng": 151.131823393,
+            "alt": null
+        }
+    },
+    "waypoints": [
+        {
+            "lat": -33.97744004189045,
+            "lng": 151.13179388909015
         }
     ]
 },

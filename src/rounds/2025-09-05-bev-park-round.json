@@ -1,0 +1,2199 @@
+{
+  "courseName": "Beverly Park Golf Course",
+  "holes": [
+    {
+      "holeNum": 1,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.97584103346944,
+            "lng": 151.13146199120777,
+            "alt": null
+          },
+          "nominalDistance": 454,
+          "par": 5
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.9800466957,
+          "lng": 151.131114745,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.9801267659,
+          "lng": 151.131101334,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.9799555045,
+          "lng": 151.131124132,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.97788921932233,
+          "lng": 151.13130384031155
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.97584103346944,
+            "lng": 151.13146199120777,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (Low)",
+          "club": "6 Iron",
+          "toPos": {
+            "lat": -33.977474452647094,
+            "lng": 151.13131503167017,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "DRAW",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.977474452647094,
+            "lng": 151.13131503167017,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "9 Iron",
+          "toPos": {
+            "lat": -33.979683548642804,
+            "lng": 151.1312048069297,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fringe",
+          "strokeType": "THREE_QTR",
+          "strike": "Thin"
+        },
+        {
+          "fromPos": {
+            "lat": -33.979683548642804,
+            "lng": 151.1312048069297,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fringe",
+          "club": "Pitching Wedge",
+          "toPos": {
+            "lat": -33.979978834618066,
+            "lng": 151.13107687225005,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Green",
+          "strokeType": "CHIP",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.979978834618066,
+            "lng": 151.13107687225005,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.9800466957,
+            "lng": 151.131114745,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.9800466957,
+            "lng": 151.131114745,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.9800466957,
+            "lng": 151.131114745,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.9800466957,
+            "lng": 151.131114745,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.9800466957,
+            "lng": 151.131114745,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 2,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.979399374798916,
+            "lng": 151.13152511921737,
+            "alt": null
+          },
+          "nominalDistance": 349,
+          "par": 4
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.982191801,
+          "lng": 151.132808556,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.9822329472,
+          "lng": 151.132926573,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.9821261895,
+          "lng": 151.132681151,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.981454502610916,
+          "lng": 151.13159217444274
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.979399374798916,
+            "lng": 151.13152511921737,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (High)",
+          "club": "Pitching Wedge",
+          "toPos": {
+            "lat": -33.98205120572202,
+            "lng": 151.13274191604904,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Green",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98205120572202,
+            "lng": 151.13274191604904,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.982191801,
+            "lng": 151.132808556,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.982191801,
+            "lng": 151.132808556,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.982191801,
+            "lng": 151.132808556,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.982191801,
+            "lng": 151.132808556,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.982191801,
+            "lng": 151.132808556,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 3,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.98221839542392,
+            "lng": 151.1318248055225,
+            "alt": null
+          },
+          "nominalDistance": 135,
+          "par": 3
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.9827799832,
+          "lng": 151.133294656,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.9828144568,
+          "lng": 151.133395239,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.9827421735,
+          "lng": 151.133191391,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.98221839542392,
+          "lng": 151.1318248055225
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.98221839542392,
+            "lng": 151.1318248055225,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (Low)",
+          "club": "5 Iron",
+          "toPos": {
+            "lat": -33.98236797946039,
+            "lng": 151.13213094519585,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Deep rough",
+          "strokeType": "FULL",
+          "strike": "Fat"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98236797946039,
+            "lng": 151.13213094519585,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Deep rough",
+          "club": "5 Iron",
+          "toPos": {
+            "lat": -33.98243221663412,
+            "lng": 151.1325990803453,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Deep rough",
+          "strokeType": "FULL",
+          "strike": "Hook"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98243221663412,
+            "lng": 151.1325990803453,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Deep rough",
+          "club": "8 Iron",
+          "toPos": {
+            "lat": -33.98259378497554,
+            "lng": 151.13279644189151,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98259378497554,
+            "lng": 151.13279644189151,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "4 Hybrid",
+          "toPos": {
+            "lat": -33.982684281027765,
+            "lng": 151.13306425177268,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.982684281027765,
+            "lng": 151.13306425177268,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "Sand Wedge",
+          "toPos": {
+            "lat": -33.982801185399154,
+            "lng": 151.13340118095903,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "CHIP",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.982801185399154,
+            "lng": 151.13340118095903,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "Sand Wedge",
+          "toPos": {
+            "lat": -33.9827799832,
+            "lng": 151.133294656,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "CHIP",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.9827799832,
+            "lng": 151.133294656,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.9827799832,
+            "lng": 151.133294656,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.9827799832,
+            "lng": 151.133294656,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.9827799832,
+            "lng": 151.133294656,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 4,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.982501928697,
+            "lng": 151.13337488096056,
+            "alt": null
+          },
+          "nominalDistance": 327,
+          "par": 4
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.97972396992,
+          "lng": 151.13187686743,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.97961720909,
+          "lng": 151.13182322325,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.9798251702,
+          "lng": 151.131927829,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.9806180866466,
+          "lng": 151.13238648693857
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.982501928697,
+            "lng": 151.13337488096056,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (High)",
+          "club": "Driver",
+          "toPos": {
+            "lat": -33.97972396992,
+            "lng": 151.13187686743,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 5,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.979737566773416,
+            "lng": 151.13232554421262,
+            "alt": null
+          },
+          "nominalDistance": 328,
+          "par": 4
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.9825600073,
+          "lng": 151.13365457879,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.98266120417,
+          "lng": 151.13368408309,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.9824488018,
+          "lng": 151.13362507449,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.98158806633517,
+          "lng": 151.13339976892308
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.979737566773416,
+            "lng": 151.13232554421262,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (High)",
+          "club": "Driver",
+          "toPos": {
+            "lat": -33.9825600073,
+            "lng": 151.13365457879,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 6,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.98309424633468,
+            "lng": 151.13321372094103,
+            "alt": null
+          },
+          "nominalDistance": 286,
+          "par": 4
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.98204113107,
+          "lng": 151.13028072538,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.98200999335,
+          "lng": 151.13015197935,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.98208227732,
+          "lng": 151.13040544811,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.982310249405046,
+          "lng": 151.131139032268
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.98309424633468,
+            "lng": 151.13321372094103,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (High)",
+          "club": "Driver",
+          "toPos": {
+            "lat": -33.98204113107,
+            "lng": 151.13028072538,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 7,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.982037675301605,
+            "lng": 151.13141078772463,
+            "alt": null
+          },
+          "nominalDistance": 352,
+          "par": 4
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.97889048419,
+          "lng": 151.13010857526,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.97878928283,
+          "lng": 151.13007638875,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.97900280645,
+          "lng": 151.13014880838,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.980116012039424,
+          "lng": 151.13053102316775
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.982037675301605,
+            "lng": 151.13141078772463,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (High)",
+          "club": "Driver",
+          "toPos": {
+            "lat": -33.98021382553286,
+            "lng": 151.13064009328878,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98021382553286,
+            "lng": 151.13064009328878,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "8 Iron",
+          "toPos": {
+            "lat": -33.97874108339267,
+            "lng": 151.12999157468676,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Deep rough",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97874108339267,
+            "lng": 151.12999157468676,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Deep rough",
+          "club": "Sand Wedge",
+          "toPos": {
+            "lat": -33.97889048419,
+            "lng": 151.13010857526,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "CHIP",
+          "strike": "Fat"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97889048419,
+            "lng": 151.13010857526,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.97889048419,
+            "lng": 151.13010857526,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97889048419,
+            "lng": 151.13010857526,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.97889048419,
+            "lng": 151.13010857526,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 8,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.98013235272,
+            "lng": 151.13086324077,
+            "alt": null
+          },
+          "nominalDistance": 142,
+          "par": 3
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.97870331021,
+          "lng": 151.13059770208,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.97858320281,
+          "lng": 151.13057356219,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.97882341743,
+          "lng": 151.13061915975,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.98013235272,
+          "lng": 151.13086324077
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.98013235272,
+            "lng": 151.13086324077,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (High)",
+          "toPosSetMethod": "Gps",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 9,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.9783567434284,
+            "lng": 151.13095103096728,
+            "alt": null
+          },
+          "nominalDistance": 262,
+          "par": 4
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.97590339504,
+          "lng": 151.13115756138,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.9758110873,
+          "lng": 151.131170972,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.9759957027,
+          "lng": 151.13114415,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.97631266208764,
+          "lng": 151.13109318804507
+        }
+      ],
+      "strokes": [],
+      "completed": false
+    },
+    {
+      "holeNum": 10,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.97575177322064,
+            "lng": 151.13091135960576,
+            "alt": null
+          },
+          "nominalDistance": 279,
+          "par": 4
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.9783752788,
+          "lng": 151.13056267243,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.97850317124,
+          "lng": 151.13056535464,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.97825850728,
+          "lng": 151.13055462581,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.97761570497168,
+          "lng": 151.13051036935803
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.97575177322064,
+            "lng": 151.13091135960576,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (Low)",
+          "club": "5 Iron",
+          "toPos": {
+            "lat": -33.97692779215532,
+            "lng": 151.13108091821653,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Wrong Fairway",
+          "strokeType": "FULL",
+          "strike": "Hook"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97692779215532,
+            "lng": 151.13108091821653,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Wrong Fairway",
+          "club": "5 Iron",
+          "toPos": {
+            "lat": -33.977750356023016,
+            "lng": 151.13051776138946,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.977750356023016,
+            "lng": 151.13051776138946,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "8 Iron",
+          "toPos": {
+            "lat": -33.97824455097383,
+            "lng": 151.13042050695515,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97824455097383,
+            "lng": 151.13042050695515,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "Sand Wedge",
+          "toPos": {
+            "lat": -33.97815729221831,
+            "lng": 151.1304760797293,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "CHIP",
+          "strike": "Fat"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97815729221831,
+            "lng": 151.1304760797293,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "Pitching Wedge",
+          "toPos": {
+            "lat": -33.9783752788,
+            "lng": 151.13056267243,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PITCH",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.9783752788,
+            "lng": 151.13056267243,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.9783752788,
+            "lng": 151.13056267243,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.9783752788,
+            "lng": 151.13056267243,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.9783752788,
+            "lng": 151.13056267243,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 11,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.97867732895,
+            "lng": 151.13012703457,
+            "alt": null
+          },
+          "nominalDistance": 129,
+          "par": 3
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.97730275603,
+          "lng": 151.13010021249,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.97715150715,
+          "lng": 151.13009216585,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.97745622886,
+          "lng": 151.13010825911,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.97867732895,
+          "lng": 151.13012703457
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.97867732895,
+            "lng": 151.13012703457,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (Low)",
+          "club": "4 Hybrid",
+          "toPos": {
+            "lat": -33.97784996392877,
+            "lng": 151.1301148257009,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97784996392877,
+            "lng": 151.1301148257009,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "6 Iron",
+          "toPos": {
+            "lat": -33.977574687650396,
+            "lng": 151.13006043956602,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Light rough",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.977574687650396,
+            "lng": 151.13006043956602,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Light rough",
+          "club": "Sand Wedge",
+          "toPos": {
+            "lat": -33.97730275603,
+            "lng": 151.13010021249,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PITCH",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97730275603,
+            "lng": 151.13010021249,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.97730275603,
+            "lng": 151.13010021249,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97730275603,
+            "lng": 151.13010021249,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.97730275603,
+            "lng": 151.13010021249,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 12,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.98178297053,
+            "lng": 151.13049777809,
+            "alt": null
+          },
+          "nominalDistance": 471,
+          "par": 5
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.98175106727,
+          "lng": 151.13036720799,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.9818111188,
+          "lng": 151.130387325,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.9816854554,
+          "lng": 151.130348433,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.979515787533984,
+          "lng": 151.12967922099998
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.98178297053,
+            "lng": 151.13049777809,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (Grass)",
+          "club": "6 Iron",
+          "toPos": {
+            "lat": -33.98175106727,
+            "lng": 151.13036720799,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Light rough",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98175106727,
+            "lng": 151.13036720799,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Light rough",
+          "club": "Pitching Wedge",
+          "toPos": {
+            "lat": -33.98175106727,
+            "lng": 151.13036720799,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "CHIP",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98175106727,
+            "lng": 151.13036720799,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.98175106727,
+            "lng": 151.13036720799,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98175106727,
+            "lng": 151.13036720799,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.98175106727,
+            "lng": 151.13036720799,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98175106727,
+            "lng": 151.13036720799,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.98175106727,
+            "lng": 151.13036720799,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 13,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.9808094169,
+            "lng": 151.12958136959,
+            "alt": null
+          },
+          "nominalDistance": 111,
+          "par": 3
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.98193038328,
+          "lng": 151.12967927022,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.98201489998,
+          "lng": 151.12968195243,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.98184586649,
+          "lng": 151.1296725647,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.9808094169,
+          "lng": 151.12958136959
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.9808094169,
+            "lng": 151.12958136959,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (High)",
+          "club": "Driver",
+          "toPos": {
+            "lat": -33.98136910098956,
+            "lng": 151.12969988949635,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98136910098956,
+            "lng": 151.12969988949635,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "9 Iron",
+          "toPos": {
+            "lat": -33.9820250981244,
+            "lng": 151.1296742637977,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Bunker / Sand",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.9820250981244,
+            "lng": 151.1296742637977,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Bunker / Sand",
+          "club": "Sand Wedge",
+          "toPos": {
+            "lat": -33.9819039205891,
+            "lng": 151.12967229607887,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Bunker / Sand",
+          "strokeType": "CHIP",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.9819039205891,
+            "lng": 151.12967229607887,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Bunker / Sand",
+          "club": "Sand Wedge",
+          "toPos": {
+            "lat": -33.98193038328,
+            "lng": 151.12967927022,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "FLOP",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98193038328,
+            "lng": 151.12967927022,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.98193038328,
+            "lng": 151.12967927022,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98193038328,
+            "lng": 151.12967927022,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.98193038328,
+            "lng": 151.12967927022,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 14,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.98232248567809,
+            "lng": 151.1294501216042,
+            "alt": null
+          },
+          "nominalDistance": 309,
+          "par": 4
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.98328218575,
+          "lng": 151.13273985096,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.983313323,
+          "lng": 151.13282299944,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.98325549667,
+          "lng": 151.13265402028,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.98294968371002,
+          "lng": 151.13181314774633
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.98232248567809,
+            "lng": 151.1294501216042,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (High)",
+          "club": "Driver",
+          "toPos": {
+            "lat": -33.982599780333715,
+            "lng": 151.1316572812861,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Wrong Fairway",
+          "strokeType": "FULL",
+          "strike": "Pull"
+        },
+        {
+          "fromPos": {
+            "lat": -33.982599780333715,
+            "lng": 151.1316572812861,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Wrong Fairway",
+          "club": "8 Iron",
+          "toPos": {
+            "lat": -33.983215510522655,
+            "lng": 151.13245399149645,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.983215510522655,
+            "lng": 151.13245399149645,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "Sand Wedge",
+          "toPos": {
+            "lat": -33.98328218575,
+            "lng": 151.13273985096,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PITCH",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98328218575,
+            "lng": 151.13273985096,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.98328218575,
+            "lng": 151.13273985096,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98328218575,
+            "lng": 151.13273985096,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.98328218575,
+            "lng": 151.13273985096,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 15,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.982216119012705,
+            "lng": 151.1339866287676,
+            "alt": null
+          },
+          "nominalDistance": 313,
+          "par": 4
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.9794114606,
+          "lng": 151.13275549483,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.97932026871,
+          "lng": 151.13272867274,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.9795148854,
+          "lng": 151.13280243349,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.98027889060879,
+          "lng": 151.13316319060002
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.982216119012705,
+            "lng": 151.1339866287676,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (High)",
+          "club": "Driver",
+          "toPos": {
+            "lat": -33.98096651341881,
+            "lng": 151.13345425925792,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "FULL",
+          "strike": "Pull"
+        },
+        {
+          "fromPos": {
+            "lat": -33.98096651341881,
+            "lng": 151.13345425925792,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "9 Iron",
+          "toPos": {
+            "lat": -33.97946929238075,
+            "lng": 151.13318130016683,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Light rough",
+          "strokeType": "FULL",
+          "strike": "Thin"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97946929238075,
+            "lng": 151.13318130016683,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Light rough",
+          "club": "8 Iron",
+          "toPos": {
+            "lat": -33.9794114606,
+            "lng": 151.13275549483,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUNCH",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.9794114606,
+            "lng": 151.13275549483,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.9794114606,
+            "lng": 151.13275549483,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.9794114606,
+            "lng": 151.13275549483,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.9794114606,
+            "lng": 151.13275549483,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 16,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.979415730746034,
+            "lng": 151.13300050923982,
+            "alt": null
+          },
+          "nominalDistance": 344,
+          "par": 4
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.97627066685,
+          "lng": 151.1325981779,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.97618058374,
+          "lng": 151.13258342574,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.97635963771,
+          "lng": 151.13260622452,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.97737612335574,
+          "lng": 151.1327081484572
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.979415730746034,
+            "lng": 151.13300050923982,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (Low)",
+          "club": "4 Hybrid",
+          "toPos": {
+            "lat": -33.97825068390011,
+            "lng": 151.13278727378605,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "FULL",
+          "strike": "Skyball"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97825068390011,
+            "lng": 151.13278727378605,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "5 Iron",
+          "toPos": {
+            "lat": -33.97663396846168,
+            "lng": 151.132717620854,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97663396846168,
+            "lng": 151.132717620854,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "Pitching Wedge",
+          "toPos": {
+            "lat": -33.97647865519149,
+            "lng": 151.13259606226308,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Green",
+          "strokeType": "CHIP",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97647865519149,
+            "lng": 151.13259606226308,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.97627066685,
+            "lng": 151.1325981779,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97627066685,
+            "lng": 151.1325981779,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.97627066685,
+            "lng": 151.1325981779,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 17,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.975997824285294,
+            "lng": 151.13222956852587,
+            "alt": null
+          },
+          "nominalDistance": 356,
+          "par": 4
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.97937421455,
+          "lng": 151.13227918939,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.97950321758,
+          "lng": 151.13228455381,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.97923965084,
+          "lng": 151.13227650718,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.97805748278111,
+          "lng": 151.13223761515292
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.975997824285294,
+            "lng": 151.13222956852587,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (High)",
+          "club": "Driver",
+          "toPos": {
+            "lat": -33.977381478938966,
+            "lng": 151.13177407385825,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Wrong Fairway",
+          "strokeType": "FULL",
+          "strike": "Slice"
+        },
+        {
+          "fromPos": {
+            "lat": -33.977381478938966,
+            "lng": 151.13177407385825,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Wrong Fairway",
+          "club": "5 Iron",
+          "toPos": {
+            "lat": -33.97880949542914,
+            "lng": 151.13213842252287,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Fairway",
+          "strokeType": "LOW_DRAW",
+          "strike": "Thin"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97880949542914,
+            "lng": 151.13213842252287,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Fairway",
+          "club": "Sand Wedge",
+          "toPos": {
+            "lat": -33.97926026681371,
+            "lng": 151.1321550725184,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Green",
+          "strokeType": "THREE_QTR",
+          "strike": "Fat"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97926026681371,
+            "lng": 151.1321550725184,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.97937421455,
+            "lng": 151.13227918939,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97937421455,
+            "lng": 151.13227918939,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.97937421455,
+            "lng": 151.13227918939,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97937421455,
+            "lng": 151.13227918939,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.97937421455,
+            "lng": 151.13227918939,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    },
+    {
+      "holeNum": 18,
+      "tees": {
+        "tee": {
+          "pos": {
+            "lat": -33.97949076869195,
+            "lng": 151.13162759213122,
+            "alt": null
+          },
+          "nominalDistance": 350,
+          "par": 4
+        }
+      },
+      "pins": {
+        "pin": {
+          "lat": -33.9761933449,
+          "lng": 151.13182741621,
+          "alt": null
+        }
+      },
+      "green": {
+        "back": {
+          "lat": -33.9761010374,
+          "lng": 151.131835463,
+          "alt": null
+        },
+        "front": {
+          "lat": -33.9762845401,
+          "lng": 151.131823393,
+          "alt": null
+        }
+      },
+      "waypoints": [
+        {
+          "lat": -33.97744004189045,
+          "lng": 151.13179388909015
+        }
+      ],
+      "strokes": [
+        {
+          "fromPos": {
+            "lat": -33.97949076869195,
+            "lng": 151.13162759213122,
+            "alt": null
+          },
+          "fromPosSetMethod": "Tee",
+          "fromLie": "Tee (High)",
+          "club": "Driver",
+          "toPos": {
+            "lat": -33.97771950917125,
+            "lng": 151.1318821463001,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Light rough",
+          "strokeType": "FULL",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97727806126725,
+            "lng": 151.1316703188519,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Light rough",
+          "club": "5 Iron",
+          "toPos": {
+            "lat": -33.97771987683178,
+            "lng": 151.13201002209917,
+            "alt": null
+          },
+          "toPosSetMethod": "Gps",
+          "toLie": "Light rough",
+          "strokeType": "FADE",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.97771987683178,
+            "lng": 151.13201002209917,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Light rough",
+          "club": "9 Iron",
+          "toPos": {
+            "lat": -33.9761933449,
+            "lng": 151.13182741621,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUNCH",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.9761933449,
+            "lng": 151.13182741621,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.9761933449,
+            "lng": 151.13182741621,
+            "alt": null
+          },
+          "toPosSetMethod": "Near Pin",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        },
+        {
+          "fromPos": {
+            "lat": -33.9761933449,
+            "lng": 151.13182741621,
+            "alt": null
+          },
+          "fromPosSetMethod": "Last Shot",
+          "fromLie": "Green",
+          "club": "Putter",
+          "toPos": {
+            "lat": -33.9761933449,
+            "lng": 151.13182741621,
+            "alt": null
+          },
+          "toPosSetMethod": "Hole",
+          "toLie": "Green",
+          "strokeType": "PUTT",
+          "strike": "Clean"
+        }
+      ],
+      "completed": false
+    }
+  ],
+  "currentHoleNum": 7,
+  "timePlayed": 1757033428216
+}
