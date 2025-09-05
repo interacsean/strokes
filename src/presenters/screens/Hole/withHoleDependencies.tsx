@@ -42,7 +42,9 @@ import { RoutePaths } from "presenters/routes/RoutePaths";
 
 type HolePublicProps = {};
 
-const USE_FAKE_POSITION = true;
+const USE_FAKE_POSITION =
+  typeof window !== "undefined" &&
+  /^localhost:\d+$/.test(window.location.host);
 
 function shouldShowNewStroke(strokes: Stroke[]) {
   return strokes.length === 0;
