@@ -458,13 +458,27 @@ export function HoleView(props: HoleViewProps) {
                 <ScoreCard round={props.course} />
                 <h4>Export</h4>
                 <Text>
-                  Copy the JSON data of your current course + round, for
+                  Export the JSON data of your current course + round, for
                   external use and analysis.
                 </Text>
                 <Button
-                  onClick={() => copyToClipboard(JSON.stringify(props.course))}
+                  onClick={() => {
+                    const json = JSON.stringify(props.course);
+                    if (json.length > 20000) {
+                      // For large data, offer to download as file
+                      if (window.confirm(`The data is large (${json.length} characters). Android has a ~20KB clipboard limit. Download as file instead?`)) {
+                        import('../../../usecases/device/downloadAsFile').then(({ downloadCourseAsJSON }) => {
+                          downloadCourseAsJSON(props.course, props.course.courseName);
+                        });
+                      } else {
+                        copyToClipboard(json, true);
+                      }
+                    } else {
+                      copyToClipboard(json);
+                    }
+                  }}
                 >
-                  Copy round
+                  Export round
                 </Button>
               </Flex>
             </TabPanel>
