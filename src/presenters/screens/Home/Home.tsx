@@ -23,6 +23,9 @@ export function Home(props: Props) {
         <Button variant="link" as={Link} to={RoutePaths.ChooseCourse} py={3}>
           New Round
         </Button>
+        <Button variant="link" as={Link} to={RoutePaths.PreviousRounds} py={3}>
+          Previous Rounds
+        </Button>
         <Button variant="link" as={Link} to={RoutePaths.Stats} py={3}>
           Stats
         </Button>

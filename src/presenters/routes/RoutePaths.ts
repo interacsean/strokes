@@ -3,6 +3,7 @@ export enum RoutePaths {
   ChooseCourse = "/choose-course",
   Hole = "/hole",
   PostRound = "/post-round",
+  PreviousRounds = "/previous-rounds",
   Stats = "/stats",
   FairwaysGreens = "/stats/fairways-greens",
   ClubDistances = "/stats/club-distances",
