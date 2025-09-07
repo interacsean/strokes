@@ -1,7 +1,8 @@
-import { Button, Container, Flex, Text } from "@chakra-ui/react";
+import { Button, Container, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import { Course, CourseDef } from "model/Course";
 import { Stroke } from "model/Stroke";
 import { RoutePaths } from "presenters/routes/RoutePaths";
+import { JsonPasteModal } from "presenters/components/JsonPasteModal";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -10,12 +11,14 @@ export type ChooseCourseViewProps = {
   setCourse: (course: Course) => void;
   newCourse: () => Course;
   hasIncompleteCourse: boolean;
+  loadCourseFromJson: (jsonString: string) => Course;
 };
 
 function useChooseCourseViewLogic(props: ChooseCourseViewProps) {
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { setCourse } = props;
+  const { setCourse, loadCourseFromJson } = props;
 
   const selectCourse = useCallback(
     (courseDef: CourseDef) => {
@@ -41,9 +44,23 @@ function useChooseCourseViewLogic(props: ChooseCourseViewProps) {
     navigate(RoutePaths.Hole);
   }, [navigate]);
 
+  const handleJsonSubmit = useCallback((jsonString: string) => {
+    try {
+      const course = loadCourseFromJson(jsonString);
+      setCourse(course);
+      navigate(RoutePaths.Hole);
+    } catch (error) {
+      console.error("Error loading course from JSON:", error);
+    }
+  }, [loadCourseFromJson, setCourse, navigate]);
+
   return {
     selectCourse,
     continueRound,
+    handleJsonSubmit,
+    isOpen,
+    onOpen,
+    onClose,
   };
 }
 
@@ -69,6 +86,13 @@ export function ChooseCourseView(props: ChooseCourseViewProps) {
         >
           New course
         </Button>
+        <Button
+          variant="link"
+          py={3}
+          onClick={viewLogic.onOpen}
+        >
+          Load from JSON...
+        </Button>
         {props.courses.map((course) => (
           <Button
             key={course.courseName}
@@ -80,6 +104,14 @@ export function ChooseCourseView(props: ChooseCourseViewProps) {
           </Button>
         ))}
       </Flex>
+      
+      <JsonPasteModal
+        isOpen={viewLogic.isOpen}
+        onClose={viewLogic.onClose}
+        onSubmit={viewLogic.handleJsonSubmit}
+        title="Load Course from JSON"
+        placeholder="Paste course JSON data here..."
+      />
     </Container>
   );
 }

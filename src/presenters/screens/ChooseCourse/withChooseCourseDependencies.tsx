@@ -13,6 +13,7 @@ import { auVicGippslandYarramGolfClub } from "data/courses/au_vic_gippsland_yarr
 import { auVicGeelongElchoParkGolfCourse } from "data/courses/au_vic_geelong_laraElchoParkGolfCourse";
 import { useCourseState } from "state/course/courseState";
 import newCourse from "usecases/course/newCourse";
+import loadCourseFromJson from "usecases/course/loadCourseFromJson";
 import { auVicMelbourneIvanhoePublic } from "data/courses/au_vic_melbourne-ivanhoePublic";
 import { auNswSydneyBeveryleyPark } from "data/courses/au_nsw_sydney_beverleyPark";
 
@@ -48,6 +49,7 @@ export function withChooseCourseDependencies(
       setCourse: setCourseState,
       newCourse,
       hasIncompleteCourse,
+      loadCourseFromJson,
     };
 
     return (
