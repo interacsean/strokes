@@ -1,5 +1,10 @@
 import { FC, useMemo } from "react";
 import { ChooseCourseViewProps } from "./ChooseCourse.View";
+import newCourse from "usecases/course/newCourse";
+import loadCourseFromJson from "usecases/course/loadCourseFromJson";
+import { useCourseState } from "state/course/courseState";
+
+// Import course data
 import { auVicMelbourneAltonaLakesGolfCourse } from "data/courses/au_vic_melbourne_altonaLakesPublic";
 import { auVicMelbourneBurnley } from "data/courses/au_vic_melbourne_burnleyPublic";
 import { auVicMelbourneNorthcote } from "data/courses/au_vic_melbourne_northcote";
@@ -11,11 +16,9 @@ import { auVicMelbourneWestgate } from "data/courses/au_vic_melbourne_westgate";
 import { auVicGippslandMorwellGolfClub } from "data/courses/au_vic_gippsland_morwellGolfClub";
 import { auVicGippslandYarramGolfClub } from "data/courses/au_vic_gippsland_yarramGolfClub";
 import { auVicGeelongElchoParkGolfCourse } from "data/courses/au_vic_geelong_laraElchoParkGolfCourse";
-import { useCourseState } from "state/course/courseState";
-import newCourse from "usecases/course/newCourse";
-import loadCourseFromJson from "usecases/course/loadCourseFromJson";
 import { auVicMelbourneIvanhoePublic } from "data/courses/au_vic_melbourne-ivanhoePublic";
 import { auNswSydneyBeveryleyPark } from "data/courses/au_nsw_sydney_beverleyPark";
+import { auVicMelbourneSanctuaryLakes } from "data/courses/au_vic_melbourne_sanctuaryLakes";
 
 type ChooseCoursePublicProps = {};
 
@@ -31,6 +34,7 @@ export function withChooseCourseDependencies(
       auVicMelbourneOakleigh,
       auVicMelbourneRiverside,
       auVicMelbourneRoyalPark,
+      auVicMelbourneSanctuaryLakes,
       auVicMelbourneYarraBendPublic,
       auVicMelbourneWestgate,
       auVicGeelongElchoParkGolfCourse,
