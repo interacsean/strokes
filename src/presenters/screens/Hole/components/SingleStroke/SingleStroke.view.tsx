@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text, Textarea } from "@chakra-ui/react";
 import { CustomModalSelect } from "presenters/components/CustomModalSelect/CustomModalSelect";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { HoleViewProps } from "../../Hole.view";
@@ -43,6 +43,9 @@ export type SingleStrokeViewProps = {
   clubs: Club[];
   distanceUnit: string;
   currentPosition: LatLng | undefined;
+  holeNote: string;
+  setHoleNote: (note: string) => void;
+  saveHoleNote: () => void;
   prevStroke: StrokeWithDerivedFields | undefined;
   nextStroke: StrokeWithDerivedFields | undefined;
   clubStats: ClubStats;
@@ -329,6 +332,15 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
             />
           )}
         </Box>
+        <Textarea
+          name="holeNote"
+          size="sm"
+          rows={2}
+          placeholder="Hole notes (saved for this course across rounds)"
+          value={props.holeNote}
+          onChange={(e) => props.setHoleNote(e.currentTarget.value)}
+          onBlur={props.saveHoleNote}
+        />
         {/* <Flex flexDir="row" alignItems={"center"} columnGap={4}>
           <Text variant="inputLabel" minWidth={inputLabelWidth}>
             Target

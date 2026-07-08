@@ -32,6 +32,7 @@ import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { DeepPartial } from "types/DeepPartial";
 import { PosOptionMethods } from "model/PosOptions";
 import { useRoundsState } from "state/rounds/roundsState";
+import { useCourseNotesState } from "state/courseNotes/courseNotesState";
 import {
   FakeGpsProvider,
   useFakeGps,
@@ -58,6 +59,8 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
   } = useCourseState();
 
   const { upsertRound: saveRound, state: rounds } = useRoundsState();
+
+  const { getHoleNote, setHoleNote } = useCourseNotesState();
 
   const currentHole = useSelector(selectCurrentHole, courseState);
   const currentPin = useSelector(selectCurrentPinFromHole, currentHole);
@@ -348,6 +351,20 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     navigate(RoutePaths.PostRound);
   }, [navigate]);
 
+  const holeNote =
+    courseState && currentHole
+      ? getHoleNote(courseState.courseName, currentHole.holeNum)
+      : "";
+
+  const saveHoleNote = useCallback(
+    (note: string) => {
+      if (courseState && currentHole) {
+        setHoleNote(courseState.courseName, currentHole.holeNum, note);
+      }
+    },
+    [setHoleNote, courseState, currentHole]
+  );
+
   const viewProps: Omit<HoleViewProps, "hole" | "course"> = {
     saveRound,
     resetCourse,
@@ -379,6 +396,8 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     ),
     clubStats,
     finishRound,
+    holeNote,
+    saveHoleNote,
   };
 
   return (

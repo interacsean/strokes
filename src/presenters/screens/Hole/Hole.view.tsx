@@ -67,6 +67,8 @@ export type HoleViewProps = {
   resetCourse: () => void;
   clubStats: ClubStats;
   finishRound: () => void;
+  holeNote: string;
+  saveHoleNote: (note: string) => void;
 };
 
 const DEFAULT_HOLE_TAB = 1;
@@ -132,6 +134,22 @@ function useHoleViewLogic(props: HoleViewProps) {
     [currentPosition, parentSetFromPosition]
   );
 
+  const { holeNote, saveHoleNote } = props;
+  const [noteValue, setNoteValue] = useState(holeNote);
+  useEffect(
+    function syncNoteOnHoleChange() {
+      setNoteValue(holeNote);
+    },
+    // reset the editable value whenever we navigate to a different hole
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [props.holeNum]
+  );
+  const saveNote = useCallback(() => {
+    if (noteValue !== holeNote) {
+      saveHoleNote(noteValue);
+    }
+  }, [noteValue, holeNote, saveHoleNote]);
+
   const [tabIndex, setTabIndex] = useState(DEFAULT_HOLE_TAB);
 
   const availableActiveStroke =
@@ -176,6 +194,9 @@ function useHoleViewLogic(props: HoleViewProps) {
     saveAndNavHome,
     setSaveRoundData,
     handleLeaveClick,
+    noteValue,
+    setNoteValue,
+    saveNote,
   };
 }
 
@@ -353,6 +374,9 @@ export function HoleView(props: HoleViewProps) {
                     distanceUnit={distanceUnit}
                     currentPosition={props.currentPosition}
                     clubStats={props.clubStats}
+                    holeNote={viewLogic.noteValue}
+                    setHoleNote={viewLogic.setNoteValue}
+                    saveHoleNote={viewLogic.saveNote}
                   />
                 </Box>
 
