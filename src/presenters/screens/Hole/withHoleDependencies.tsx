@@ -1,4 +1,4 @@
-import { head, last, partial } from "ramda";
+import { head, partial } from "ramda";
 import { nextHole } from "usecases/course/nextHole";
 import { prevHole } from "usecases/course/prevHole";
 import { saveHole } from "usecases/course/saveHole";
@@ -25,6 +25,8 @@ import { useSelector } from "state/utils/useSelector";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 import { Strike } from "model/Strike";
 import { StrokeType } from "model/StrokeType";
+import { Penalty } from "model/Penalty";
+import { setStrokePenalty } from "usecases/stroke/setStrokePenalty";
 import { setStrokeType } from "usecases/stroke/setStrokeType";
 import { setClub } from "usecases/stroke/setClub";
 import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
@@ -83,10 +85,9 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
 
   const addStroke = useCallback(() => {
     if (strokes && currentHole) {
-      const strokeToAdd = {
-        ...newStrokeFromStrokes(strokes, currentHole),
-        fromPos: last(strokes)?.toPos,
-      };
+      // newStrokeFromStrokes already carries the last stroke's toPos forward
+      // where the ball was played on from there, and withholds it after relief.
+      const strokeToAdd = newStrokeFromStrokes(strokes, currentHole);
       saveStroke(
         updateCourseState,
         currentHole,
@@ -242,6 +243,23 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     [saveStrokeAndUpdate]
   );
 
+  const selectPenalty = useCallback(
+    (strokeNum: number, penalty: Penalty | undefined) => {
+      if (strokes) {
+        const saveStrokeNumAndUpdate = partial(saveStrokeAndUpdate, [
+          strokeNum,
+        ]);
+        setStrokePenalty(
+          saveStrokeNumAndUpdate,
+          strokeNum,
+          strokes[strokeNum - 1],
+          penalty
+        );
+      }
+    },
+    [saveStrokeAndUpdate, strokes]
+  );
+
   const setToPosition = useCallback(
     (strokeNum: number, pos: LatLng) => {
       saveStrokeAndUpdate(strokeNum, { toPos: pos });
@@ -377,6 +395,7 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     selectStrokeClub: setStrokeClubAndUpdate,
     selectStrokeType: setStrokeTypeAndUpdate,
     selectStrike,
+    selectPenalty,
     setFromPosMethod,
     setToPosMethod,
     preprocessedStrokes,

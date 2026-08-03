@@ -13,8 +13,14 @@ export function calculateStrokeDistances(hole: Hole, strokes: Stroke[]) {
             stroke.intendedPos || pin
           )
         : undefined;
+    // Falling back to where the previous stroke finished is only valid if the
+    // ball was played on from there — after relief it was moved or replayed.
+    const prevStroke = i > 0 ? strokes[i - 1] : undefined;
     const fromPos =
-      stroke.fromPos || (i > 0 ? strokes[i - 1]?.toPos : undefined); // || hole.teePos[tee]
+      stroke.fromPos ||
+      (prevStroke && !prevStroke.penalty?.relief
+        ? prevStroke.toPos
+        : undefined); // || hole.teePos[tee]
     const toPos = stroke.toPos;
     if (!fromPos || !toPos) {
       return {

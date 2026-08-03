@@ -69,7 +69,11 @@ export function StrokeCounter({
             bgColor={"transparent"}
             opacity={pip.kind === "future" ? 0.4 : 1}
             color={
-              pip.kind === "penalty" ? "#FAC775" : overPar ? "pink" : "white"
+              pip.kind === "penalty"
+                ? "penalty.300"
+                : overPar
+                ? "pink"
+                : "white"
             }
             borderBottom={`3px solid`}
             borderColor={isActive ? `white` : "transparent"}

@@ -7,9 +7,16 @@ import { calculateCaddySuggestions } from "usecases/stroke/calculateCaddySuggest
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
 import { LatLng } from "model/LatLng";
 import { StrokeType } from "model/StrokeType";
+import { PenaltyReason, newPenalty } from "model/Penalty";
+import {
+  LieDerivedReasons,
+  penaltyReasonForLie,
+} from "usecases/stroke/penaltyReasonForLie";
+import { isFromTeeingArea } from "usecases/stroke/isFromTeeingArea";
 
 type GeneratedPropKeys =
   | "clubs"
+  | "penaltyReasons"
   | "fromPosOptions"
   | "toPosOptions"
   | "prevStroke"
@@ -42,6 +49,19 @@ const toLies = [
   Lie.HAZARD,
 ];
 
+// Trouble reasons first — they're what the To lie leads into. The score-only
+// ones below are the reason the manual "+ Penalty" path exists at all.
+const penaltyReasons = [
+  PenaltyReason.PENALTY_AREA,
+  PenaltyReason.OUT_OF_BOUNDS,
+  PenaltyReason.LOST_BALL,
+  PenaltyReason.UNPLAYABLE,
+  PenaltyReason.BALL_MOVED,
+  PenaltyReason.GROUNDED_CLUB,
+  PenaltyReason.WRONG_BALL,
+  PenaltyReason.OTHER,
+];
+
 export function withSingleStrokeDependencies(
   HoleView: FC<SingleStrokeViewProps>
 ) {
@@ -52,7 +72,7 @@ export function withSingleStrokeDependencies(
       hole: { tees, pins, pinPlayed, teePlayed, holeNum },
       strokes,
       strokeNum,
-      stroke: { fromPos, fromLie, fromPosSetMethod, toPosSetMethod },
+      stroke: { fromPos, fromLie, fromPosSetMethod, toPosSetMethod, toLie, penalty },
       clubStats,
       setFromPosition,
       setFromPosMethod,
@@ -61,6 +81,7 @@ export function withSingleStrokeDependencies(
       selectStrokeType,
       selectClub,
       selectToLie,
+      selectPenalty,
       currentPosition,
     } = props;
 
@@ -112,6 +133,12 @@ export function withSingleStrokeDependencies(
             case PosOptionMethods.LAST_SHOT:
               setFromPosition(strokeNum, prevStroke?.toPos);
               break;
+            case PosOptionMethods.REPLAY:
+              // stroke and distance — play again from where the last one was hit
+              if (prevStroke?.fromPos) {
+                setFromPosition(strokeNum, prevStroke.fromPos);
+              }
+              break;
           }
         }
       },
@@ -137,6 +164,26 @@ export function withSingleStrokeDependencies(
         }
       },
       [toPosSetMethod],
+    );
+
+    useEffect(
+      function suggestPenaltyOnToLieChange() {
+        if (holeNum === localHoleNum && strokeNum === localStrokeNum) {
+          // toLie changed by the player, not by navigating strokes or holes
+          const reason = penaltyReasonForLie(toLie);
+          if (reason && !penalty) {
+            selectPenalty(strokeNum, newPenalty(reason));
+          } else if (
+            !reason &&
+            penalty &&
+            LieDerivedReasons.includes(penalty.reason)
+          ) {
+            // corrected to a playable lie, so the lie's penalty goes with it
+            selectPenalty(strokeNum, undefined);
+          }
+        }
+      },
+      [toLie]
     );
 
     const prevStroke = useMemo(() => {
@@ -175,6 +222,7 @@ export function withSingleStrokeDependencies(
       // todo: exclude if last stroke's toLie was hazard/water
       if (strokeNum > 1) {
         fo.push(PosOptions[PosOptionMethods.DROP]);
+        fo.push(PosOptions[PosOptionMethods.REPLAY]);
       }
       fo.push(PosOptions[PosOptionMethods.CUSTOM]);
       return fo;
@@ -213,16 +261,18 @@ export function withSingleStrokeDependencies(
     }, [pinPlayedPos]);
 
     const fromLies = useMemo(() => {
-      if (strokeNum === 1) {
+      if (isFromTeeingArea(strokeNum, props.stroke)) {
         return TeeLies;
       } else {
         return Object.values(Lie).filter((lie) => {
+          // you never play a shot from the water
           if (lie === Lie.WATER) return false;
-          // todo: only allow tees if previous shot was OOB
+          if ((TeeLies as string[]).includes(lie)) return false;
           return true;
         });
       }
-    }, [strokeNum]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [strokeNum, fromPosSetMethod]);
 
     const caddySuggestions = useMemo(() => {
       return fromPos && pinPlayedPos && clubStats
@@ -352,6 +402,7 @@ export function withSingleStrokeDependencies(
       onToPosClick,
       onMapClick: mapClickAction ? onMapClick : undefined,
       acceptCaddySuggestion,
+      penaltyReasons,
       clubs: [
         Club.D,
         Club["3W"],

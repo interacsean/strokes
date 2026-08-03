@@ -51,6 +51,12 @@ const elementColors = {
   placeholder: {
     100: "#A5A5A5",
   },
+  penalty: {
+    100: "#FAEEDA", // bar background
+    300: "#FAC775", // pips on a dark panel
+    500: "#EF9F27", // borders
+    900: "#854F0B", // text
+  },
   disabled: {
     100: "#7c7c7c",
   },

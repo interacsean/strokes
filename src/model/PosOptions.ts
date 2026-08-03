@@ -3,6 +3,7 @@ export enum PosOptionMethods {
   LAST_SHOT = "Last Shot",
   CUSTOM = "Custom",
   DROP = "Drop",
+  REPLAY = "Replay",
   NEAR_PIN = "Near Pin",
   HOLE = "Hole",
   TEE = "Tee",
@@ -47,6 +48,15 @@ export const PosOptions: Record<PosOptionMethods, PosOption> = {
     label: "Take Drop",
     value: PosOptionMethods.DROP,
     actionable: true,
+  },
+  // Stroke and distance — the position is the previous stroke's fromPos, so
+  // there is nothing for the player to set.
+  [PosOptionMethods.REPLAY]: {
+    buttonText: "Replay",
+    buttonTextSmall: "Prev spot",
+    label: "Replay from previous spot",
+    value: PosOptionMethods.REPLAY,
+    actionable: false,
   },
   [PosOptionMethods.NEAR_PIN]: {
     buttonText: "Near Pin",

@@ -2,6 +2,7 @@ import { Club } from "model/Club";
 import { Lie, PuttableLies, TeeLies } from "model/Lie";
 import { Stroke } from "model/Stroke";
 import { StrokeType } from "model/StrokeType";
+import { isFromTeeingArea } from "./isFromTeeingArea";
 
 export function setStrokeFromLie(
   setHoleAttr: (partStroke: Partial<Stroke>) => void,
@@ -12,7 +13,9 @@ export function setStrokeFromLie(
   const validLie =
     strokeNum === 1 && (!lie || !(TeeLies as string[]).includes(lie))
       ? Lie.TEE_HIGH
-      : strokeNum > 1 && lie && (TeeLies as string[]).includes(lie)
+      : !isFromTeeingArea(strokeNum, stroke) &&
+        lie &&
+        (TeeLies as string[]).includes(lie)
       ? undefined
       : lie;
   const attrs: Partial<Stroke> = {

@@ -19,6 +19,16 @@ import { ClubStats } from "model/ClubStats";
 import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
 import { Strike, StrikeLabels } from "model/Strike";
 import { StrokeTypeLabels } from "model/StrokeType";
+import {
+  Penalty,
+  PenaltyReason,
+  PenaltyReasonLabels,
+  PenaltyRules,
+  ReliefMethod,
+  ReliefMethodLabels,
+  newPenalty,
+} from "model/Penalty";
+import { PenaltySelectModal } from "./PenaltySelectModal.view";
 
 export type SingleStrokeViewProps = {
   hole: Hole;
@@ -60,6 +70,8 @@ export type SingleStrokeViewProps = {
   mapClickAction: "from" | "to" | null;
   onMapClick: undefined | ((latLng: LatLng) => void);
   acceptCaddySuggestion: () => void;
+  selectPenalty: (strokeNum: number, penalty: Penalty | undefined) => void;
+  penaltyReasons: PenaltyReason[];
 };
 
 enum Modals {
@@ -68,6 +80,7 @@ enum Modals {
   FromLie = "FromLie",
   ToLie = "ToLie",
   Strike = "Strike",
+  Penalty = "Penalty",
 }
 
 function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
@@ -76,7 +89,15 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
   const {
     fromPosOptions,
     toPosOptions,
-    stroke: { fromPosSetMethod, fromPos, toPosSetMethod, toPos, fromLie, toLie },
+    stroke: {
+      fromPosSetMethod,
+      fromPos,
+      toPosSetMethod,
+      toPos,
+      fromLie,
+      toLie,
+      penalty,
+    },
     hole: { strokes },
     setFromPosMethod,
     setToPosMethod,
@@ -85,6 +106,7 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     prevStroke,
     distSinceFromPos,
     currentPosition,
+    selectPenalty,
   } = props;
 
   const ballMapPos = useMemo(() => {
@@ -117,6 +139,8 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     switch (fromPosSetMethod) {
       case PosOptionMethods.TEE:
         return "buttonReadOnly";
+      case PosOptionMethods.REPLAY:
+        return !fromPos ? "buttonUnsatisfied" : "buttonReadOnly";
       case PosOptionMethods.DROP:
       case PosOptionMethods.GPS:
         return !fromPos ? "buttonUnsatisfied" : "buttonPrimary";
@@ -208,6 +232,33 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
 
   const closeModal = () => setActiveModal(null);
 
+  // Only offered when the rules give a genuine choice — out of bounds and lost
+  // balls are stroke and distance with nothing to pick.
+  const reliefOptions = useMemo(
+    () => (penalty ? PenaltyRules[penalty.reason].reliefOptions : []),
+    [penalty]
+  );
+
+  const setPenaltyReason = useCallback(
+    (reason: PenaltyReason) => {
+      selectPenalty(strokeNum, newPenalty(reason));
+      setActiveModal(null);
+    },
+    [selectPenalty, strokeNum]
+  );
+
+  const setPenaltyRelief = useCallback(
+    (relief: ReliefMethod) => {
+      if (penalty) selectPenalty(strokeNum, { ...penalty, relief });
+    },
+    [selectPenalty, strokeNum, penalty]
+  );
+
+  const clearPenalty = useCallback(
+    () => selectPenalty(strokeNum, undefined),
+    [selectPenalty, strokeNum]
+  );
+
   const [usingCaddie, setShowCaddie] = useState(true);
   const showCaddie = () => setShowCaddie(true);
   const hideCaddie = () => setShowCaddie(false);
@@ -237,6 +288,10 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     ballMapPos,
     showGreenView,
     greenViewSetToPosFromGps,
+    reliefOptions,
+    setPenaltyReason,
+    setPenaltyRelief,
+    clearPenalty,
   };
 }
 
@@ -292,6 +347,12 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           props.selectStrike(props.strokeNum, strike);
           viewLogic.setActiveModal(null);
         }}
+        cancel={viewLogic.closeModal}
+      />
+    ) : viewLogic.activeModal === Modals.Penalty ? (
+      <PenaltySelectModal
+        selectReason={viewLogic.setPenaltyReason}
+        reasons={props.penaltyReasons}
         cancel={viewLogic.closeModal}
       />
     ) : null;
@@ -574,6 +635,69 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               <Button variant="link" onClick={() => viewLogic.setActiveModal(Modals.ToLie)}>Leave Green View</Button>
             )}
           </Flex>
+          {props.stroke.penalty ? (
+            <Box
+              bgColor="penalty.100"
+              borderWidth="1px"
+              borderColor="penalty.500"
+              borderRadius="md"
+              px={2}
+              py={2}
+              mt={1}
+            >
+              <Flex justifyContent="space-between" alignItems="center">
+                <Button
+                  variant="link"
+                  color="penalty.900"
+                  px={0}
+                  onClick={() => viewLogic.setActiveModal(Modals.Penalty)}
+                >
+                  <Text variant="area-heading" color="penalty.900">
+                    {PenaltyReasonLabels[props.stroke.penalty.reason]} &middot; +
+                    {props.stroke.penalty.strokes}
+                  </Text>
+                </Button>
+                <Button
+                  variant="link"
+                  color="penalty.900"
+                  px={0}
+                  onClick={viewLogic.clearPenalty}
+                >
+                  <Text variant="minor" color="penalty.900">
+                    No penalty
+                  </Text>
+                </Button>
+              </Flex>
+              {viewLogic.reliefOptions.length > 1 && (
+                <Flex columnGap={1} mt={2}>
+                  {viewLogic.reliefOptions.map((relief) => (
+                    <Button
+                      key={relief}
+                      flex={1}
+                      variant={
+                        props.stroke.penalty?.relief === relief
+                          ? "penalty"
+                          : "penaltyOutline"
+                      }
+                      onClick={() => viewLogic.setPenaltyRelief(relief)}
+                    >
+                      {ReliefMethodLabels[relief]}
+                    </Button>
+                  ))}
+                </Flex>
+              )}
+            </Box>
+          ) : (
+            <Flex justifyContent="flex-end">
+              <Button
+                variant="link"
+                px={0}
+                onClick={() => viewLogic.setActiveModal(Modals.Penalty)}
+              >
+                <Text variant="minor-clickable">+ Penalty</Text>
+              </Button>
+            </Flex>
+          )}
           <Flex flexDir="row" alignItems={"center"} columnGap={4}>
             <Text variant="inputLabel" minWidth={inputLabelWidth}>
               Strike

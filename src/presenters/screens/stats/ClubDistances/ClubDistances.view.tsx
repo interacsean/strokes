@@ -74,8 +74,12 @@ function useClubDistancesLogic(props: ClubDistancesViewProps) {
           if (!selectedStrikes.includes(stroke.strike) && !selectedStrikes.includes('ALL')) return;
           if (!selectedStrokeTypes.includes(stroke.strokeType)) return;
 
-          // Calculate stroke distance
-          const fromPos = stroke.fromPos || (i > 0 ? hole.strokes[i - 1]?.toPos : undefined);
+          // Calculate stroke distance. The previous stroke's toPos is only a
+          // valid start if no relief was taken after it.
+          const prevStroke = i > 0 ? hole.strokes[i - 1] : undefined;
+          const fromPos =
+            stroke.fromPos ||
+            (prevStroke && !prevStroke.penalty?.relief ? prevStroke.toPos : undefined);
           const toPos = stroke.toPos;
           
           if (!fromPos || !toPos) return;

@@ -11,6 +11,7 @@ import { Container, StrokesContainer } from "./Hole.styles";
 import { HoleOverview } from "./components/HoleOverview/HoleOverview.view";
 import { Strike } from "model/Strike";
 import { StrokeType } from "model/StrokeType";
+import { Penalty } from "model/Penalty";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { SingleStroke } from "./components/SingleStroke";
 import { PosOptionMethods } from "model/PosOptions";
@@ -37,6 +38,7 @@ export type HoleViewProps = {
   selectStrokeClub: (stroke: number, club: Club) => void;
   selectStrokeType: (stroke: number, strokeType: StrokeType) => void;
   selectStrike: (stroke: number, strike: Strike) => void;
+  selectPenalty: (stroke: number, penalty: Penalty | undefined) => void;
   preprocessedStrokes: StrokeWithDerivedFields[];
   setFromPosition: (stroke: number, pos: LatLng) => void;
   setToPosition: (stroke: number, pos: LatLng) => void;
@@ -271,6 +273,7 @@ export function HoleView(props: HoleViewProps) {
                 selectClub={props.selectStrokeClub}
                 selectStrokeType={props.selectStrokeType}
                 selectStrike={props.selectStrike}
+                selectPenalty={props.selectPenalty}
                 setFromPosition={viewLogic.setFromPosition}
                 setToPosition={viewLogic.setToPosition}
                 setFromPosMethod={props.setFromPosMethod}
