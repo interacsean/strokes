@@ -11,6 +11,8 @@ import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistan
 import "./mapStyles.css";
 import { useFakeGps } from "../FakePos/FakePosContext";
 import { BASE_PATH } from "App";
+import { Box } from "@chakra-ui/react";
+import { GpsAccuracy } from "presenters/components/GpsAccuracy/GpsAccuracy";
 
 type GoogleMap = any;
 
@@ -23,6 +25,7 @@ type MapProps = {
   zoomFactor?: number;
   tilt?: number;
   onMapClick?: (pos: LatLng) => void;
+  gpsAccuracy?: number | null;
 };
 
 const createRotatedIcon = (
@@ -220,6 +223,9 @@ function Map({ mapId = "map", ...props }: MapProps) {
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <div id={mapId} style={{ width: "100%", height: "100%" }}></div>
+      <Box position="absolute" bottom={1} right={1} pointerEvents="none">
+        <GpsAccuracy accuracy={props.gpsAccuracy} />
+      </Box>
     </div>
   );
 }

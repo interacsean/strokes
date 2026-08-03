@@ -1,5 +1,9 @@
 import { Flex, Box, Text, Button } from "@chakra-ui/react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CloseIcon,
+} from "@chakra-ui/icons";
 import { StrokeCounter } from "./StrokeCounter.view";
 
 const MIN_DIST_FOR_RESULT_TEXT = 270;
@@ -21,6 +25,8 @@ type HoleOverviewProps = {
   nextHole: (() => void) | null;
   prevHole: (() => void) | null;
   setPar: (par: number) => void;
+  leaveRound: () => void;
+  showScorecard: () => void;
 };
 
 export function HoleOverview(props: HoleOverviewProps) {
@@ -61,7 +67,17 @@ export function HoleOverview(props: HoleOverviewProps) {
   return (
     <Box borderBottom="1px solid" borderColor="neutral.500">
       <Flex justifyContent="stretch" alignItems="stretch" bgColor="white">
-        <Flex width="3rem"></Flex>
+        <Flex width="3rem" alignItems="center" justifyContent="center">
+          <Button
+            aria-label="Leave round"
+            variant="ghost"
+            px={0}
+            minWidth="auto"
+            onClick={props.leaveRound}
+          >
+            <CloseIcon boxSize={4} />
+          </Button>
+        </Flex>
         <Flex
           py={1}
           px={2}
@@ -123,12 +139,22 @@ export function HoleOverview(props: HoleOverviewProps) {
         </Flex>
         {props.roundScore !== undefined && (
           <Flex
+            as="button"
+            type="button"
+            aria-label="Show scorecard"
+            onClick={props.showScorecard}
             bgColor={roundScoreBg}
             justifyContent="center"
             alignItems="center"
             width="3rem"
+            _active={{ opacity: 0.6 }}
           >
-            <Text variant="heading" color="white">
+            <Text
+              variant="heading"
+              color="white"
+              lineHeight="1.15em"
+              borderBottom="1px dotted currentColor"
+            >
               {props.roundScore > 0 ? "+" : props.roundScore < 0 ? "-" : ""}
               {props.roundScore === 0 ? "E" : Math.abs(props.roundScore)}
             </Text>

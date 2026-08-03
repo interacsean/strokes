@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text, Textarea } from "@chakra-ui/react";
+import { Box, Button, Flex, IconButton, Text, Textarea } from "@chakra-ui/react";
 import { CustomModalSelect } from "presenters/components/CustomModalSelect/CustomModalSelect";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { HoleViewProps } from "../../Hole.view";
@@ -14,6 +14,7 @@ import { PosOption, PosOptionMethods } from "model/PosOptions";
 import { LatLng } from "model/LatLng";
 import { Lie, shortLieNames } from "model/Lie";
 import Map from "presenters/components/Map/Map";
+import { ExpandIcon } from "presenters/components/icons/MapIcons";
 import { ClubStats } from "model/ClubStats";
 import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
 import { Strike, StrikeLabels } from "model/Strike";
@@ -43,6 +44,8 @@ export type SingleStrokeViewProps = {
   clubs: Club[];
   distanceUnit: string;
   currentPosition: LatLng | undefined;
+  gpsAccuracy: number | undefined;
+  showFullScreenMap: () => void;
   holeNote: string;
   setHoleNote: (note: string) => void;
   saveHoleNote: () => void;
@@ -310,7 +313,6 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
       )}
       <Flex
         flexDir="column"
-        rowGap={5}
         visibility={viewLogic.activeModal ? "hidden" : "visible"}
       >
         <Box
@@ -318,6 +320,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
           color="white"
           height="120px"
           mx={-4}
+          position="relative"
           className="smallLogo"
         >
           {props.currentPosition && (
@@ -329,18 +332,44 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               ballPos={viewLogic.ballMapPos}
               zoomFactor={0.8}
               onMapClick={props.onMapClick}
+              gpsAccuracy={props.gpsAccuracy}
             />
           )}
+          <IconButton
+            aria-label="Expand map"
+            variant="unstyled"
+            display="flex"
+            minW="auto"
+            height="auto"
+            p={1.5}
+            borderRadius="md"
+            bgColor="rgba(0, 0, 0, 0.55)"
+            color="white"
+            position="absolute"
+            top={1}
+            right={1}
+            onClick={props.showFullScreenMap}
+          >
+            <ExpandIcon boxSize={4} />
+          </IconButton>
         </Box>
         <Textarea
           name="holeNote"
           size="sm"
           rows={2}
+          mt={2}
+          mb={4}
           placeholder="Hole notes (saved for this course across rounds)"
           value={props.holeNote}
           onChange={(e) => props.setHoleNote(e.currentTarget.value)}
           onBlur={props.saveHoleNote}
         />
+      </Flex>
+      <Flex
+        flexDir="column"
+        rowGap={5}
+        visibility={viewLogic.activeModal ? "hidden" : "visible"}
+      >
         {/* <Flex flexDir="row" alignItems={"center"} columnGap={4}>
           <Text variant="inputLabel" minWidth={inputLabelWidth}>
             Target

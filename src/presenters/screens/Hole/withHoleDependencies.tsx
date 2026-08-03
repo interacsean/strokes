@@ -26,7 +26,6 @@ import { Strike } from "model/Strike";
 import { StrokeType } from "model/StrokeType";
 import { setStrokeType } from "usecases/stroke/setStrokeType";
 import { setClub } from "usecases/stroke/setClub";
-import { GeoHUD } from "presenters/screens/Hole/components/GeoHUD";
 import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { DeepPartial } from "types/DeepPartial";
@@ -391,9 +390,7 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
     holeLength,
     roundScore: roundScore || 0,
     par: currentTee?.par,
-    gpsComponent: USE_FAKE_POSITION ? null : (
-      <GeoHUD currentPosition={currentPosition} geo={geo} />
-    ),
+    gpsAccuracy: USE_FAKE_POSITION ? undefined : geo.coords?.accuracy,
     clubStats,
     finishRound,
     holeNote,
