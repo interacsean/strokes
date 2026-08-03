@@ -19,6 +19,7 @@ import { auVicGeelongElchoParkGolfCourse } from "data/courses/au_vic_geelong_lar
 import { auVicMelbourneIvanhoePublic } from "data/courses/au_vic_melbourne-ivanhoePublic";
 import { auNswSydneyBeveryleyPark } from "data/courses/au_nsw_sydney_beverleyPark";
 import { auVicMelbourneSanctuaryLakes } from "data/courses/au_vic_melbourne_sanctuaryLakes";
+import { auVicMelbourneStudleyGreens } from "data/courses/au_vic_melbourne_studleyGreens";
 
 type ChooseCoursePublicProps = {};
 
@@ -35,6 +36,7 @@ export function withChooseCourseDependencies(
       auVicMelbourneRiverside,
       auVicMelbourneRoyalPark,
       auVicMelbourneSanctuaryLakes,
+      auVicMelbourneStudleyGreens,
       auVicMelbourneYarraBendPublic,
       auVicMelbourneWestgate,
       auVicGeelongElchoParkGolfCourse,
