@@ -5,19 +5,25 @@ import { PenaltyReasonLabels } from "model/Penalty";
 const MAX_PIPS = 6;
 
 type Pip =
-  | { kind: "stroke"; label: number; strokeNum: number }
-  | { kind: "penalty"; label: string; title: string }
-  | { kind: "future"; label: number };
+  | { kind: "stroke"; strokeNum: number }
+  | { kind: "penalty"; title: string }
+  | { kind: "future" };
 
-// Pips read left to right as the hole played out: a numbered pip per swing, with
-// a flag pip for each penalty stroke sitting after the swing that incurred it.
-function buildPips(strokes: Stroke[], par: number | undefined): Pip[] {
+type NumberedPip = Pip & { label: number };
+
+// Pips read left to right as the hole played out: one per swing, followed by one
+// per penalty stroke it incurred. Every pip is one stroke on the card, so the
+// labels are just the sequence — which is what makes a penalty take a number of
+// its own and the swing after it count on from there.
+function buildPips(
+  strokes: Stroke[],
+  par: number | undefined
+): NumberedPip[] {
   const pips: Pip[] = strokes.flatMap((stroke, i): Pip[] => [
-    { kind: "stroke", label: i + 1, strokeNum: i + 1 },
+    { kind: "stroke", strokeNum: i + 1 },
     ...Array(stroke.penalty?.strokes ?? 0).fill(0).map(
       (): Pip => ({
         kind: "penalty",
-        label: "⚑",
         title: `${PenaltyReasonLabels[stroke.penalty!.reason]} +${
           stroke.penalty!.strokes
         }`,
@@ -27,10 +33,10 @@ function buildPips(strokes: Stroke[], par: number | undefined): Pip[] {
 
   // pad out to par so the player can see what's left in regulation
   const target = Math.max(par || 1, pips.length);
-  for (let n = strokes.length + 1; pips.length < target; n++) {
-    pips.push({ kind: "future", label: n });
+  while (pips.length < target) {
+    pips.push({ kind: "future" });
   }
-  return pips;
+  return pips.map((pip, i) => ({ ...pip, label: i + 1 }));
 }
 
 export function StrokeCounter({
@@ -48,16 +54,12 @@ export function StrokeCounter({
   const pips = buildPips(strokes, par);
   const shownPips = pips.slice(-MAX_PIPS);
   const truncated = pips.length > MAX_PIPS;
-  const hiddenPips = pips.length - shownPips.length;
 
-  // todo: consider activeStroke, if user is scrolling back through
   return (
     <Flex alignItems="baseline">
       {shownPips.map((pip, i) => {
         const isActive = pip.kind === "stroke" && pip.strokeNum === activeStroke;
-        // a pip's position in the hole, not its label — a penalty pushes every
-        // following swing further past par
-        const overPar = !!par && hiddenPips + i + 1 > par;
+        const overPar = !!par && pip.label > par;
         const txt = (
           <Text
             display="inline-flex"

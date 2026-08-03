@@ -53,7 +53,7 @@ const elementColors = {
   },
   penalty: {
     100: "#FAEEDA", // bar background
-    300: "#FAC775", // pips on a dark panel
+    300: "#FFF04D", // penalty stroke numbers on a dark panel
     500: "#EF9F27", // borders
     900: "#854F0B", // text
   },

@@ -5,7 +5,7 @@ import {
   CloseIcon,
 } from "@chakra-ui/icons";
 import { Stroke } from "model/Stroke";
-import { countPenaltyStrokes } from "usecases/hole/calculateHoleScore";
+import { strokeNumberWithPenalties } from "usecases/hole/calculateHoleScore";
 import { StrokeCounter } from "./StrokeCounter.view";
 
 const MIN_DIST_FOR_RESULT_TEXT = 270;
@@ -42,13 +42,13 @@ export function HoleOverview(props: HoleOverviewProps) {
       ? "black"
       : "neutral.800";
 
-  // What the player cards by holing the stroke on screen: its own number, plus
-  // the penalties incurred before it. Counted off the stroke index rather than
-  // any outcome field, since club, lie and position are all filled in piecemeal
-  // while the shot is being recorded.
-  const strokesForScore =
-    props.activeStroke +
-    countPenaltyStrokes(props.strokes.slice(0, props.activeStroke - 1));
+  // What the player cards by holing the stroke on screen — its golf stroke
+  // number. Counted off the stroke index rather than any outcome field, since
+  // club, lie and position are all filled in piecemeal while a shot is recorded.
+  const strokesForScore = strokeNumberWithPenalties(
+    props.strokes,
+    props.activeStroke
+  );
 
   // todo: make relative to player's max strike, and lie - i.e. tee / other
   // todo: hide this if hole finished

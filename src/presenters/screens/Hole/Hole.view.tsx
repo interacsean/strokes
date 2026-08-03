@@ -12,6 +12,7 @@ import { HoleOverview } from "./components/HoleOverview/HoleOverview.view";
 import { Strike } from "model/Strike";
 import { StrokeType } from "model/StrokeType";
 import { Penalty } from "model/Penalty";
+import { strokeNumberWithPenalties } from "usecases/hole/calculateHoleScore";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { SingleStroke } from "./components/SingleStroke";
 import { PosOptionMethods } from "model/PosOptions";
@@ -326,7 +327,13 @@ export function HoleView(props: HoleViewProps) {
                 justifyContent={"flex-center"}
                 style={{ whiteSpace: "nowrap" }}
               >
-                <Text mx={2}>Shot {viewLogic.activeStroke}</Text>
+                <Text mx={2}>
+                  Shot{" "}
+                  {strokeNumberWithPenalties(
+                    props.preprocessedStrokes,
+                    viewLogic.activeStroke
+                  )}
+                </Text>
               </Flex>
               <Flex flex={1} justifyContent={"space-between"}>
                 <Button

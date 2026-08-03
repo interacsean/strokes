@@ -1,7 +1,11 @@
 import { Hole } from "model/Hole";
 import { Penalty, PenaltyReason, ReliefMethod } from "model/Penalty";
 import { Stroke } from "model/Stroke";
-import { calculateHoleScore, countPenaltyStrokes } from "./calculateHoleScore";
+import {
+  calculateHoleScore,
+  countPenaltyStrokes,
+  strokeNumberWithPenalties,
+} from "./calculateHoleScore";
 
 function stroke(penalty?: Penalty): Stroke {
   return {
@@ -74,5 +78,51 @@ describe("usecases/calculateHoleScore", () => {
 
   test("Scores an empty hole as zero", () => {
     expect(calculateHoleScore(hole([]))).toBe(0);
+  });
+});
+
+describe("usecases/strokeNumberWithPenalties", () => {
+  const water = {
+    reason: PenaltyReason.PENALTY_AREA,
+    strokes: 1,
+    relief: ReliefMethod.DROP,
+  };
+
+  test("Numbers swings by index when there are no penalties", () => {
+    const strokes = [stroke(), stroke(), stroke()];
+
+    expect(strokeNumberWithPenalties(strokes, 1)).toBe(1);
+    expect(strokeNumberWithPenalties(strokes, 3)).toBe(3);
+  });
+
+  test("Leaves the penalised swing's own number alone", () => {
+    // the penalty is incurred *by* shot 1, so shot 1 is still "one"
+    expect(strokeNumberWithPenalties([stroke(water), stroke()], 1)).toBe(1);
+  });
+
+  test("Shifts swings played after a penalty", () => {
+    // water off the tee means you are playing three
+    expect(strokeNumberWithPenalties([stroke(water), stroke()], 2)).toBe(3);
+  });
+
+  test("Does not shift a swing by a penalty incurred later", () => {
+    // scrolling back to shot 1 must not count shot 2's penalty
+    const strokes = [stroke(), stroke(water), stroke()];
+
+    expect(strokeNumberWithPenalties(strokes, 1)).toBe(1);
+    expect(strokeNumberWithPenalties(strokes, 2)).toBe(2);
+    expect(strokeNumberWithPenalties(strokes, 3)).toBe(4);
+  });
+
+  test("Accumulates multiple earlier penalties", () => {
+    const strokes = [stroke(water), stroke(water), stroke()];
+
+    expect(strokeNumberWithPenalties(strokes, 3)).toBe(5);
+  });
+
+  test("Counts a two-stroke penalty twice", () => {
+    const grounded = { reason: PenaltyReason.GROUNDED_CLUB, strokes: 2 };
+
+    expect(strokeNumberWithPenalties([stroke(grounded), stroke()], 2)).toBe(4);
   });
 });
