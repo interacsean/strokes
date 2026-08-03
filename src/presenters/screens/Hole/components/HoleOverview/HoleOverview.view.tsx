@@ -14,7 +14,6 @@ type HoleOverviewProps = {
   holeNum: number;
   holeLength: number | undefined;
   par: number | undefined;
-  currentStrokeNum: number;
   strokes: Stroke[];
   distanceToHole: number | undefined;
   holeAltitudeDelta: number | undefined;
@@ -43,9 +42,13 @@ export function HoleOverview(props: HoleOverviewProps) {
       ? "black"
       : "neutral.800";
 
-  // the shot about to be played counts penalties already taken on this hole
+  // What the player cards by holing the stroke on screen: its own number, plus
+  // the penalties incurred before it. Counted off the stroke index rather than
+  // any outcome field, since club, lie and position are all filled in piecemeal
+  // while the shot is being recorded.
   const strokesForScore =
-    props.currentStrokeNum + countPenaltyStrokes(props.strokes);
+    props.activeStroke +
+    countPenaltyStrokes(props.strokes.slice(0, props.activeStroke - 1));
 
   // todo: make relative to player's max strike, and lie - i.e. tee / other
   // todo: hide this if hole finished

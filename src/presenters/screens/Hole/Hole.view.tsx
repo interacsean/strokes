@@ -248,7 +248,6 @@ export function HoleView(props: HoleViewProps) {
                 }
                 prevHole={props.prevHole}
                 holeNum={props.holeNum}
-                currentStrokeNum={props.preprocessedStrokes.length}
                 strokes={props.preprocessedStrokes}
                 distanceToHole={props.distanceToHole}
                 holeAltitudeDelta={props.holeAltitudeDelta}
