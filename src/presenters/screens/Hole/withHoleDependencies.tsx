@@ -19,6 +19,7 @@ import { Club } from "model/Club";
 import { LatLng } from "model/LatLng";
 import { useGeolocated } from "react-geolocated";
 import { calculateStrokeDistances } from "usecases/hole/calculateStrokeDistances";
+import { calculateHoleScore } from "usecases/hole/calculateHoleScore";
 import { selectCurrentHole } from "state/course/selectors/currentHole";
 import { useSelector } from "state/utils/useSelector";
 import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistanceBetweenPositions";
@@ -338,7 +339,7 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
           hole.strokes.length &&
           hole.strokes.find((s) => s.toPosSetMethod === PosOptionMethods.HOLE)
         ) {
-          return scoreAcc + hole.strokes.length - (holesTee?.par || 0);
+          return scoreAcc + calculateHoleScore(hole) - (holesTee?.par || 0);
         }
         return scoreAcc;
       }, 0),

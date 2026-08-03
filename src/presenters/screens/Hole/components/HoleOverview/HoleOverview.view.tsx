@@ -4,6 +4,8 @@ import {
   ChevronRightIcon,
   CloseIcon,
 } from "@chakra-ui/icons";
+import { Stroke } from "model/Stroke";
+import { countPenaltyStrokes } from "usecases/hole/calculateHoleScore";
 import { StrokeCounter } from "./StrokeCounter.view";
 
 const MIN_DIST_FOR_RESULT_TEXT = 270;
@@ -13,6 +15,7 @@ type HoleOverviewProps = {
   holeLength: number | undefined;
   par: number | undefined;
   currentStrokeNum: number;
+  strokes: Stroke[];
   distanceToHole: number | undefined;
   holeAltitudeDelta: number | undefined;
   roundScore: number | undefined;
@@ -40,6 +43,10 @@ export function HoleOverview(props: HoleOverviewProps) {
       ? "black"
       : "neutral.800";
 
+  // the shot about to be played counts penalties already taken on this hole
+  const strokesForScore =
+    props.currentStrokeNum + countPenaltyStrokes(props.strokes);
+
   // todo: make relative to player's max strike, and lie - i.e. tee / other
   // todo: hide this if hole finished
   // bug!: this should be based on fromPos of activeStroke to hole, not currentPosition
@@ -48,20 +55,20 @@ export function HoleOverview(props: HoleOverviewProps) {
     (props.distanceToHole !== undefined &&
       props.distanceToHole > MIN_DIST_FOR_RESULT_TEXT)
       ? undefined
-      : props.currentStrokeNum === props.par - 2
+      : strokesForScore === props.par - 2
       ? "eagle"
-      : props.currentStrokeNum === props.par - 1
+      : strokesForScore === props.par - 1
       ? "birdie"
-      : props.currentStrokeNum === props.par
+      : strokesForScore === props.par
       ? "par"
-      : props.currentStrokeNum === props.par + 1
+      : strokesForScore === props.par + 1
       ? "bogey"
-      : props.currentStrokeNum === props.par + 2
+      : strokesForScore === props.par + 2
       ? "double bogey"
-      : props.currentStrokeNum === props.par + 3
+      : strokesForScore === props.par + 3
       ? "triple bogey"
-      : props.currentStrokeNum >= props.par
-      ? `${props.currentStrokeNum - props.par}× bogey`
+      : strokesForScore >= props.par
+      ? `${strokesForScore - props.par}× bogey`
       : undefined;
 
   return (
@@ -172,7 +179,7 @@ export function HoleOverview(props: HoleOverviewProps) {
           <StrokeCounter
             par={props.par}
             activeStroke={props.activeStroke}
-            totalStrokes={props.currentStrokeNum}
+            strokes={props.strokes}
             strokeClick={props.setActiveStroke}
           />
           <Text color="white" variant="solidLabel" mt={2} lineHeight="1em">

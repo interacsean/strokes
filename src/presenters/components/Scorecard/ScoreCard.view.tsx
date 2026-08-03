@@ -4,8 +4,13 @@ import { PosOptionMethods } from "model/PosOptions";
 import { Strike } from "model/Strike";
 import { StrokeType } from "model/StrokeType";
 import { Club, shortClubNames } from "model/Club";
+import { PenaltyReasonLabels } from "model/Penalty";
 import React, { useState } from "react";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
+import {
+  calculateHoleScore,
+  countPenaltyStrokes,
+} from "usecases/hole/calculateHoleScore";
 
 type ScoreCardProps = {
   round: Course;
@@ -126,7 +131,8 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ round }) => {
       {round.holes.map((hole, i) => {
         const teePlayed = selectCurrentTeeFromHole(hole);
         const par = teePlayed?.par || 4;
-        const score = hole.strokes.length;
+        const score = calculateHoleScore(hole);
+        const penalties = countPenaltyStrokes(hole.strokes);
         const holeComplete = hole?.strokes.find(
           (s) => s.toPosSetMethod === PosOptionMethods.HOLE
         );
@@ -161,17 +167,31 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ round }) => {
                     const strikeText = getStrikeChar(stroke.strike);
                     const bgColor = getStrokeTypeColor(stroke.strokeType);
                     return (
-                      <Text
-                        key={idx}
-                        as="span"
-                        backgroundColor={bgColor}
-                        px="2px"
-                        mx="1px"
-                        borderRadius="2px"
-                      >
-                        <span style={{ fontWeight: "bold" }}>{clubText}</span>{" "}
-                        {strikeText}
-                      </Text>
+                      <React.Fragment key={idx}>
+                        <Text
+                          as="span"
+                          backgroundColor={bgColor}
+                          px="2px"
+                          mx="1px"
+                          borderRadius="2px"
+                        >
+                          <span style={{ fontWeight: "bold" }}>{clubText}</span>{" "}
+                          {strikeText}
+                        </Text>
+                        {stroke.penalty && (
+                          <Text
+                            as="span"
+                            color="#cc0000"
+                            fontWeight="bold"
+                            mx="1px"
+                            title={`${
+                              PenaltyReasonLabels[stroke.penalty.reason]
+                            } +${stroke.penalty.strokes}`}
+                          >
+                            {"+".repeat(stroke.penalty.strokes)}
+                          </Text>
+                        )}
+                      </React.Fragment>
                     );
                   })}
                 </Box>
@@ -193,6 +213,19 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ round }) => {
                   >
                     {scoreReading}
                   </Text>
+                  {penalties > 0 && (
+                    <Text
+                      as="sup"
+                      fontSize="0.7rem"
+                      color="#cc0000"
+                      alignSelf="flex-start"
+                      title={`${penalties} penalty stroke${
+                        penalties > 1 ? "s" : ""
+                      }`}
+                    >
+                      +{penalties}
+                    </Text>
+                  )}
                 </Flex>
                 <Flex flex="1" justify="center" align="center">
                   {holeComplete
@@ -234,8 +267,7 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ round }) => {
       </Checkbox>
       <Text variant="minor" color="neutral.800" mt={3}>
         <em>
-          WIP: does not tally penalties, may not work great if a hole doesn't
-          have a par preset for it
+          WIP: may not work great if a hole doesn't have a par preset for it
         </em>
       </Text>
     </Flex>
