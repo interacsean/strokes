@@ -1,3 +1,14 @@
+// a degree of latitude is very nearly the same length everywhere
+const METERS_PER_LAT_DEGREE = 111320;
+
+export function metersToLat(meters: number) {
+  return meters / METERS_PER_LAT_DEGREE;
+}
+
+export function latToMeters(lat: number) {
+  return lat * METERS_PER_LAT_DEGREE;
+}
+
 export function metersToLon(meters: number, latitude: number) {
   const earthRadius = 6378137; // Earth's radius in meters
   const radiansPerDegree = Math.PI / 180;

@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useInitialiseMap } from "./useInitialiseMap";
 import { useUpdateUserPin } from "./useUpdateUserPin";
+import { useGreenDistanceLabels } from "./useGreenDistanceLabels";
+import { useClubRangeRings } from "./useClubRangeRings";
 import { Hole } from "model/Hole";
 import { LatLng } from "model/LatLng";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
@@ -11,10 +13,21 @@ import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistan
 import "./mapStyles.css";
 import { useFakeGps } from "../FakePos/FakePosContext";
 import { BASE_PATH } from "App";
-import { Box } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { GpsAccuracy } from "presenters/components/GpsAccuracy/GpsAccuracy";
+import { GreenDistances } from "presenters/components/GreenDistances/GreenDistances";
+import { calculateGreenDistances } from "usecases/hole/calculateGreenDistances";
+import { calculateBearingBetweenPositions } from "usecases/hole/calculateBearingBetweenPositions";
+import { ClubRanges } from "usecases/stroke/calculateClubRanges";
 
 type GoogleMap = any;
+
+/** The mini map is small enough that a 2px+ stroke reads as a solid band. */
+const MINI_MAP_ID = "miniMap";
+const CLUB_RANGE_STROKE_WEIGHT = {
+  mini: 1,
+  full: 2,
+};
 
 type MapProps = {
   hole: Hole;
@@ -26,6 +39,14 @@ type MapProps = {
   tilt?: number;
   onMapClick?: (pos: LatLng) => void;
   gpsAccuracy?: number | null;
+  /** Pins the green distances to the points they belong to. */
+  showGreenDistanceLabels?: boolean;
+  /** Sums the green distances up in one readout beside the GPS accuracy. */
+  showGreenDistanceReadout?: boolean;
+  /** Where those distances are measured from; falls back to the user's position. */
+  measureDistancesFrom?: LatLng | null;
+  /** Carry and total bands for the club in hand, drawn as arcs towards the pin. */
+  clubRanges?: ClubRanges | null;
 };
 
 const createRotatedIcon = (
@@ -220,12 +241,43 @@ function Map({ mapId = "map", ...props }: MapProps) {
   useInitialiseMap(mapId, map, setMap, mapRef);
   useUpdateUserPin(userLocation, map, mapRef);
 
+  const measureFrom = props.measureDistancesFrom ?? props.currentPosition;
+  const greenDistances = calculateGreenDistances(props.hole, measureFrom);
+  useGreenDistanceLabels(map, greenDistances, !!props.showGreenDistanceLabels);
+
+  // The rings open towards the pin, which is where the player is lining up from
+  // wherever they currently are — not the tee-to-pin line the map is oriented on.
+  const pinPos = selectCurrentPinFromHole(props.hole);
+  const bearingToPin =
+    measureFrom && pinPos
+      ? calculateBearingBetweenPositions(measureFrom, pinPos)
+      : null;
+  useClubRangeRings(
+    map,
+    measureFrom,
+    bearingToPin,
+    props.clubRanges ?? null,
+    mapId === MINI_MAP_ID
+      ? CLUB_RANGE_STROKE_WEIGHT.mini
+      : CLUB_RANGE_STROKE_WEIGHT.full
+  );
+
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <div id={mapId} style={{ width: "100%", height: "100%" }}></div>
-      <Box position="absolute" bottom={1} right={1} pointerEvents="none">
+      <Flex
+        position="absolute"
+        bottom={1}
+        right={1}
+        columnGap={1}
+        alignItems="center"
+        pointerEvents="none"
+      >
+        {props.showGreenDistanceReadout && (
+          <GreenDistances distances={greenDistances} />
+        )}
         <GpsAccuracy accuracy={props.gpsAccuracy} />
-      </Box>
+      </Flex>
     </div>
   );
 }

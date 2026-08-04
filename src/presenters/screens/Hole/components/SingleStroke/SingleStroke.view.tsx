@@ -17,6 +17,7 @@ import Map from "presenters/components/Map/Map";
 import { ExpandIcon } from "presenters/components/icons/MapIcons";
 import { ClubStats } from "model/ClubStats";
 import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
+import { calculateClubRanges } from "usecases/stroke/calculateClubRanges";
 import { Strike, StrikeLabels } from "model/Strike";
 import { StrokeTypeLabels } from "model/StrokeType";
 import {
@@ -267,7 +268,18 @@ function useSingleStrokeViewLogic(props: SingleStrokeViewProps) {
     return toLie && ([Lie.GREEN] as string[]).includes(toLie)
   }, [toLie]);
 
+  const clubRanges = useMemo(
+    () =>
+      calculateClubRanges(
+        props.clubStats,
+        props.stroke.club,
+        props.stroke.strokeType
+      ),
+    [props.clubStats, props.stroke.club, props.stroke.strokeType]
+  );
+
   return {
+    clubRanges,
     fromPosButtonText,
     setGpsText,
     greenViewGpsButtonColor,
@@ -394,6 +406,9 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               zoomFactor={0.8}
               onMapClick={props.onMapClick}
               gpsAccuracy={props.gpsAccuracy}
+              showGreenDistanceReadout
+              measureDistancesFrom={props.stroke.fromPos}
+              clubRanges={viewLogic.clubRanges}
             />
           )}
           <IconButton

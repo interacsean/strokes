@@ -4,10 +4,14 @@ import { CollapseIcon } from "presenters/components/icons/MapIcons";
 import { Hole } from "model/Hole";
 import { LatLng } from "model/LatLng";
 import { useInput } from "presenters/utils/useInput/useInput";
+import { ClubRanges } from "usecases/stroke/calculateClubRanges";
 
 type FullScreenMapProps = {
   hole: Hole;
   currentPosition: LatLng | undefined;
+  /** Start of the stroke being played; green distances are measured from here. */
+  fromPos: LatLng | undefined;
+  clubRanges: ClubRanges | null;
   gpsAccuracy: number | undefined;
   parInputProps: ReturnType<typeof useInput>["inputProps"];
   setTeePos: (teeName: string, pos: LatLng) => void;
@@ -38,6 +42,9 @@ export function FullScreenMap(props: FullScreenMapProps) {
             hole={props.hole}
             currentPosition={props.currentPosition}
             gpsAccuracy={props.gpsAccuracy}
+            showGreenDistanceLabels
+            measureDistancesFrom={props.fromPos}
+            clubRanges={props.clubRanges}
           />
         ) : (
           <Flex height="100%" alignItems="center" justifyContent="center">

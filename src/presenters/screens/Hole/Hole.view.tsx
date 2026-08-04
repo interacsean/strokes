@@ -23,6 +23,7 @@ import { ClubStats } from "model/ClubStats";
 import { ordinalIndicator } from "presenters/utils/ordinalIndicator";
 import { FullScreenMap } from "./components/FullScreenMap.view";
 import { ScorecardPanel } from "./components/ScorecardPanel.view";
+import { calculateClubRanges } from "usecases/stroke/calculateClubRanges";
 
 export type HoleViewProps = {
   holeNum: number;
@@ -392,6 +393,12 @@ export function HoleView(props: HoleViewProps) {
         <FullScreenMap
           hole={props.hole}
           currentPosition={props.currentPosition}
+          fromPos={currentStroke.fromPos}
+          clubRanges={calculateClubRanges(
+            props.clubStats,
+            currentStroke.club,
+            currentStroke.strokeType
+          )}
           gpsAccuracy={props.gpsAccuracy}
           parInputProps={viewLogic.parInputProps}
           setTeePos={props.setTeePos}
