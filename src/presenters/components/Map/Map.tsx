@@ -5,6 +5,7 @@ import { useInitialiseMap } from "./useInitialiseMap";
 import { useUpdateUserPin } from "./useUpdateUserPin";
 import { useGreenDistanceLabels } from "./useGreenDistanceLabels";
 import { useClubRangeRings } from "./useClubRangeRings";
+import { useStrokePath } from "./useStrokePath";
 import { Hole } from "model/Hole";
 import { LatLng } from "model/LatLng";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
@@ -47,6 +48,9 @@ type MapProps = {
   measureDistancesFrom?: LatLng | null;
   /** Carry and total bands for the club in hand, drawn as arcs towards the pin. */
   clubRanges?: ClubRanges | null;
+  /** Where the stroke was played from; drawn as a faded ball joined to ballPos
+   * by a dashed line once the stroke has both ends. */
+  strokeFromPos?: LatLng | null;
 };
 
 const createRotatedIcon = (
@@ -240,6 +244,8 @@ function Map({ mapId = "map", ...props }: MapProps) {
 
   useInitialiseMap(mapId, map, setMap, mapRef);
   useUpdateUserPin(userLocation, map, mapRef);
+
+  useStrokePath(map, props.strokeFromPos, props.ballPos);
 
   const measureFrom = props.measureDistancesFrom ?? props.currentPosition;
   const greenDistances = calculateGreenDistances(props.hole, measureFrom);

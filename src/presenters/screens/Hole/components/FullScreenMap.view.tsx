@@ -11,6 +11,8 @@ type FullScreenMapProps = {
   currentPosition: LatLng | undefined;
   /** Start of the stroke being played; green distances are measured from here. */
   fromPos: LatLng | undefined;
+  /** Where the stroke came to rest, once it has been taken. */
+  toPos: LatLng | undefined;
   clubRanges: ClubRanges | null;
   gpsAccuracy: number | undefined;
   parInputProps: ReturnType<typeof useInput>["inputProps"];
@@ -37,7 +39,8 @@ export function FullScreenMap(props: FullScreenMapProps) {
           <Map
             mapId="fullScreenMap"
             tilt={52}
-            ballPos={null}
+            ballPos={props.toPos ?? null}
+            strokeFromPos={props.fromPos}
             zoomFactor={2}
             hole={props.hole}
             currentPosition={props.currentPosition}

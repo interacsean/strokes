@@ -394,6 +394,7 @@ export function HoleView(props: HoleViewProps) {
           hole={props.hole}
           currentPosition={props.currentPosition}
           fromPos={currentStroke.fromPos}
+          toPos={currentStroke.toPos}
           clubRanges={calculateClubRanges(
             props.clubStats,
             currentStroke.club,

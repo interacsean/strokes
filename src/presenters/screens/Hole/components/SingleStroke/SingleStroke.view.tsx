@@ -403,6 +403,7 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               currentPosition={props.currentPosition}
               hole={props.hole}
               ballPos={viewLogic.ballMapPos}
+              strokeFromPos={props.stroke.fromPos}
               zoomFactor={0.8}
               onMapClick={props.onMapClick}
               gpsAccuracy={props.gpsAccuracy}
