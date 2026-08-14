@@ -1,7 +1,7 @@
-import { lensPath, set } from "ramda";
 import { Updater } from "types/Updater";
 import { Stroke } from "model/Stroke";
 import { Hole } from "model/Hole";
+import { saveStrokes } from "./saveStrokes";
 
 type NeededCourseState = {
   currentHoleNum: number;
@@ -16,21 +16,5 @@ export function saveStroke(
   strokeNum: number,
   stroke: Stroke
 ) {
-  updateCourseState((state) => {
-    const updatedStateHole = set(
-      lensPath(["holes", (state?.currentHoleNum || 1) - 1]),
-      hole,
-      state
-    );
-    return set(
-      lensPath([
-        "holes",
-        (state?.currentHoleNum || 1) - 1,
-        "strokes",
-        strokeNum - 1,
-      ]),
-      stroke,
-      updatedStateHole
-    );
-  });
+  saveStrokes(updateCourseState, hole, { [strokeNum]: stroke });
 }
