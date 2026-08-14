@@ -49,9 +49,11 @@ const MIN_ACROSS_HOLE_METRES = 16;
 /** The full screen map has the room to leave a margin around that. */
 const FULL_MAP_MARGIN = 1.15;
 
-/** Ground kept clear around the ball, so its marker has somewhere to sit rather
- * than clinging to the edge of a view stretched to just barely reach it. */
+/** Ground kept clear around the ball and the pin, so their markers have
+ * somewhere to sit rather than clinging to the edge of a view stretched to just
+ * barely reach them. */
 const BALL_CLEARANCE_METRES = 7;
+const PIN_CLEARANCE_METRES = 8;
 
 /** Metres of ground one screen spans at zoom 0, along the hole. */
 const MAP_SIZE_AT_ZOOM_0 = 50000000;
@@ -171,7 +173,7 @@ function useViewLogic(
     const camera = calculateMapCamera({
       points: [
         { pos: frameFromPos, radius: BALL_CLEARANCE_METRES },
-        pinPos,
+        { pos: pinPos, radius: PIN_CLEARANCE_METRES },
         // Around the green it is the green and the ball that have to be in
         // view, not just the line between them.
         ...(closeRange ? [green?.front, green?.back, props.ballPos] : []),

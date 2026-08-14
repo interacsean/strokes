@@ -55,7 +55,9 @@ export function FullScreenMap(props: FullScreenMapProps) {
           <Map
             mapId="fullScreenMap"
             tilt={52}
-            ballPos={props.toPos ?? null}
+            // Until the stroke is taken the ball is still sitting where it is
+            // played from, which is where it belongs on the map.
+            ballPos={props.toPos ?? props.fromPos ?? null}
             strokeFromPos={props.fromPos}
             zoomFactor={2}
             hole={props.hole}
