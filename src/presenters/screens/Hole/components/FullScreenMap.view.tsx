@@ -1,10 +1,18 @@
+import { useState } from "react";
 import { Box, Button, Flex, IconButton, Input, Text } from "@chakra-ui/react";
-import Map from "presenters/components/Map/Map";
+import Map, { MapFrame } from "presenters/components/Map/Map";
 import { CollapseIcon } from "presenters/components/icons/MapIcons";
 import { Hole } from "model/Hole";
 import { LatLng } from "model/LatLng";
 import { useInput } from "presenters/utils/useInput/useInput";
 import { ClubRanges } from "usecases/stroke/calculateClubRanges";
+import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
+import { samePosition } from "usecases/hole/samePosition";
+
+const FRAME_OPTIONS: [MapFrame, string][] = [
+  ["hole", "Hole"],
+  ["stroke", "Shot"],
+];
 
 type FullScreenMapProps = {
   hole: Hole;
@@ -22,6 +30,14 @@ type FullScreenMapProps = {
 };
 
 export function FullScreenMap(props: FullScreenMapProps) {
+  const [frame, setFrame] = useState<MapFrame>("stroke");
+
+  // Framing the stroke only shows anything different once the ball has moved on
+  // from the tee, so until then there is nothing to toggle between.
+  const teePos = selectCurrentTeeFromHole(props.hole)?.pos;
+  const canFrameStroke =
+    !!props.fromPos && !samePosition(props.fromPos, teePos);
+
   return (
     <Flex
       position="fixed"
@@ -48,10 +64,41 @@ export function FullScreenMap(props: FullScreenMapProps) {
             showGreenDistanceLabels
             measureDistancesFrom={props.fromPos}
             clubRanges={props.clubRanges}
+            frame={frame}
           />
         ) : (
           <Flex height="100%" alignItems="center" justifyContent="center">
             <Text color="white">Loading map</Text>
+          </Flex>
+        )}
+        {canFrameStroke && (
+          <Flex
+            position="absolute"
+            top={1}
+            left={1}
+            borderRadius="md"
+            overflow="hidden"
+            bgColor="rgba(0, 0, 0, 0.55)"
+          >
+            {FRAME_OPTIONS.map(([option, label]) => (
+              <Button
+                key={option}
+                aria-label={`Frame ${label.toLowerCase()}`}
+                aria-pressed={frame === option}
+                variant="unstyled"
+                minW="auto"
+                height="auto"
+                px={2.5}
+                py={1.5}
+                borderRadius={0}
+                fontSize="xs"
+                color={frame === option ? "black" : "white"}
+                bgColor={frame === option ? "white" : "transparent"}
+                onClick={() => setFrame(option)}
+              >
+                {label}
+              </Button>
+            ))}
           </Flex>
         )}
         <IconButton

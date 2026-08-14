@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { LatLng } from "model/LatLng";
+import { samePosition } from "usecases/hole/samePosition";
 import { BASE_PATH } from "App";
 
 /** The ball has already been played from here, so it sits back from the live one. */
@@ -20,10 +21,6 @@ const DASH_SYMBOL: google.maps.Symbol = {
   scale: 2,
 };
 
-function samePos(a: LatLng, b: LatLng) {
-  return a.lat === b.lat && a.lng === b.lng;
-}
-
 /**
  * Draws where the stroke was played from: a faded ball at the start and a dashed
  * white line running to where it came to rest.
@@ -38,7 +35,7 @@ export function useStrokePath(
     null
   );
 
-  const draw = !!map && !!fromPos && !!toPos && !samePos(fromPos, toPos);
+  const draw = !!map && !!fromPos && !!toPos && !samePosition(fromPos, toPos);
   const pathKey = draw
     ? [fromPos.lat, fromPos.lng, toPos.lat, toPos.lng].join("|")
     : "";
