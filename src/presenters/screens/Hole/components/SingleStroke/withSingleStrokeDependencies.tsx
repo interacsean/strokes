@@ -368,10 +368,9 @@ export function withSingleStrokeDependencies(
           setMapClickAction("to");
           break;
       }
-      if (nextStroke && nextStroke.fromPosSetMethod === PosOptionMethods.LAST_SHOT && currentPosition) {
-        setPendingPos(["from", currentPosition, strokeNum + 1])
-      }
-    }, [toPosSetMethod, setToPosition, strokeNum, nextStroke, currentPosition, setPendingPos]);
+      // Carrying the landing spot into a next stroke played as it lies is
+      // setToPosition's job, so it happens however the position is set.
+    }, [toPosSetMethod, setToPosition, strokeNum]);
 
     const acceptCaddySuggestion = useCallback(() => {
       if (caddySuggestions?.[0]?.club) {

@@ -19,9 +19,14 @@ import { GpsAccuracy } from "presenters/components/GpsAccuracy/GpsAccuracy";
 import { GreenDistances } from "presenters/components/GreenDistances/GreenDistances";
 import { calculateGreenDistances } from "usecases/hole/calculateGreenDistances";
 import { calculateBearingBetweenPositions } from "usecases/hole/calculateBearingBetweenPositions";
+import { calculateMapCamera } from "usecases/hole/calculateMapCamera";
+import { selectApproachPosFromHole } from "state/course/selectors/approachPos";
 import { ClubRanges } from "usecases/stroke/calculateClubRanges";
 
 type GoogleMap = any;
+
+/** What the map frames: the whole hole, or just the stroke in hand. */
+export type MapFrame = "hole" | "stroke";
 
 /** The mini map is small enough that a 2px+ stroke reads as a solid band. */
 const MINI_MAP_ID = "miniMap";
@@ -29,6 +34,29 @@ const CLUB_RANGE_STROKE_WEIGHT = {
   mini: 1,
   full: 2,
 };
+
+/** Inside this the shot is a chip or a putt, played from wherever around the
+ * green the last one finished. Facing the ball from there would swing the view
+ * around with every step, so it faces the way the hole is played in instead.
+ * It takes a few metres more to leave that view than to enter it, so a ball
+ * sitting on the boundary doesn't swing the map back and forth. */
+const CLOSE_RANGE_METRES = { enter: 60, leave: 65 };
+
+/** How little ground the view may show across the hole — the mini map's height,
+ * the full screen map's width. An average green, or a big green's own depth. */
+const MIN_ACROSS_HOLE_METRES = 16;
+
+/** The full screen map has the room to leave a margin around that. */
+const FULL_MAP_MARGIN = 1.15;
+
+/** Ground kept clear around the ball and the pin, so their markers have
+ * somewhere to sit rather than clinging to the edge of a view stretched to just
+ * barely reach them. */
+const BALL_CLEARANCE_METRES = 7;
+const PIN_CLEARANCE_METRES = 8;
+
+/** Metres of ground one screen spans at zoom 0, along the hole. */
+const MAP_SIZE_AT_ZOOM_0 = 50000000;
 
 type MapProps = {
   hole: Hole;
@@ -51,6 +79,9 @@ type MapProps = {
   /** Where the stroke was played from; drawn as a faded ball joined to ballPos
    * by a dashed line once the stroke has both ends. */
   strokeFromPos?: LatLng | null;
+  /** Whether the view is framed on the whole hole (tee to pin) or on the stroke
+   * in hand (strokeFromPos to pin). Defaults to the stroke. */
+  frame?: MapFrame;
 };
 
 const createRotatedIcon = (
@@ -78,11 +109,22 @@ const createRotatedIcon = (
   };
 };
 
-function useViewLogic(props: MapProps, map: google.maps.Map | null) {
+function useViewLogic(
+  props: MapProps,
+  map: google.maps.Map | null,
+  mapId: string
+) {
   const { holeOrientation = "vertical" } = props;
   // todo: optimisation
   const teePos = selectCurrentTeeFromHole(props.hole)?.pos;
   const pinPos = selectCurrentPinFromHole(props.hole);
+  const approachPos = selectApproachPosFromHole(props.hole);
+
+  // The stroke is framed from where it is played, falling back to the tee while
+  // it has no position yet. The tee shot — and a stroke and distance replay of
+  // it — start from the tee, so framing their stroke frames the hole anyway.
+  const frameFromPos =
+    props.frame === "hole" ? teePos : props.strokeFromPos ?? teePos;
 
   const pinMarkerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(
     null
@@ -93,37 +135,71 @@ function useViewLogic(props: MapProps, map: google.maps.Map | null) {
   const ballMarkerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(
     null
   );
+  const closeRangeRef = useRef(false);
 
-  if (teePos && pinPos && map) {
-    const tiltRadians = ((props.tilt || 0) * Math.PI) / 180;
-    const weightFactor = Math.sin(tiltRadians) / 6;
+  if (frameFromPos && pinPos && map) {
+    const distanceToPin = calculateDistanceBetweenPositions(
+      frameFromPos,
+      pinPos
+    );
+    closeRangeRef.current =
+      distanceToPin <=
+      (closeRangeRef.current
+        ? CLOSE_RANGE_METRES.leave
+        : CLOSE_RANGE_METRES.enter);
+    const closeRange = closeRangeRef.current;
 
-    const centerLat =
-      teePos.lat * (0.5 + weightFactor) + pinPos.lat * (0.5 - weightFactor);
-    const centerLng =
-      teePos.lng * (0.5 + weightFactor) + pinPos.lng * (0.5 - weightFactor);
-
-    const distance = calculateDistanceBetweenPositions(teePos, pinPos);
+    const green = props.hole.green;
+    const greenDepth = green
+      ? calculateDistanceBetweenPositions(green.front, green.back)
+      : 0;
 
     const screenSizeFactor = 1; // todo: on a normal mobile screen this should be 1, for larger screens, this will need to scale out, probably based on largest dimension of the containing element
-    const bufferFactor = 1.05;
-    const mapSize = 50000000 * screenSizeFactor * (props.zoomFactor || 1);
-    const zoomLevel = Math.log2(mapSize / (distance * bufferFactor));
+    const alongHoleMapSize =
+      MAP_SIZE_AT_ZOOM_0 * screenSizeFactor * (props.zoomFactor || 1);
+    // The hole lies across the map element on a horizontal orientation and runs
+    // up it on a vertical one, so which side of the element is along the hole
+    // and which is across it depends on the orientation.
+    const mapDiv = map.getDiv();
+    const alongPx =
+      holeOrientation === "horizontal"
+        ? mapDiv.clientWidth
+        : mapDiv.clientHeight;
+    const acrossPx =
+      holeOrientation === "horizontal"
+        ? mapDiv.clientHeight
+        : mapDiv.clientWidth;
 
-    map.panTo(new google.maps.LatLng(centerLat, centerLng));
-    map.setZoom(zoomLevel);
+    const camera = calculateMapCamera({
+      points: [
+        { pos: frameFromPos, radius: BALL_CLEARANCE_METRES },
+        { pos: pinPos, radius: PIN_CLEARANCE_METRES },
+        // Around the green it is the green and the ball that have to be in
+        // view, not just the line between them.
+        ...(closeRange ? [green?.front, green?.back, props.ballPos] : []),
+      ],
+      holeBearing: calculateBearingBetweenPositions(
+        (closeRange && approachPos) || frameFromPos,
+        pinPos
+      ),
+      orientation: holeOrientation,
+      alongHoleMapSize,
+      acrossHoleMapSize:
+        alongPx > 0
+          ? alongHoleMapSize * (acrossPx / alongPx)
+          : alongHoleMapSize,
+      minAcrossHoleSpan:
+        Math.max(MIN_ACROSS_HOLE_METRES, greenDepth) *
+        (mapId === MINI_MAP_ID ? 1 : FULL_MAP_MARGIN),
+      tilt: props.tilt || 0,
+    });
 
-    const latDiff = pinPos.lat - teePos.lat;
-    const avgLat = (teePos.lat + pinPos.lat) / 2;
-    const lngDiff =
-      (pinPos.lng - teePos.lng) * Math.cos((avgLat * Math.PI) / 180); // Adjust lngDiff by cosine of average latitude
-
-    const angleRad = Math.atan2(lngDiff, latDiff); // Note: reversed latDiff and lngDiff
-    const angleDeg = (angleRad * 180) / Math.PI;
-    const bearingDeg =
-      (angleDeg + 360 + (holeOrientation === "horizontal" ? -90 : 0)) % 360;
-    map.setHeading(bearingDeg);
-    map.setTilt(props.tilt || 0);
+    if (camera) {
+      map.panTo(new google.maps.LatLng(camera.center.lat, camera.center.lng));
+      map.setZoom(camera.zoom);
+      map.setHeading(camera.heading);
+      map.setTilt(props.tilt || 0);
+    }
   }
 
   useEffect(() => {
@@ -238,7 +314,7 @@ function useViewLogic(props: MapProps, map: google.maps.Map | null) {
 function Map({ mapId = "map", ...props }: MapProps) {
   const [map, setMap] = useState<GoogleMap | null>(null);
   const userLocation = props.currentPosition;
-  useViewLogic(props, map);
+  useViewLogic(props, map, mapId);
 
   const mapRef = useRef<GoogleMap | null>(null); // Ref for map instance
 

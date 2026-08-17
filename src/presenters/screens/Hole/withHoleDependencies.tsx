@@ -9,6 +9,7 @@ import { Hole, Hole as HoleModel } from "model/Hole";
 import { setHolePar } from "usecases/hole/setHolePar";
 import { mergePartStroke } from "usecases/stroke/mergePartStroke";
 import { saveStroke } from "usecases/course/saveStroke";
+import { saveStrokes } from "usecases/course/saveStrokes";
 import { Lie } from "model/Lie";
 import { setStrokeFromLie } from "usecases/stroke/setStrokeFromLie";
 import { setStrokeToLie } from "usecases/stroke/setStrokeToLie";
@@ -262,9 +263,24 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
 
   const setToPosition = useCallback(
     (strokeNum: number, pos: LatLng) => {
-      saveStrokeAndUpdate(strokeNum, { toPos: pos });
+      if (!strokes || !currentHole) return;
+
+      const stroke =
+        strokes[strokeNum - 1] || newStrokeFromStrokes(strokes, currentHole);
+      const updates: Record<number, Stroke> = {
+        [strokeNum]: mergePartStroke(stroke, { toPos: pos }),
+      };
+
+      // A stroke played as it lies starts wherever the last one finished, so it
+      // follows that landing spot even when it is corrected after the fact.
+      const nextStroke = strokes[strokeNum];
+      if (nextStroke?.fromPosSetMethod === PosOptionMethods.LAST_SHOT) {
+        updates[strokeNum + 1] = mergePartStroke(nextStroke, { fromPos: pos });
+      }
+
+      saveStrokes(updateCourseState, currentHole, updates);
     },
-    [saveStrokeAndUpdate]
+    [strokes, currentHole, updateCourseState]
   );
 
   const setFromPosition = useCallback(
