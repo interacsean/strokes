@@ -14,7 +14,7 @@ import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistan
 import "./mapStyles.css";
 import { useFakeGps } from "../FakePos/FakePosContext";
 import { BASE_PATH } from "App";
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { GpsAccuracy } from "presenters/components/GpsAccuracy/GpsAccuracy";
 import { GreenDistances } from "presenters/components/GreenDistances/GreenDistances";
 import { calculateGreenDistances } from "usecases/hole/calculateGreenDistances";
@@ -22,6 +22,8 @@ import { calculateBearingBetweenPositions } from "usecases/hole/calculateBearing
 import { calculateMapCamera } from "usecases/hole/calculateMapCamera";
 import { selectApproachPosFromHole } from "state/course/selectors/approachPos";
 import { ClubRanges } from "usecases/stroke/calculateClubRanges";
+import { useWind } from "state/wind/windState";
+import { WindCompass } from "presenters/components/WindCompass/WindCompass";
 
 type GoogleMap = any;
 
@@ -33,6 +35,12 @@ const MINI_MAP_ID = "miniMap";
 const CLUB_RANGE_STROKE_WEIGHT = {
   mini: 1,
   full: 2,
+};
+
+/** The mini map has room for little more than the dial itself. */
+const WIND_COMPASS_SIZE = {
+  mini: 46,
+  full: 64,
 };
 
 /** Inside this the shot is a chip or a putt, played from wherever around the
@@ -136,6 +144,9 @@ function useViewLogic(
     null
   );
   const closeRangeRef = useRef(false);
+  // What the compass turns against. Held across renders so that it survives the
+  // ones where there is nothing to frame and the camera is not recalculated.
+  const headingRef = useRef(0);
 
   if (frameFromPos && pinPos && map) {
     const distanceToPin = calculateDistanceBetweenPositions(
@@ -195,6 +206,7 @@ function useViewLogic(
     });
 
     if (camera) {
+      headingRef.current = camera.heading;
       map.panTo(new google.maps.LatLng(camera.center.lat, camera.center.lng));
       map.setZoom(camera.zoom);
       map.setHeading(camera.heading);
@@ -309,12 +321,14 @@ function useViewLogic(
       };
     }
   }, [map, props]);
+
+  return { mapHeading: headingRef.current };
 }
 
 function Map({ mapId = "map", ...props }: MapProps) {
   const [map, setMap] = useState<GoogleMap | null>(null);
   const userLocation = props.currentPosition;
-  useViewLogic(props, map, mapId);
+  const { mapHeading } = useViewLogic(props, map, mapId);
 
   const mapRef = useRef<GoogleMap | null>(null); // Ref for map instance
 
@@ -334,6 +348,12 @@ function Map({ mapId = "map", ...props }: MapProps) {
     measureFrom && pinPos
       ? calculateBearingBetweenPositions(measureFrom, pinPos)
       : null;
+  // The wind that matters is the one over the ball, falling back to wherever
+  // the player is standing before the stroke has a position.
+  const wind = useWind(
+    props.ballPos ?? props.strokeFromPos ?? props.currentPosition
+  );
+
   useClubRangeRings(
     map,
     measureFrom,
@@ -347,6 +367,18 @@ function Map({ mapId = "map", ...props }: MapProps) {
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <div id={mapId} style={{ width: "100%", height: "100%" }}></div>
+      {/* Top left: the bottom of the map belongs to Google's attribution. */}
+      <Box position="absolute" top={1} left={1} pointerEvents="none">
+        <WindCompass
+          wind={wind}
+          mapHeading={mapHeading}
+          size={
+            mapId === MINI_MAP_ID
+              ? WIND_COMPASS_SIZE.mini
+              : WIND_COMPASS_SIZE.full
+          }
+        />
+      </Box>
       <Flex
         position="absolute"
         bottom={1}

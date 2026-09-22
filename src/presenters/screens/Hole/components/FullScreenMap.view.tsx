@@ -9,6 +9,9 @@ import { ClubRanges } from "usecases/stroke/calculateClubRanges";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { samePosition } from "usecases/hole/samePosition";
 
+/** The compass in the top left corner, plus the gap either side of it. */
+const WIND_COMPASS_LEFT_OFFSET = "72px";
+
 const FRAME_OPTIONS: [MapFrame, string][] = [
   ["hole", "Hole"],
   ["stroke", "Shot"],
@@ -77,7 +80,8 @@ export function FullScreenMap(props: FullScreenMapProps) {
           <Flex
             position="absolute"
             top={1}
-            left={1}
+            // Clear of the wind compass, which sits in the corner.
+            left={WIND_COMPASS_LEFT_OFFSET}
             borderRadius="md"
             overflow="hidden"
             bgColor="rgba(0, 0, 0, 0.55)"
