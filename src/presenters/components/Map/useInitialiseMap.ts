@@ -7,7 +7,8 @@ export function useInitialiseMap(
   mapId: string,
   map: any,
   setMap: any,
-  mapRef: any
+  mapRef: any,
+  greedyGestures = false
 ) {
   // @ts-ignore - todo: fix window
   const gmaps = window.google?.maps; // Assuming you have a Maps Maps API script loaded with your API key
@@ -32,6 +33,7 @@ export function useInitialiseMap(
             fullscreenControl: false, // Hides fullscreen button
             streetViewControl: false, // Hides Streetview button
             myLocationButtonControl: true,
+            ...(greedyGestures && { gestureHandling: "greedy" }),
             // @ts-ignore
             mapTypeId: google.maps.MapTypeId.SATELLITE,
             // styles: googleMapStyle,
@@ -45,6 +47,6 @@ export function useInitialiseMap(
         }
       })();
     },
-    [mapId, gmaps, map, mapRef, setMap]
+    [mapId, gmaps, map, mapRef, setMap, greedyGestures]
   );
 }

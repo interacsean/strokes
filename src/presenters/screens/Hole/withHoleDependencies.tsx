@@ -7,6 +7,8 @@ import { useCourseState } from "state/course/courseState";
 import { HoleViewProps } from "./Hole.view";
 import { Hole, Hole as HoleModel } from "model/Hole";
 import { setHolePar } from "usecases/hole/setHolePar";
+import { currentTeeName } from "usecases/hole/currentTeeName";
+import { currentPinName } from "usecases/hole/currentPinName";
 import { mergePartStroke } from "usecases/stroke/mergePartStroke";
 import { saveStroke } from "usecases/course/saveStroke";
 import { saveStrokes } from "usecases/course/saveStrokes";
@@ -126,16 +128,18 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
   }, [currentHole, saveCurrentHole, updateCourseState]);
 
   const setParAndUpdate = useCallback(
-    (par: number) => setHolePar(holeUpdateAndSave, par),
-    [holeUpdateAndSave]
+    (par: number) =>
+      currentHole && setHolePar(holeUpdateAndSave, currentHole, par),
+    [holeUpdateAndSave, currentHole]
   );
 
   const setHolePos = useCallback(
     (holePos: LatLng) => {
-      // todo: handle taking tee name
-      holeUpdateAndSave({ pins: { pin: holePos } });
+      if (currentHole) {
+        holeUpdateAndSave({ pins: { [currentPinName(currentHole)]: holePos } });
+      }
     },
-    [holeUpdateAndSave]
+    [holeUpdateAndSave, currentHole]
   );
 
   const setFromPosMethod = useCallback(
@@ -153,18 +157,27 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
   );
 
   const setTeePos = useCallback(
-    (teeName: string, teePos: LatLng) => {
-      if (currentHole) {
-        holeUpdateAndSave({
-          tees: {
-            ...(currentHole.tees || {}),
-            [teeName]: {
-              ...currentHole.tees[teeName],
-              pos: teePos,
-            },
-          },
-        } as DeepPartial<HoleModel>);
-      }
+    (teePos: LatLng) => {
+      if (!currentHole) return;
+      // The opening shot is played from the tee, so it moves with it — unless
+      // the player has already put it somewhere else themselves.
+      const [firstStroke, ...laterStrokes] = currentHole.strokes;
+      const playedFromTee =
+        firstStroke &&
+        (firstStroke.fromPosSetMethod === PosOptionMethods.TEE ||
+          !firstStroke.fromPos);
+      holeUpdateAndSave({
+        tees: { [currentTeeName(currentHole)]: { pos: teePos } },
+        ...(playedFromTee && {
+          strokes: [
+            mergePartStroke(firstStroke, {
+              fromPos: teePos,
+              fromPosSetMethod: PosOptionMethods.TEE,
+            }),
+            ...laterStrokes,
+          ],
+        }),
+      } as DeepPartial<HoleModel>);
     },
     [holeUpdateAndSave, currentHole]
   );

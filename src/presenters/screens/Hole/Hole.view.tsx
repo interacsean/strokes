@@ -14,6 +14,7 @@ import { StrokeType } from "model/StrokeType";
 import { Penalty } from "model/Penalty";
 import { strokeNumberWithPenalties } from "usecases/hole/calculateHoleScore";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
+import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 import { SingleStroke } from "./components/SingleStroke";
 import { PosOptionMethods } from "model/PosOptions";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
@@ -21,7 +22,7 @@ import { RoutePaths } from "presenters/routes/RoutePaths";
 import { Course } from "model/Course";
 import { ClubStats } from "model/ClubStats";
 import { ordinalIndicator } from "presenters/utils/ordinalIndicator";
-import { FullScreenMap } from "./components/FullScreenMap.view";
+import { FullScreenMap, HoleMarker } from "./components/FullScreenMap.view";
 import { ScorecardPanel } from "./components/ScorecardPanel.view";
 import { calculateClubRanges } from "usecases/stroke/calculateClubRanges";
 
@@ -45,7 +46,7 @@ export type HoleViewProps = {
   setFromPosition: (stroke: number, pos: LatLng) => void;
   setToPosition: (stroke: number, pos: LatLng) => void;
   setHolePos: (pos: LatLng) => void;
-  setTeePos: (teeName: string, pos: LatLng) => void;
+  setTeePos: (pos: LatLng) => void;
   addStroke: () => void;
   distanceToHole: number | undefined;
   holeAltitudeDelta: number | undefined;
@@ -84,7 +85,7 @@ function useHoleViewLogic(props: HoleViewProps) {
   const par = teePlayed?.par;
   const { inputProps: parInputProps, setCurrentValue: setParInputValue } =
     useInput({
-      initValue: `${par}`,
+      initValue: `${par ?? ""}`,
       onBlur: useCallback(
         (value: string) => {
           const newPar = parseInt(value, 10);
@@ -97,7 +98,7 @@ function useHoleViewLogic(props: HoleViewProps) {
     });
   useEffect(
     function updateParInputValueOnHoleUpdate() {
-      setParInputValue(`${par}`);
+      setParInputValue(`${par ?? ""}`);
     },
     [setParInputValue, props.holeNum, par]
   );
@@ -139,6 +140,8 @@ function useHoleViewLogic(props: HoleViewProps) {
   }, [noteValue, holeNote, saveHoleNote]);
 
   const [showFullScreenMap, setShowFullScreenMap] = useState(false);
+  // Which end of the hole, if any, the map opens ready to be tapped for.
+  const [mapPlacing, setMapPlacing] = useState<HoleMarker | null>(null);
   const [showScorecard, setShowScorecard] = useState(false);
 
   const availableActiveStroke =
@@ -160,7 +163,15 @@ function useHoleViewLogic(props: HoleViewProps) {
     par,
     parInputProps,
     showFullScreenMap,
-    openFullScreenMap: useCallback(() => setShowFullScreenMap(true), []),
+    mapPlacing,
+    openFullScreenMap: useCallback(() => {
+      setMapPlacing(null);
+      setShowFullScreenMap(true);
+    }, []),
+    placeOnFullScreenMap: useCallback((marker: HoleMarker) => {
+      setMapPlacing(marker);
+      setShowFullScreenMap(true);
+    }, []),
     closeFullScreenMap: useCallback(() => setShowFullScreenMap(false), []),
     showScorecard,
     openScorecard: useCallback(() => setShowScorecard(true), []),
@@ -199,6 +210,13 @@ export function HoleView(props: HoleViewProps) {
       .toPosSetMethod === PosOptionMethods.HOLE;
   const canFinish = timeForNextHole &&
     props.hole.holeNum === props.course.holes.length;
+  // A hole set up on the fly starts with neither end on the map; the pin is
+  // the one that matters most, since every distance is measured to it.
+  const missingMarker: HoleMarker | null = !selectCurrentPinFromHole(props.hole)
+    ? "pin"
+    : !selectCurrentTeeFromHole(props.hole)?.pos
+    ? "tee"
+    : null;
 
   return (
     <Container>
@@ -261,6 +279,8 @@ export function HoleView(props: HoleViewProps) {
                 distanceUnit={distanceUnit}
                 leaveRound={viewLogic.promptOnLeave}
                 showScorecard={viewLogic.openScorecard}
+                missingMarker={missingMarker}
+                placeMarker={viewLogic.placeOnFullScreenMap}
               />
             </Box>
             <Box position="relative" flex={1} zIndex={9}>
@@ -404,6 +424,7 @@ export function HoleView(props: HoleViewProps) {
           parInputProps={viewLogic.parInputProps}
           setTeePos={props.setTeePos}
           setHolePos={props.setHolePos}
+          initialPlacing={viewLogic.mapPlacing}
           onClose={viewLogic.closeFullScreenMap}
         />
       )}

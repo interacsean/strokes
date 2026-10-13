@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Box, Button, Flex, IconButton, Input, Text } from "@chakra-ui/react";
 import Map, { MapFrame } from "presenters/components/Map/Map";
 import { CollapseIcon } from "presenters/components/icons/MapIcons";
@@ -7,6 +7,7 @@ import { LatLng } from "model/LatLng";
 import { useInput } from "presenters/utils/useInput/useInput";
 import { ClubRanges } from "usecases/stroke/calculateClubRanges";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
+import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 import { samePosition } from "usecases/hole/samePosition";
 
 /** The compass in the top left corner, plus the gap either side of it. */
@@ -16,6 +17,9 @@ const FRAME_OPTIONS: [MapFrame, string][] = [
   ["hole", "Hole"],
   ["stroke", "Shot"],
 ];
+
+/** The ends of the hole the player can put on the map themselves. */
+export type HoleMarker = "tee" | "pin";
 
 type FullScreenMapProps = {
   hole: Hole;
@@ -27,19 +31,37 @@ type FullScreenMapProps = {
   clubRanges: ClubRanges | null;
   gpsAccuracy: number | undefined;
   parInputProps: ReturnType<typeof useInput>["inputProps"];
-  setTeePos: (teeName: string, pos: LatLng) => void;
+  setTeePos: (pos: LatLng) => void;
   setHolePos: (pos: LatLng) => void;
+  /** Opens the map ready for the player to tap where this marker goes. */
+  initialPlacing?: HoleMarker | null;
   onClose: () => void;
 };
 
 export function FullScreenMap(props: FullScreenMapProps) {
   const [frame, setFrame] = useState<MapFrame>("stroke");
+  const [placing, setPlacing] = useState<HoleMarker | null>(
+    props.initialPlacing ?? null
+  );
 
   // Framing the stroke only shows anything different once the ball has moved on
   // from the tee, so until then there is nothing to toggle between.
   const teePos = selectCurrentTeeFromHole(props.hole)?.pos;
+  const pinPos = selectCurrentPinFromHole(props.hole);
   const canFrameStroke =
-    !!props.fromPos && !samePosition(props.fromPos, teePos);
+    !placing && !!props.fromPos && !samePosition(props.fromPos, teePos);
+
+  const { setTeePos, setHolePos } = props;
+  const placeMarker = useCallback(
+    (pos: LatLng) => {
+      if (placing === "tee") setTeePos(pos);
+      if (placing === "pin") setHolePos(pos);
+      setPlacing(null);
+    },
+    [placing, setTeePos, setHolePos]
+  );
+  const togglePlacing = (marker: HoleMarker) =>
+    setPlacing((current) => (current === marker ? null : marker));
 
   return (
     <Flex
@@ -70,6 +92,9 @@ export function FullScreenMap(props: FullScreenMapProps) {
             measureDistancesFrom={props.fromPos}
             clubRanges={props.clubRanges}
             frame={frame}
+            onMapClick={placing ? placeMarker : undefined}
+            holdCamera={!!placing}
+            greedyGestures
           />
         ) : (
           <Flex height="100%" alignItems="center" justifyContent="center">
@@ -124,6 +149,42 @@ export function FullScreenMap(props: FullScreenMapProps) {
         >
           <CollapseIcon boxSize={5} />
         </IconButton>
+        {placing && (
+          <Flex
+            position="absolute"
+            left={2}
+            right={2}
+            bottom={8}
+            px={3}
+            py={2.5}
+            columnGap={2}
+            alignItems="center"
+            borderRadius="md"
+            bgColor="rgba(0, 0, 0, 0.7)"
+          >
+            <Text color="white" flex={1} fontSize="sm">
+              Tap the map where the {placing} is
+            </Text>
+            <Button
+              size="sm"
+              variant="primary"
+              isDisabled={!props.currentPosition}
+              onClick={() =>
+                props.currentPosition && placeMarker(props.currentPosition)
+              }
+            >
+              I'm here
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              color="white"
+              onClick={() => setPlacing(null)}
+            >
+              Cancel
+            </Button>
+          </Flex>
+        )}
       </Box>
       <Flex
         bgColor="white"
@@ -134,15 +195,13 @@ export function FullScreenMap(props: FullScreenMapProps) {
         justifyContent="space-around"
       >
         <Flex flexDir="column" alignItems="center" rowGap={1}>
-          <Text variant="solidLabel">Tee pos</Text>
+          <Text variant="solidLabel">Tee</Text>
           <Button
-            variant="primaryOutline"
-            onClick={() =>
-              props.currentPosition &&
-              props.setTeePos("default", props.currentPosition)
-            }
+            variant={placing === "tee" ? "primary" : "primaryOutline"}
+            aria-pressed={placing === "tee"}
+            onClick={() => togglePlacing("tee")}
           >
-            📍⛳️
+            {teePos ? "Move tee" : "Set tee"}
           </Button>
         </Flex>
         <Flex flexDir="column" alignItems="center" rowGap={1}>
@@ -155,14 +214,13 @@ export function FullScreenMap(props: FullScreenMapProps) {
           />
         </Flex>
         <Flex flexDir="column" alignItems="center" rowGap={1}>
-          <Text variant="solidLabel">Hole pos</Text>
+          <Text variant="solidLabel">Pin</Text>
           <Button
-            variant="primaryOutline"
-            onClick={() =>
-              props.currentPosition && props.setHolePos(props.currentPosition)
-            }
+            variant={placing === "pin" ? "primary" : "primaryOutline"}
+            aria-pressed={placing === "pin"}
+            onClick={() => togglePlacing("pin")}
           >
-            📍⛳️
+            {pinPos ? "Move pin" : "Set pin"}
           </Button>
         </Flex>
       </Flex>

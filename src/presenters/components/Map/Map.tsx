@@ -1,6 +1,6 @@
 /// <reference types="@types/google.maps" />
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, MutableRefObject } from "react";
 import { useInitialiseMap } from "./useInitialiseMap";
 import { useUpdateUserPin } from "./useUpdateUserPin";
 import { useGreenDistanceLabels } from "./useGreenDistanceLabels";
@@ -66,6 +66,11 @@ const PIN_CLEARANCE_METRES = 8;
 /** Metres of ground one screen spans at zoom 0, along the hole. */
 const MAP_SIZE_AT_ZOOM_0 = 50000000;
 
+/** Without both a tee and a pin there is no hole to frame, so the map shows the
+ * ground around the player instead — enough of it to find the green from the
+ * tee of a par 4. */
+const UNFRAMED_ZOOM = 16.5;
+
 type MapProps = {
   hole: Hole;
   ballPos: LatLng | null;
@@ -90,6 +95,12 @@ type MapProps = {
   /** Whether the view is framed on the whole hole (tee to pin) or on the stroke
    * in hand (strokeFromPos to pin). Defaults to the stroke. */
   frame?: MapFrame;
+  /** Leaves the camera where the player has panned it, rather than framing the
+   * hole on every render — while they look for a spot to tap, say. */
+  holdCamera?: boolean;
+  /** Lets one finger pan the map, which only suits a map that fills the screen
+   * — anywhere else that finger is scrolling the page. */
+  greedyGestures?: boolean;
 };
 
 const createRotatedIcon = (
@@ -115,6 +126,15 @@ const createRotatedIcon = (
 
     callback(canvas.toDataURL());
   };
+};
+
+const removeMarker = (
+  markerRef: MutableRefObject<google.maps.marker.AdvancedMarkerElement | null>
+) => {
+  if (markerRef.current) {
+    markerRef.current.map = null;
+    markerRef.current = null;
+  }
 };
 
 function useViewLogic(
@@ -144,11 +164,30 @@ function useViewLogic(
     null
   );
   const closeRangeRef = useRef(false);
+  // What the unframed view was last centred on, so that it is centred once
+  // rather than chasing the player around as their position updates.
+  const unframedCentreRef = useRef<string | null>(null);
   // What the compass turns against. Held across renders so that it survives the
   // ones where there is nothing to frame and the camera is not recalculated.
   const headingRef = useRef(0);
 
-  if (frameFromPos && pinPos && map) {
+  if (map && !(frameFromPos && pinPos)) {
+    const centre = teePos ?? props.ballPos ?? props.currentPosition;
+    const centreKey = teePos
+      ? `tee:${teePos.lat},${teePos.lng}`
+      : props.ballPos
+      ? `ball:${props.ballPos.lat},${props.ballPos.lng}`
+      : "player";
+    if (unframedCentreRef.current !== centreKey) {
+      unframedCentreRef.current = centreKey;
+      map.panTo(new google.maps.LatLng(centre.lat, centre.lng));
+      map.setZoom(UNFRAMED_ZOOM);
+      map.setTilt(props.tilt || 0);
+    }
+  }
+
+  if (frameFromPos && pinPos && map && !props.holdCamera) {
+    unframedCentreRef.current = null;
     const distanceToPin = calculateDistanceBetweenPositions(
       frameFromPos,
       pinPos
@@ -215,6 +254,9 @@ function useViewLogic(
   }
 
   useEffect(() => {
+    // The map outlives the hole, so a hole the player has yet to set up must
+    // not be left showing the last one's markers.
+    if (!props.ballPos) removeMarker(ballMarkerRef);
     if (map && props.ballPos) {
       if (ballMarkerRef.current) {
         ballMarkerRef.current.position = props.ballPos;
@@ -241,6 +283,8 @@ function useViewLogic(
   }, [props.ballPos, map]);
 
   useEffect(() => {
+    if (!teePos) removeMarker(teeMarkerRef);
+    if (!pinPos) removeMarker(pinMarkerRef);
     if (map && teePos) {
       if (teeMarkerRef.current) {
         teeMarkerRef.current.position = teePos;
@@ -291,7 +335,7 @@ function useViewLogic(
         }
       }
     }
-  }, [pinPos, map]);
+  }, [teePos, pinPos, map]);
 
   const { setFakePos } = useFakeGps();
   useEffect(() => {
@@ -332,7 +376,7 @@ function Map({ mapId = "map", ...props }: MapProps) {
 
   const mapRef = useRef<GoogleMap | null>(null); // Ref for map instance
 
-  useInitialiseMap(mapId, map, setMap, mapRef);
+  useInitialiseMap(mapId, map, setMap, mapRef, props.greedyGestures);
   useUpdateUserPin(userLocation, map, mapRef);
 
   useStrokePath(map, props.strokeFromPos, props.ballPos);

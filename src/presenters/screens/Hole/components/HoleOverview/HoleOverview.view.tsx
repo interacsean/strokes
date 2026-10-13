@@ -7,6 +7,7 @@ import {
 import { Stroke } from "model/Stroke";
 import { strokeNumberWithPenalties } from "usecases/hole/calculateHoleScore";
 import { StrokeCounter } from "./StrokeCounter.view";
+import { HoleMarker } from "../FullScreenMap.view";
 
 const MIN_DIST_FOR_RESULT_TEXT = 270;
 
@@ -29,6 +30,9 @@ type HoleOverviewProps = {
   setPar: (par: number) => void;
   leaveRound: () => void;
   showScorecard: () => void;
+  /** The end of the hole still to be put on the map, if any. */
+  missingMarker: HoleMarker | null;
+  placeMarker: (marker: HoleMarker) => void;
 };
 
 export function HoleOverview(props: HoleOverviewProps) {
@@ -113,7 +117,7 @@ export function HoleOverview(props: HoleOverviewProps) {
                   const parNum = parseInt(e.target.value, 10);
                   if (parNum) props.setPar(parNum);
                 }}
-                value={props.par}
+                value={props.par ?? ""}
                 style={{
                   position: "absolute",
                   top: 0,
@@ -124,6 +128,9 @@ export function HoleOverview(props: HoleOverviewProps) {
                   cursor: "pointer",
                 }}
               >
+                <option value="" disabled hidden>
+                  Set par
+                </option>
                 <option value={3}>3</option>
                 <option value={4}>4</option>
                 <option value={5}>5</option>
@@ -204,10 +211,16 @@ export function HoleOverview(props: HoleOverviewProps) {
               </Text>
             </Flex>
           )}
-          {!props.holeLength && (
-            <Button variant="ghost" p={0}>
+          {props.missingMarker && (
+            <Button
+              variant="ghost"
+              p={0}
+              onClick={() =>
+                props.missingMarker && props.placeMarker(props.missingMarker)
+              }
+            >
               <Text variant="minor" lineHeight="1.1em" fontWeight={800}>
-                Set Pin
+                Set {props.missingMarker === "pin" ? "Pin" : "Tee"}
               </Text>
             </Button>
           )}
