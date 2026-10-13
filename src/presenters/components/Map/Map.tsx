@@ -96,7 +96,8 @@ type MapProps = {
    * in hand (strokeFromPos to pin). Defaults to the stroke. */
   frame?: MapFrame;
   /** Leaves the camera where the player has panned it, rather than framing the
-   * hole on every render — while they look for a spot to tap, say. */
+   * hole on every render — while they look for a spot to tap, say. The hole is
+   * still framed once, so a map that opens holding starts on the hole. */
   holdCamera?: boolean;
   /** Lets one finger pan the map, which only suits a map that fills the screen
    * — anywhere else that finger is scrolling the page. */
@@ -170,6 +171,7 @@ function useViewLogic(
   // What the unframed view was last centred on, so that it is centred once
   // rather than chasing the player around as their position updates.
   const unframedCentreRef = useRef<string | null>(null);
+  const hasFramedRef = useRef(false);
   // What the compass turns against. Held across renders so that it survives the
   // ones where there is nothing to frame and the camera is not recalculated.
   const headingRef = useRef(0);
@@ -189,7 +191,12 @@ function useViewLogic(
     }
   }
 
-  if (frameFromPos && pinPos && map && !props.holdCamera) {
+  if (
+    frameFromPos &&
+    pinPos &&
+    map &&
+    !(props.holdCamera && hasFramedRef.current)
+  ) {
     unframedCentreRef.current = null;
     const distanceToPin = calculateDistanceBetweenPositions(
       frameFromPos,
@@ -248,6 +255,7 @@ function useViewLogic(
     });
 
     if (camera) {
+      hasFramedRef.current = true;
       headingRef.current = camera.heading;
       map.panTo(new google.maps.LatLng(camera.center.lat, camera.center.lng));
       map.setZoom(camera.zoom);
