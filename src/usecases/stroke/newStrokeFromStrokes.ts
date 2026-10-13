@@ -34,7 +34,8 @@ export function newStrokeFromStrokes(strokes: Stroke[], hole: Hole): Stroke {
         : undefined,
     fromPosSetMethod:
       strokes.length === 0
-        ? usedTee
+        ? // A tee given a par but not yet put on the map has nowhere to play from
+          usedTee?.pos
           ? PosOptionMethods.TEE
           : PosOptionMethods.GPS
         : lastRelief === ReliefMethod.REPLAY

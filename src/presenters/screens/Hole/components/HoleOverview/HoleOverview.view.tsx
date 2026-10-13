@@ -1,4 +1,5 @@
 import { Flex, Box, Text, Button } from "@chakra-ui/react";
+import { ReactNode } from "react";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -7,6 +8,7 @@ import {
 import { Stroke } from "model/Stroke";
 import { strokeNumberWithPenalties } from "usecases/hole/calculateHoleScore";
 import { StrokeCounter } from "./StrokeCounter.view";
+import { ParSelect } from "./ParSelect.view";
 import { HoleMarker } from "../FullScreenMap.view";
 
 const MIN_DIST_FOR_RESULT_TEXT = 270;
@@ -30,10 +32,52 @@ type HoleOverviewProps = {
   setPar: (par: number) => void;
   leaveRound: () => void;
   showScorecard: () => void;
-  /** The end of the hole still to be put on the map, if any. */
-  missingMarker: HoleMarker | null;
+  /** Whether each end of the hole is on the map yet. A course set up on the
+   * fly starts with neither. */
+  hasTee: boolean;
+  hasPin: boolean;
   placeMarker: (marker: HoleMarker) => void;
 };
+
+/** Small enough to sit under a reading without pushing the bar any taller. */
+const OUTLINE_BUTTON_PROPS = {
+  variant: "unstyled",
+  display: "inline-flex",
+  alignItems: "center",
+  height: "auto",
+  minW: "auto",
+  px: 2,
+  py: 0.5,
+  borderWidth: "1px",
+  borderRadius: "md",
+  fontSize: "xs",
+  fontWeight: 700,
+} as const;
+
+/** A quiet way in to change something that is already set. */
+function PanelLink({
+  onClick,
+  children,
+}: {
+  onClick?: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <Button
+      variant="unstyled"
+      height="auto"
+      minW="auto"
+      p={0}
+      fontSize="xs"
+      fontWeight={600}
+      color="white"
+      textDecoration="underline"
+      onClick={onClick}
+    >
+      {children}
+    </Button>
+  );
+}
 
 export function HoleOverview(props: HoleOverviewProps) {
   // todo: move to logic hook
@@ -110,40 +154,48 @@ export function HoleOverview(props: HoleOverviewProps) {
           <Text variant="heading" color="black" pr={2}>
             {props.holeNum}
           </Text>
-          <Flex flexDir={"column"} color={"neutral.800"}>
-            <Button variant="ghost" p={0} height="auto" position="relative">
-              <select
-                onChange={(e) => {
-                  const parNum = parseInt(e.target.value, 10);
-                  if (parNum) props.setPar(parNum);
-                }}
-                value={props.par ?? ""}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  opacity: 0,
-                  cursor: "pointer",
-                }}
+          <Flex
+            flexDir={"column"}
+            alignItems="flex-start"
+            rowGap={0.5}
+            color={"neutral.800"}
+          >
+            {/* Without a pin there is no hole length to go with it, and the
+                par on its own over "Set tee" is just clutter. */}
+            {props.par && props.hasPin && (
+              <Text variant="minor" lineHeight={"1.1em"} fontWeight={800}>
+                Par {props.par}
+              </Text>
+            )}
+            {!props.hasTee ? (
+              <Button
+                {...OUTLINE_BUTTON_PROPS}
+                borderColor="primary.500"
+                color="primary.500"
+                onClick={() => props.placeMarker("tee")}
               >
-                <option value="" disabled hidden>
-                  Set par
-                </option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
-              </select>
-              <Text variant="minor" lineHeight={"1.1em"} fontWeight={800}>
-                {props.par ? `Par ${props.par}` : "Set Par"}
-              </Text>
-            </Button>
-            {props.holeLength && (
-              <Text variant="minor" lineHeight={"1.1em"} fontWeight={800}>
-                {Math.round(props.holeLength)}
-                {props.distanceUnit}
-              </Text>
+                Set tee
+              </Button>
+            ) : (
+              <Button
+                variant="unstyled"
+                aria-label="Edit tee"
+                height="auto"
+                minW="auto"
+                p={0}
+                onClick={() => props.placeMarker("tee")}
+              >
+                <Text
+                  variant="minor"
+                  lineHeight={"1.1em"}
+                  fontWeight={800}
+                  textDecoration="underline"
+                >
+                  {props.holeLength
+                    ? `${Math.round(props.holeLength)}${props.distanceUnit}`
+                    : "Edit tee"}
+                </Text>
+              </Button>
             )}
           </Flex>
           {props.nextHole ? (
@@ -191,38 +243,61 @@ export function HoleOverview(props: HoleOverviewProps) {
             activeStroke={props.activeStroke}
             strokes={props.strokes}
             strokeClick={props.setActiveStroke}
-          />
-          <Text color="white" variant="solidLabel" mt={2} lineHeight="1em">
-            {forScoreOutcomeDescription && (
-              <>For {forScoreOutcomeDescription}</>
+          >
+            {!props.par && (
+              <ParSelect par={props.par} setPar={props.setPar}>
+                <Button
+                  as="span"
+                  {...OUTLINE_BUTTON_PROPS}
+                  ml={2}
+                  borderColor="white"
+                  color="white"
+                >
+                  Set par
+                </Button>
+              </ParSelect>
             )}
-            &nbsp;
-          </Text>
+          </StrokeCounter>
+          {/* Holds its height with nothing in it, so the bar doesn't jump. */}
+          <Flex mt={2} minH="1em" columnGap={3} alignItems="center">
+            {forScoreOutcomeDescription && (
+              <Text color="white" variant="solidLabel" lineHeight="1em">
+                For {forScoreOutcomeDescription}
+              </Text>
+            )}
+            {props.par && (
+              <ParSelect par={props.par} setPar={props.setPar}>
+                <PanelLink>Edit par</PanelLink>
+              </ParSelect>
+            )}
+          </Flex>
         </Flex>
-        <Flex flexDir={"column"} alignItems={"flex-end"}>
-          {props.distanceToHole && (
-            <Flex pt={1}>
-              <Text color="white" variant="solidLabel" mr={1}>
-                To hole
-              </Text>
+        <Flex flexDir={"column"} alignItems={"flex-end"} rowGap={1}>
+          <Flex pt={1} alignItems="center">
+            <Text color="white" variant="solidLabel" mr={1}>
+              To hole
+            </Text>
+            {!props.hasPin ? (
+              <Button
+                {...OUTLINE_BUTTON_PROPS}
+                borderColor="white"
+                color="white"
+                onClick={() => props.placeMarker("pin")}
+              >
+                Set pin
+              </Button>
+            ) : (
               <Text variant="heading2" color="white" lineHeight={"1em"}>
-                {Math.round(props.distanceToHole)}
-                {props.distanceUnit}
+                {props.distanceToHole !== undefined
+                  ? `${Math.round(props.distanceToHole)}${props.distanceUnit}`
+                  : "–"}
               </Text>
-            </Flex>
-          )}
-          {props.missingMarker && (
-            <Button
-              variant="ghost"
-              p={0}
-              onClick={() =>
-                props.missingMarker && props.placeMarker(props.missingMarker)
-              }
-            >
-              <Text variant="minor" lineHeight="1.1em" fontWeight={800}>
-                Set {props.missingMarker === "pin" ? "Pin" : "Tee"}
-              </Text>
-            </Button>
+            )}
+          </Flex>
+          {props.hasPin && (
+            <PanelLink onClick={() => props.placeMarker("pin")}>
+              Edit pin
+            </PanelLink>
           )}
           {/* Todo: Wind */}
         </Flex>

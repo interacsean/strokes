@@ -382,11 +382,13 @@ function HoleDependenciesAndGps({ HoleView }: { HoleView: FC<HoleViewProps> }) {
       courseState?.holes &&
       courseState.holes.reduce((scoreAcc, hole) => {
         const holesTee = selectCurrentTeeFromHole(hole);
+        // A hole with no par has nothing to be over or under.
         if (
+          holesTee?.par &&
           hole.strokes.length &&
           hole.strokes.find((s) => s.toPosSetMethod === PosOptionMethods.HOLE)
         ) {
-          return scoreAcc + calculateHoleScore(hole) - (holesTee?.par || 0);
+          return scoreAcc + calculateHoleScore(hole) - holesTee.par;
         }
         return scoreAcc;
       }, 0),

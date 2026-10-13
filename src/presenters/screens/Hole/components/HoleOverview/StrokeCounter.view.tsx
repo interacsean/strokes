@@ -1,4 +1,5 @@
 import { Flex, Box, Text, Button } from "@chakra-ui/react";
+import { ReactNode } from "react";
 import { Stroke } from "model/Stroke";
 import { PenaltyReasonLabels } from "model/Penalty";
 
@@ -44,11 +45,14 @@ export function StrokeCounter({
   activeStroke,
   strokes,
   strokeClick,
+  children,
 }: {
   par: number | undefined;
   activeStroke: number;
   strokes: Stroke[];
   strokeClick: (stroke: number) => void;
+  /** Follows the strokes, e.g. to ask for the par they are counted against. */
+  children?: ReactNode;
 }) {
   const sz = 32; // size
   const pips = buildPips(strokes, par);
@@ -109,6 +113,7 @@ export function StrokeCounter({
           </Box>
         );
       })}
+      {children}
     </Flex>
   );
 }

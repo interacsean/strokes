@@ -1,14 +1,15 @@
 import { useCallback, useState } from "react";
-import { Box, Button, Flex, IconButton, Input, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, IconButton, Select, Text } from "@chakra-ui/react";
 import Map, { MapFrame } from "presenters/components/Map/Map";
+import { ChevronDownIcon, EditIcon } from "@chakra-ui/icons";
 import { CollapseIcon } from "presenters/components/icons/MapIcons";
 import { Hole } from "model/Hole";
 import { LatLng } from "model/LatLng";
-import { useInput } from "presenters/utils/useInput/useInput";
 import { ClubRanges } from "usecases/stroke/calculateClubRanges";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
 import { selectCurrentPinFromHole } from "state/course/selectors/currentPin";
 import { samePosition } from "usecases/hole/samePosition";
+import { PARS } from "./HoleOverview/ParSelect.view";
 
 /** The compass in the top left corner, plus the gap either side of it. */
 const WIND_COMPASS_LEFT_OFFSET = "72px";
@@ -30,10 +31,12 @@ type FullScreenMapProps = {
   toPos: LatLng | undefined;
   clubRanges: ClubRanges | null;
   gpsAccuracy: number | undefined;
-  parInputProps: ReturnType<typeof useInput>["inputProps"];
+  par: number | undefined;
+  setPar: (par: number) => void;
   setTeePos: (pos: LatLng) => void;
   setHolePos: (pos: LatLng) => void;
-  /** Opens the map ready for the player to tap where this marker goes. */
+  /** Opens the map ready for the player to tap where this marker goes, and
+   * goes back to the stroke once they have. */
   initialPlacing?: HoleMarker | null;
   onClose: () => void;
 };
@@ -43,6 +46,10 @@ export function FullScreenMap(props: FullScreenMapProps) {
   const [placing, setPlacing] = useState<HoleMarker | null>(
     props.initialPlacing ?? null
   );
+  // Opened from the stroke just to put a marker down, the map has done its job
+  // once the marker is down (or the player thinks better of it).
+  const [returnWhenPlaced] = useState(!!props.initialPlacing);
+  const [showDetails, setShowDetails] = useState(true);
 
   // Framing the stroke only shows anything different once the ball has moved on
   // from the tee, so until then there is nothing to toggle between.
@@ -51,14 +58,18 @@ export function FullScreenMap(props: FullScreenMapProps) {
   const canFrameStroke =
     !placing && !!props.fromPos && !samePosition(props.fromPos, teePos);
 
-  const { setTeePos, setHolePos } = props;
+  const { setTeePos, setHolePos, onClose } = props;
+  const stopPlacing = useCallback(() => {
+    if (returnWhenPlaced) onClose();
+    else setPlacing(null);
+  }, [returnWhenPlaced, onClose]);
   const placeMarker = useCallback(
     (pos: LatLng) => {
       if (placing === "tee") setTeePos(pos);
       if (placing === "pin") setHolePos(pos);
-      setPlacing(null);
+      stopPlacing();
     },
-    [placing, setTeePos, setHolePos]
+    [placing, setTeePos, setHolePos, stopPlacing]
   );
   const togglePlacing = (marker: HoleMarker) =>
     setPlacing((current) => (current === marker ? null : marker));
@@ -95,6 +106,8 @@ export function FullScreenMap(props: FullScreenMapProps) {
             onMapClick={placing ? placeMarker : undefined}
             holdCamera={!!placing}
             greedyGestures
+            // Clear of the tab that hides the details panel.
+            readoutsBottom={showDetails ? 6 : 1}
           />
         ) : (
           <Flex height="100%" alignItems="center" justifyContent="center">
@@ -149,11 +162,32 @@ export function FullScreenMap(props: FullScreenMapProps) {
         >
           <CollapseIcon boxSize={5} />
         </IconButton>
+        {!showDetails && (
+          <IconButton
+            aria-label="Show hole details"
+            variant="unstyled"
+            display="flex"
+            minW="auto"
+            height="auto"
+            p={1.5}
+            borderRadius="md"
+            bgColor="rgba(0, 0, 0, 0.55)"
+            color="white"
+            position="absolute"
+            // Over the GPS accuracy, when there is one to show.
+            bottom={props.gpsAccuracy !== undefined ? 8 : 1}
+            right={1}
+            onClick={() => setShowDetails(true)}
+          >
+            <EditIcon boxSize={5} />
+          </IconButton>
+        )}
         {placing && (
           <Flex
             position="absolute"
             left={2}
-            right={2}
+            // Clear of the button that shows the details panel again.
+            right={showDetails ? 2 : 12}
             bottom={8}
             px={3}
             py={2.5}
@@ -179,51 +213,87 @@ export function FullScreenMap(props: FullScreenMapProps) {
               size="sm"
               variant="ghost"
               color="white"
-              onClick={() => setPlacing(null)}
+              onClick={stopPlacing}
             >
               Cancel
             </Button>
           </Flex>
         )}
       </Box>
-      <Flex
-        bgColor="white"
-        px={4}
-        py={3}
-        columnGap={3}
-        alignItems="flex-end"
-        justifyContent="space-around"
-      >
-        <Flex flexDir="column" alignItems="center" rowGap={1}>
-          <Text variant="solidLabel">Tee</Text>
-          <Button
-            variant={placing === "tee" ? "primary" : "primaryOutline"}
-            aria-pressed={placing === "tee"}
-            onClick={() => togglePlacing("tee")}
+      {showDetails && (
+        <Flex
+          position="relative"
+          bgColor="white"
+          px={4}
+          py={3}
+          columnGap={3}
+          alignItems="flex-end"
+          justifyContent="space-around"
+        >
+          <IconButton
+            aria-label="Hide hole details"
+            variant="unstyled"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            position="absolute"
+            // A tab on the top edge of the panel, sitting over the map.
+            bottom="100%"
+            right={4}
+            minW="auto"
+            width={12}
+            height={5}
+            bgColor="white"
+            borderTopRadius="md"
+            borderBottomRadius={0}
+            onClick={() => setShowDetails(false)}
           >
-            {teePos ? "Move tee" : "Set tee"}
-          </Button>
+            <ChevronDownIcon boxSize={5} />
+          </IconButton>
+          <Flex flexDir="column" alignItems="center" rowGap={1}>
+            <Text variant="solidLabel">Tee</Text>
+            <Button
+              variant={placing === "tee" ? "primary" : "primaryOutline"}
+              aria-pressed={placing === "tee"}
+              onClick={() => togglePlacing("tee")}
+            >
+              {teePos ? "Move tee" : "Set tee"}
+            </Button>
+          </Flex>
+          <Flex flexDir="column" alignItems="center" rowGap={1}>
+            <Text variant="solidLabel">Par</Text>
+            <Select
+              aria-label="Par"
+              size="md"
+              width="4.5rem"
+              value={props.par ?? ""}
+              onChange={(e) => {
+                const par = parseInt(e.target.value, 10);
+                if (par) props.setPar(par);
+              }}
+            >
+              <option value="" disabled hidden>
+                –
+              </option>
+              {PARS.map((par) => (
+                <option key={par} value={par}>
+                  {par}
+                </option>
+              ))}
+            </Select>
+          </Flex>
+          <Flex flexDir="column" alignItems="center" rowGap={1}>
+            <Text variant="solidLabel">Pin</Text>
+            <Button
+              variant={placing === "pin" ? "primary" : "primaryOutline"}
+              aria-pressed={placing === "pin"}
+              onClick={() => togglePlacing("pin")}
+            >
+              {pinPos ? "Move pin" : "Set pin"}
+            </Button>
+          </Flex>
         </Flex>
-        <Flex flexDir="column" alignItems="center" rowGap={1}>
-          <Text variant="solidLabel">Par</Text>
-          <Input
-            name="par"
-            width="4rem"
-            textAlign="center"
-            {...props.parInputProps}
-          />
-        </Flex>
-        <Flex flexDir="column" alignItems="center" rowGap={1}>
-          <Text variant="solidLabel">Pin</Text>
-          <Button
-            variant={placing === "pin" ? "primary" : "primaryOutline"}
-            aria-pressed={placing === "pin"}
-            onClick={() => togglePlacing("pin")}
-          >
-            {pinPos ? "Move pin" : "Set pin"}
-          </Button>
-        </Flex>
-      </Flex>
+      )}
     </Flex>
   );
 }

@@ -16,6 +16,8 @@ type ScoreCardProps = {
   round: Course;
 };
 
+const formatToPar = (toPar: number) => `${toPar > 0 ? "+" : ""}${toPar}`;
+
 function getHoleScoreStyle(par: number, score: number) {
   if (score - par >= 2) {
     return {
@@ -103,6 +105,9 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ round }) => {
   const [showStrokes, setShowStrokes] = useState(false);
   let totalScore = 0;
   let totalPar = 0;
+  // Over or under par only counts the finished holes that have a par to be
+  // measured against — a hole set up on the fly may never be given one.
+  let totalScoreWithPar = 0;
   let totalParComplete = 0;
   return (
     <Flex flexDir="column" rowGap={2} fontSize="1.2rem">
@@ -130,7 +135,7 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ round }) => {
       </Flex>
       {round.holes.map((hole, i) => {
         const teePlayed = selectCurrentTeeFromHole(hole);
-        const par = teePlayed?.par || 4;
+        const par = teePlayed?.par;
         const score = calculateHoleScore(hole);
         const penalties = countPenaltyStrokes(hole.strokes);
         const holeComplete = hole?.strokes.find(
@@ -138,12 +143,14 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ round }) => {
         );
         if (holeComplete) {
           totalScore += score;
-          totalParComplete += par;
+          if (par) {
+            totalScoreWithPar += score;
+            totalParComplete += par;
+          }
         }
-        totalPar += par;
-        const holeScoreStyle = holeComplete
-          ? getHoleScoreStyle(par, score)
-          : {};
+        totalPar += par ?? 0;
+        const holeScoreStyle =
+          holeComplete && par ? getHoleScoreStyle(par, score) : {};
         const scoreReading = holeComplete
           ? score
           : score > 0
@@ -156,7 +163,7 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ round }) => {
               {hole.holeNum || i + 1}
             </Flex>
             <Flex flex="4" justify="center" align="center">
-              {par}
+              {par ?? "-"}
             </Flex>
             {showStrokes ? (
               <Flex flex="5" justify="start" align="center">
@@ -228,10 +235,8 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ round }) => {
                   )}
                 </Flex>
                 <Flex flex="1" justify="center" align="center">
-                  {holeComplete
-                    ? `${totalScore - totalParComplete > 0 ? "+" : ""}${
-                        totalScore - totalParComplete
-                      }`
+                  {holeComplete && par
+                    ? formatToPar(totalScoreWithPar - totalParComplete)
                     : "-"}
                 </Flex>
               </>
@@ -252,8 +257,7 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ round }) => {
               {totalScore}
             </Flex>
             <Flex flex="1" justify="center" align="center">
-              {totalScore - totalParComplete > 0 ? "+" : ""}
-              {totalScore - totalParComplete}
+              {formatToPar(totalScoreWithPar - totalParComplete)}
             </Flex>
           </>
         )}
@@ -265,11 +269,6 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ round }) => {
       >
         Show strokes
       </Checkbox>
-      <Text variant="minor" color="neutral.800" mt={3}>
-        <em>
-          WIP: may not work great if a hole doesn't have a par preset for it
-        </em>
-      </Text>
     </Flex>
   );
 };

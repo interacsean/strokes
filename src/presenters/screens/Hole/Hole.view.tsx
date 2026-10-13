@@ -3,7 +3,6 @@ import { Button, Flex, Text, Box } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Hole as HoleModel } from "model/Hole";
 import { Lie } from "model/Lie";
-import { useInput } from "presenters/utils/useInput/useInput";
 import { Club } from "model/Club";
 import { StrokeWithDerivedFields } from "model/Stroke";
 import { LatLng } from "model/LatLng";
@@ -64,7 +63,6 @@ export type HoleViewProps = {
 
 function useHoleViewLogic(props: HoleViewProps) {
   const {
-    setPar,
     currentPosition,
     setToPosition: parentSetToPosition,
     setFromPosition: parentSetFromPosition,
@@ -81,27 +79,6 @@ function useHoleViewLogic(props: HoleViewProps) {
     [props.preprocessedStrokes.length]
   );
 
-  const teePlayed = selectCurrentTeeFromHole(props.hole);
-  const par = teePlayed?.par;
-  const { inputProps: parInputProps, setCurrentValue: setParInputValue } =
-    useInput({
-      initValue: `${par ?? ""}`,
-      onBlur: useCallback(
-        (value: string) => {
-          const newPar = parseInt(value, 10);
-          if (!isNaN(newPar)) {
-            setPar(newPar);
-          }
-        },
-        [setPar]
-      ),
-    });
-  useEffect(
-    function updateParInputValueOnHoleUpdate() {
-      setParInputValue(`${par ?? ""}`);
-    },
-    [setParInputValue, props.holeNum, par]
-  );
 
   const setToPosition = useCallback(
     (strokeNum: number, optionalPos?: LatLng) => {
@@ -160,8 +137,6 @@ function useHoleViewLogic(props: HoleViewProps) {
   const cancelLeave = useCallback(() => setShowLeavingPrompt(false), []);
 
   return {
-    par,
-    parInputProps,
     showFullScreenMap,
     mapPlacing,
     openFullScreenMap: useCallback(() => {
@@ -210,13 +185,6 @@ export function HoleView(props: HoleViewProps) {
       .toPosSetMethod === PosOptionMethods.HOLE;
   const canFinish = timeForNextHole &&
     props.hole.holeNum === props.course.holes.length;
-  // A hole set up on the fly starts with neither end on the map; the pin is
-  // the one that matters most, since every distance is measured to it.
-  const missingMarker: HoleMarker | null = !selectCurrentPinFromHole(props.hole)
-    ? "pin"
-    : !selectCurrentTeeFromHole(props.hole)?.pos
-    ? "tee"
-    : null;
 
   return (
     <Container>
@@ -279,7 +247,8 @@ export function HoleView(props: HoleViewProps) {
                 distanceUnit={distanceUnit}
                 leaveRound={viewLogic.promptOnLeave}
                 showScorecard={viewLogic.openScorecard}
-                missingMarker={missingMarker}
+                hasTee={!!selectCurrentTeeFromHole(props.hole)?.pos}
+                hasPin={!!selectCurrentPinFromHole(props.hole)}
                 placeMarker={viewLogic.placeOnFullScreenMap}
               />
             </Box>
@@ -421,7 +390,8 @@ export function HoleView(props: HoleViewProps) {
             currentStroke.strokeType
           )}
           gpsAccuracy={props.gpsAccuracy}
-          parInputProps={viewLogic.parInputProps}
+          par={props.par}
+          setPar={props.setPar}
           setTeePos={props.setTeePos}
           setHolePos={props.setHolePos}
           initialPlacing={viewLogic.mapPlacing}

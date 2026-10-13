@@ -101,6 +101,9 @@ type MapProps = {
   /** Lets one finger pan the map, which only suits a map that fills the screen
    * — anywhere else that finger is scrolling the page. */
   greedyGestures?: boolean;
+  /** How far up from the bottom edge the readouts in the corner sit, to keep
+   * them clear of anything laid over the map there. */
+  readoutsBottom?: number;
 };
 
 const createRotatedIcon = (
@@ -425,7 +428,7 @@ function Map({ mapId = "map", ...props }: MapProps) {
       </Box>
       <Flex
         position="absolute"
-        bottom={1}
+        bottom={props.readoutsBottom ?? 1}
         right={1}
         columnGap={1}
         alignItems="center"
