@@ -14,6 +14,7 @@ import { PosOption, PosOptionMethods } from "model/PosOptions";
 import { LatLng } from "model/LatLng";
 import { Lie, shortLieNames } from "model/Lie";
 import Map from "presenters/components/Map/Map";
+import { MAP_OVERLAY_PROPS } from "presenters/components/Map/useMeasureTool";
 import { ExpandIcon } from "presenters/components/icons/MapIcons";
 import { ClubStats } from "model/ClubStats";
 import { CaddySuggestion } from "usecases/stroke/calculateCaddySuggestions";
@@ -410,9 +411,12 @@ export function SingleStrokeView(props: SingleStrokeViewProps) {
               showGreenDistanceReadout
               measureDistancesFrom={props.stroke.fromPos}
               clubRanges={viewLogic.clubRanges}
+              // Under the button that expands the map.
+              measureButtonTop={9}
             />
           )}
           <IconButton
+            {...MAP_OVERLAY_PROPS}
             aria-label="Expand map"
             variant="unstyled"
             display="flex"

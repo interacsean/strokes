@@ -6,6 +6,7 @@ import { useUpdateUserPin } from "./useUpdateUserPin";
 import { useGreenDistanceLabels } from "./useGreenDistanceLabels";
 import { useClubRangeRings } from "./useClubRangeRings";
 import { useStrokePath } from "./useStrokePath";
+import { MAP_OVERLAY_PROPS, useMeasureTool } from "./useMeasureTool";
 import { Hole } from "model/Hole";
 import { LatLng } from "model/LatLng";
 import { selectCurrentTeeFromHole } from "state/course/selectors/currentTee";
@@ -14,7 +15,8 @@ import { calculateDistanceBetweenPositions } from "usecases/hole/calculateDistan
 import "./mapStyles.css";
 import { useFakeGps } from "../FakePos/FakePosContext";
 import { BASE_PATH } from "App";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, IconButton } from "@chakra-ui/react";
+import { MeasureIcon } from "presenters/components/icons/MapIcons";
 import { GpsAccuracy } from "presenters/components/GpsAccuracy/GpsAccuracy";
 import { GreenDistances } from "presenters/components/GreenDistances/GreenDistances";
 import { calculateGreenDistances } from "usecases/hole/calculateGreenDistances";
@@ -34,6 +36,10 @@ export type MapFrame = "hole" | "stroke";
 const MINI_MAP_ID = "miniMap";
 const CLUB_RANGE_STROKE_WEIGHT = {
   mini: 1,
+  full: 2,
+};
+const MEASURE_LINE_STROKE_WEIGHT = {
+  mini: 1.5,
   full: 2,
 };
 
@@ -105,6 +111,9 @@ type MapProps = {
   /** How far up from the bottom edge the readouts in the corner sit, to keep
    * them clear of anything laid over the map there. */
   readoutsBottom?: number;
+  /** How far down from the top edge the measure button sits, to keep it clear
+   * of anything laid over the map's top right corner. */
+  measureButtonTop?: number;
 };
 
 const createRotatedIcon = (
@@ -383,7 +392,36 @@ function useViewLogic(
 function Map({ mapId = "map", ...props }: MapProps) {
   const [map, setMap] = useState<GoogleMap | null>(null);
   const userLocation = props.currentPosition;
-  const { mapHeading } = useViewLogic(props, map, mapId);
+  const isMiniMap = mapId === MINI_MAP_ID;
+
+  const measureFrom = props.measureDistancesFrom ?? props.currentPosition;
+  const pinPos = selectCurrentPinFromHole(props.hole);
+
+  const [measuring, setMeasuring] = useState(false);
+  // A point measured on one hole means nothing on the next.
+  useEffect(() => setMeasuring(false), [props.hole.holeNum]);
+  const { overlayRef: measureOverlayRef, setPoint: setMeasurePoint } =
+    useMeasureTool({
+      map,
+      active: measuring,
+      fromPos: measureFrom,
+      pinPos,
+      strokeWeight: isMiniMap
+        ? MEASURE_LINE_STROKE_WEIGHT.mini
+        : MEASURE_LINE_STROKE_WEIGHT.full,
+    });
+
+  const { mapHeading } = useViewLogic(
+    {
+      ...props,
+      // While measuring, a tap moves the point, and the view stays put so the
+      // player can look around for where to put it.
+      onMapClick: measuring ? setMeasurePoint : props.onMapClick,
+      holdCamera: props.holdCamera || measuring,
+    },
+    map,
+    mapId
+  );
 
   const mapRef = useRef<GoogleMap | null>(null); // Ref for map instance
 
@@ -392,13 +430,11 @@ function Map({ mapId = "map", ...props }: MapProps) {
 
   useStrokePath(map, props.strokeFromPos, props.ballPos);
 
-  const measureFrom = props.measureDistancesFrom ?? props.currentPosition;
   const greenDistances = calculateGreenDistances(props.hole, measureFrom);
   useGreenDistanceLabels(map, greenDistances, !!props.showGreenDistanceLabels);
 
   // The rings open towards the pin, which is where the player is lining up from
   // wherever they currently are — not the tee-to-pin line the map is oriented on.
-  const pinPos = selectCurrentPinFromHole(props.hole);
   const bearingToPin =
     measureFrom && pinPos
       ? calculateBearingBetweenPositions(measureFrom, pinPos)
@@ -414,27 +450,54 @@ function Map({ mapId = "map", ...props }: MapProps) {
     measureFrom,
     bearingToPin,
     props.clubRanges ?? null,
-    mapId === MINI_MAP_ID
-      ? CLUB_RANGE_STROKE_WEIGHT.mini
-      : CLUB_RANGE_STROKE_WEIGHT.full
+    isMiniMap ? CLUB_RANGE_STROKE_WEIGHT.mini : CLUB_RANGE_STROKE_WEIGHT.full
   );
 
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <div id={mapId} style={{ width: "100%", height: "100%" }}></div>
+      <Box
+        ref={measureOverlayRef}
+        position="absolute"
+        inset={0}
+        overflow="hidden"
+        pointerEvents="none"
+      />
       {/* Top left: the bottom of the map belongs to Google's attribution. */}
-      <Box position="absolute" top={1} left={1} pointerEvents="none">
+      <Box
+        {...MAP_OVERLAY_PROPS}
+        position="absolute"
+        top={1}
+        left={1}
+        pointerEvents="none"
+      >
         <WindCompass
           wind={wind}
           mapHeading={mapHeading}
-          size={
-            mapId === MINI_MAP_ID
-              ? WIND_COMPASS_SIZE.mini
-              : WIND_COMPASS_SIZE.full
-          }
+          size={isMiniMap ? WIND_COMPASS_SIZE.mini : WIND_COMPASS_SIZE.full}
         />
       </Box>
+      <IconButton
+        {...MAP_OVERLAY_PROPS}
+        aria-label="Measure distances"
+        aria-pressed={measuring}
+        variant="unstyled"
+        display="flex"
+        minW="auto"
+        height="auto"
+        p={1.5}
+        borderRadius="md"
+        bgColor={measuring ? "white" : "rgba(0, 0, 0, 0.55)"}
+        color={measuring ? "black" : "white"}
+        position="absolute"
+        top={props.measureButtonTop ?? 1}
+        right={1}
+        onClick={() => setMeasuring((current) => !current)}
+      >
+        <MeasureIcon boxSize={isMiniMap ? 4 : 5} />
+      </IconButton>
       <Flex
+        {...MAP_OVERLAY_PROPS}
         position="absolute"
         bottom={props.readoutsBottom ?? 1}
         right={1}

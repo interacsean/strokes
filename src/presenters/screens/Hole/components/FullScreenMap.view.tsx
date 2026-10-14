@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { Box, Button, Flex, IconButton, Select, Text } from "@chakra-ui/react";
 import Map, { MapFrame } from "presenters/components/Map/Map";
+import { MAP_OVERLAY_PROPS } from "presenters/components/Map/useMeasureTool";
 import { ChevronDownIcon, EditIcon } from "@chakra-ui/icons";
 import { CollapseIcon } from "presenters/components/icons/MapIcons";
 import { Hole } from "model/Hole";
@@ -108,6 +109,8 @@ export function FullScreenMap(props: FullScreenMapProps) {
             greedyGestures
             // Clear of the tab that hides the details panel.
             readoutsBottom={showDetails ? 6 : 1}
+            // Under the button that closes the map.
+            measureButtonTop={10}
           />
         ) : (
           <Flex height="100%" alignItems="center" justifyContent="center">
@@ -116,6 +119,7 @@ export function FullScreenMap(props: FullScreenMapProps) {
         )}
         {canFrameStroke && (
           <Flex
+            {...MAP_OVERLAY_PROPS}
             position="absolute"
             top={1}
             // Clear of the wind compass, which sits in the corner.
@@ -146,6 +150,7 @@ export function FullScreenMap(props: FullScreenMapProps) {
           </Flex>
         )}
         <IconButton
+          {...MAP_OVERLAY_PROPS}
           aria-label="Close map"
           variant="unstyled"
           display="flex"
@@ -164,6 +169,7 @@ export function FullScreenMap(props: FullScreenMapProps) {
         </IconButton>
         {!showDetails && (
           <IconButton
+            {...MAP_OVERLAY_PROPS}
             aria-label="Show hole details"
             variant="unstyled"
             display="flex"
@@ -184,6 +190,7 @@ export function FullScreenMap(props: FullScreenMapProps) {
         )}
         {placing && (
           <Flex
+            {...MAP_OVERLAY_PROPS}
             position="absolute"
             left={2}
             // Clear of the button that shows the details panel again.
@@ -231,6 +238,7 @@ export function FullScreenMap(props: FullScreenMapProps) {
           justifyContent="space-around"
         >
           <IconButton
+            {...MAP_OVERLAY_PROPS}
             aria-label="Hide hole details"
             variant="unstyled"
             display="flex"

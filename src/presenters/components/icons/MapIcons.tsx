@@ -35,3 +35,20 @@ export const GpsAccuracyIcon = createIcon({
     </>
   ),
 });
+
+/** Two points with the line measured between them. */
+export const MeasureIcon = createIcon({
+  displayName: "MeasureIcon",
+  viewBox: "0 0 24 24",
+  path: (
+    <>
+      <path fill="currentColor" d="M6.3 16.3 16.3 6.3l1.4 1.4-10 10-1.4-1.4Z" />
+      <circle cx="5" cy="19" r="3" fill="currentColor" />
+      <circle cx="19" cy="5" r="3" fill="currentColor" />
+      <path
+        fill="currentColor"
+        d="M9.6 7.2 11 5.8l1.4 1.4L11 8.6 9.6 7.2Zm6.6 6.6 1.4-1.4 1.4 1.4-1.4 1.4-1.4-1.4Z"
+      />
+    </>
+  ),
+});
